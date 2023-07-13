@@ -22,9 +22,9 @@ export class AddLockToUserComponent implements OnInit {
     return result;
   }
 
-  addLockToUser(id: string, modelo: string){
-    const chapa = {idL: id, nombre:this.nombre, pass:this.password, modelNum: modelo, admin: }
-    console.log("se agregó");
-  }
+  //addLockToUser(id: string, modelo: string){
+  //  const chapa = {idL: id, nombre:this.nombre, pass:this.password, modelNum: modelo, admin: }
+  //  console.log("se agregó");
+  //}
 
 }
