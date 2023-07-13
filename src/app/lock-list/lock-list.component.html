@@ -1,0 +1,25 @@
+<h2>Chapas</h2>
+<ul class="locks">
+    <li *ngFor="let chapa of listaChapas">
+        <button [class.selected]=" chapa === selectedChapa" type="button" (click)="OnSelect(chapa)">
+            <span class="badge">
+                {{chapa.idL}}
+            </span>
+            <span class="badge">
+                {{chapa.nombre}}
+            </span>
+        </button>
+
+    </li>
+</ul>
+
+<div *ngIf="selectedChapa">
+    <h2> Detalles del producto {{selectedChapa.nombre | uppercase}} </h2>
+    <button>Editar</button>
+    <button>Borrar</button>
+    <div>lockId: {{selectedChapa.idL}}</div>
+    <div>lockAlias: {{selectedChapa.nombre}}</div>
+    <div>noKeyPwd: {{selectedChapa.pass}}</div>
+    <div *ngIf="getlockSound(selectedChapa)">Sonido Activado: Si</div>
+    <div>Modelo de la Chapa: {{selectedChapa.modelNum}}</div>
+</div>

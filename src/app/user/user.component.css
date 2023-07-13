@@ -1,0 +1,25 @@
+.Titulo {
+    text-align: center;
+}
+
+.Perfil {
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+}
+
+.Chapas {
+    margin: 20px;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+}
+
+.descripcion {
+    margin-bottom: 20px;
+    border-style: dotted;
+    border-color: black;
+    border-bottom: 10px;
+    border-left: 10px;
+    border-right: 10px;
+}

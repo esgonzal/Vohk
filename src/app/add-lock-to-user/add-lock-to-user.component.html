@@ -1,0 +1,10 @@
+<div class="individual" *ngFor="let chapas of getChapasDisponibles()">
+    <form class="custom-form" method="post">
+        <p>Identificador de la chapa:{{chapas.idL}}</p>
+        <input [(ngModel)]="chapas.nombre" name="nombre" placeholder="Nombre de la chapa" required="required" />
+        <p>Modelo de la chapa: {{chapas.modelNum}}</p>
+        <input [(ngModel)]="chapas.pass" name="pass" placeholder="Contraseña de la chapa" required="required" />
+        <input [(ngModel)]="chapas.lockSound" name="lockSound" placeholder="1 o 2" required="required" />
+        <button type="submit" (click)="addLockToUser(chapas.idL, chapas.modelNum)">Agregar chapa a tu cuenta</button>
+    </form>
+</div>
