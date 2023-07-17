@@ -1,8 +1,14 @@
 <div class="Perfil">
     <div class="Titulo">TU PERFIL</div>
-    <div>ID del usuario: {{id}}</div>
-    <div>Nombre del usuario: {{nombre}}</div>
-    <div>Contraseña del Usuario: {{pass}}</div>
+    <div>ID del usuario: </div>
+    <div>Nombre del usuario: {{username}}</div>
+    <div>Contraseña del Usuario: {{password}} </div>
+    <button type="submit" (click)="ToggleDisplay()">Cambiar Contraseña</button>
+    <div *ngIf="idDisplay">
+        <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="Nueva Contraseña" required="required" />
+        <button type="submit" (click)="cambiarPass(username,newPassword)">Cambiar</button>
+    </div>
+    <button type="submit" (click)="Eliminar()">Borrar Usuario</button>
 </div>
 <div class="Chapas">
     <div class="Titulo">

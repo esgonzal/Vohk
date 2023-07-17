@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../User';
 import { Usuarios } from '../mock-users';
 import { Router } from '@angular/router';
-
-
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
@@ -13,19 +12,15 @@ import { Router } from '@angular/router';
 export class UserListComponent implements OnInit {
 
   listaUsuarios = Usuarios;
-
-  constructor(public router: Router) { }
-
-  ngOnInit(): void {
-  }
-
   selectedUsuario?: User;
 
+  constructor(public router: Router) {}
 
+  ngOnInit(): void {}
+  
   OnSelect(usuario: User): void {
-  this.selectedUsuario = usuario;
-  console.log(usuario);
-  this.router.navigateByUrl("/users/:id");
+    this.selectedUsuario = usuario;
+    this.router.navigateByUrl("/users/:id");
   }
 
 }

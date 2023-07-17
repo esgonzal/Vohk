@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chapas } from '../mock-locks';
+import {  ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-add-lock-to-user',
@@ -9,22 +11,23 @@ import { Chapas } from '../mock-locks';
 export class AddLockToUserComponent implements OnInit {
 
   listaChapas = Chapas;
-  nombre:string;
-  password:string;
+  admin:string;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private router : Router) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit() {}
 
   getChapasDisponibles(){
     const result = Chapas.filter((obj) => {return obj.admin === ""});
     return result;
   }
 
-  //addLockToUser(id: string, modelo: string){
-  //  const chapa = {idL: id, nombre:this.nombre, pass:this.password, modelNum: modelo, admin: }
-  //  console.log("se agregó");
-  //}
+  addLockToUser(name: string,pass: string,sound: number,id: string, modelo: string){
+  const admin = this.router.url.split("/")[2];
+  const chapa = {idL: id, nombre:name, pass:pass, lockSound:Number(sound), modelNum: modelo, admin: admin};
+  let indexToUpdate = this.listaChapas.findIndex(item => item.idL ===chapa.idL);
+  this.listaChapas[indexToUpdate] = chapa;
+  this.router.navigate(['/users/', admin]);
+  }
 
 }

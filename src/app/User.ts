@@ -1,5 +1,9 @@
+//import Long from "long";
+
 export interface User {
-    userid: string;
-    nombre: string;
+    clientId: string;
+    clientSecret: string
+    username: string;
     password: string;
+    date: number;
   }
