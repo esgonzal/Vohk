@@ -1,28 +1,30 @@
 <div class="Perfil">
     <div class="Titulo">TU PERFIL</div>
-    <div>ID del usuario: </div>
+    <div *ngIf="tokenData">
+    <div>ID del usuario: {{tokenData.uid}}</div>
+    <div>Access Token del usuario: {{tokenData.access_token}}</div>
     <div>Nombre del usuario: {{username}}</div>
     <div>Contraseña del Usuario: {{password}} </div>
     <button type="submit" (click)="ToggleDisplay()">Cambiar Contraseña</button>
-    <div *ngIf="idDisplay">
+    <div *ngIf="newPasswordDisplay">
         <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="Nueva Contraseña" required="required" />
         <button type="submit" (click)="cambiarPass(username,newPassword)">Cambiar</button>
     </div>
     <button type="submit" (click)="Eliminar()">Borrar Usuario</button>
+    </div>
 </div>
 <div class="Chapas">
     <div class="Titulo">
         TU COLECCION DE CHAPAS
-        <button type="submit" (click)="AgregarChapa()">Agregar nueva chapa</button>
+        <div *ngIf="locksList">
+            <div *ngFor="let lock of locksList.list">
+              <div>ID de la chapa: {{lock.lockId}}</div>
+              <!--<div>lockData de la chapa: {{lock.lockData}}</div>-->
+              <div>Nombre de la chapa: {{lock.lockName}}</div>
+              <div>Alias de la chapa: {{lock.lockAlias}}</div>
+              <div>Contraseña de la chapa: {{lock.noKeyPwd}}</div>
+            </div>
+          </div>
     </div>
-    <div *ngFor="let chapa of getChapas()">
-        <div class="descripcion">
-            <p>Identificador de la Chapa: {{chapa.idL}}</p>
-            <p>Nombre de la Chapa: {{chapa.nombre}}</p>
-            <p>Contraseña de la Chapa: {{chapa.pass}}</p>
-            <p>Modelo de la Chapa: {{chapa.modelNum}}</p>
-            <button type="submit" (click)="EditarChapa()">Editar chapa</button>
-            <button type="submit" (click)="BorrarChapa()">Borrar chapa</button>
-        </div>
-    </div>
+    
 </div>

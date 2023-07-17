@@ -3,15 +3,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import moment from 'moment-timezone';
 import {Md5} from 'ts-md5';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserServiceService {
+
   nombre_usuario:string;
   clave_usuario:string;
-  data:any[]
+  private dataSubject = new BehaviorSubject<any>(null);
+  data$ = this.dataSubject.asObservable();
+
   constructor(private http: HttpClient) { }
 
   getnombre_usuario(): string{
@@ -20,7 +23,6 @@ export class UserServiceService {
   setnombre_usuario(nombre:string): void{
     this.nombre_usuario = nombre;
   }
-
   getclave_usuario(): string{
     return this.clave_usuario;
   }
@@ -28,29 +30,19 @@ export class UserServiceService {
     this.clave_usuario = clave;
   }
 
-  getdata_usuario() {
-    console.log("en el service get ", this.data)
-    return this.data;
-  }
-
-  setdata_usuario(data: any[]){
-    this.data = data;
-    console.log("en el service set ", this.data)
-  }
-
   public getMD5(clave:string){
     return Md5.hashStr(clave);
   }
 
   public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').format()
+    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
     return timeInShanghai;
   }
   
   UserRegister(nombre:string, clave:string){
     let clave_encriptada = this.getMD5(clave);
     let date = this.timestamp()
-    const url = 'https://euapi.ttlock.com/v3/user/register';
+    let url = 'https://euapi.ttlock.com/v3/user/register';
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
     let options = { headers: header};
@@ -59,13 +51,13 @@ export class UserServiceService {
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
     body.set('username', nombre);
     body.set('password', clave_encriptada);
-    body.set('date', date);
+    body.set('date', date.toString());
     this.http.post(url ,body.toString(), options).subscribe((response: any) => {
       console.log(response);
     });
   }
 
-  getAccessToken(nombre: string, clave: string){
+  async getAccessToken(nombre: string, clave: string){
     let clave_encriptada = this.getMD5(clave);
     let url = 'https://euapi.ttlock.com/oauth2/token';
     let header = new HttpHeaders({
@@ -78,11 +70,14 @@ export class UserServiceService {
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
     body.set('username', username);
     body.set('password', clave_encriptada);
-    this.http.post(url, body.toString(), options)
-    let res = this.http.post(url, body.toString(), options).subscribe((response: any) => {
-      this.data = response
-      this.setdata_usuario(this.data)
-    });
+
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response); // Emit the response to dataSubject
+    } catch (error) {
+      console.error("Error while fetching access token:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
   }
 
   DeleteUser(nombre: string){
@@ -97,7 +92,7 @@ export class UserServiceService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
     body.set('username', username);
-    body.set('date', date);
+    body.set('date', date.toString());
     this.http.post(url, body.toString(), options).subscribe((response: any) => {
       console.log(response)
     });
@@ -122,7 +117,7 @@ export class UserServiceService {
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
     body.set('username', username);
     body.set('password', clave_encriptada);
-    body.set('date', date);
+    body.set('date', date.toString());
     let res = this.http.post(url ,body.toString(), options)
     res.subscribe((response: any) => {
       console.log(response);

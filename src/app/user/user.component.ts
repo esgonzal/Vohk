@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Chapas } from '../mock-locks';
 import { Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
-import { Observable } from 'rxjs';
+import { AccessTokenData } from '../AccessToken';
+import { LockServiceService } from '../services/lock-service.service';
+import { LockData, LockListResponse } from '../Lock';
 
 @Component({
   selector: 'app-user',
@@ -13,30 +14,48 @@ import { Observable } from 'rxjs';
 })
 export class UserComponent implements OnInit {
 
-  listaChapas = Chapas
   username: string;
   password: string;
   newPassword: string;
-  idDisplay = false
-  data: any[]
+  newPasswordDisplay = false;
+  tokenData: AccessTokenData;
+  locksList: LockListResponse;
 
-  constructor(private route: ActivatedRoute, private router: Router, public userService: UserServiceService) {
+  constructor(private route: ActivatedRoute, private router: Router, public userService: UserServiceService, public lockService: LockServiceService) {}
+    
+  ngOnInit(){
     this.username = this.userService.getnombre_usuario();
     this.password = this.userService.getclave_usuario();
-    this.data =  this.userService.getdata_usuario();
+    this.userService.data$.subscribe((data) => {
+      this.tokenData = data;
+    });
+    this.EncontrarLocksdelUsuario(this.tokenData.access_token);
+  }
+
+  async EncontrarLocksdelUsuario(token: string){
+    try{
+      await this.lockService.getLockListAccount(token);
+      this.lockService.data$.subscribe((data) => {
+        if (data.list) {
+          this.locksList = data;
+        } else {
+          console.log("Data not yet available.");
+        }
+
+      });
+    } catch(error) {
+      console.error("Error while fetching access token:", error);
+    }
+    console.log("Objeto llamado Locks el cual es un array de LockDatas",this.locksList)
   }
     
-
-  ngOnInit(){
-  //this.username= this.route.snapshot.paramMap.get('id')!;
-    }
 
   Eliminar(){
     this.userService.DeleteUser(this.username)
     this.router.navigate(['']);
   }
 
-  ToggleDisplay(){ this.idDisplay = !this.idDisplay }
+  ToggleDisplay(){ this.newPasswordDisplay = !this.newPasswordDisplay }
 
   cambiarPass(username: string, newPassword: string){
     this.userService.ResetPassword(username, newPassword);
@@ -44,43 +63,5 @@ export class UserComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  recibirDatos(array: any[], nombre: string, clave: string){
-    this.username = nombre;
-    this.password = clave;
-    this.data = array;
-    console.log(this.username)
-    console.log(this.password)
-    console.log(this.data)
-  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-  getChapas(){
-    const result = Chapas.filter((obj) => {return obj.admin === this.username});
-    return result;
-  }
-
-  AgregarChapa(){
-    console.log("se quiere agregar una chapa");
-    this.router.navigate(['/users/',this.username,'addlock']);
-  }
-
-  EditarChapa(){
-    console.log("se quiere editar una chapa");
-  }
-
-  BorrarChapa(){
-    console.log("se quiere borrar una chapa");
-  }
- 
 }
