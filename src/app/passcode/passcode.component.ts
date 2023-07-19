@@ -18,10 +18,12 @@ export class PasscodeComponent implements OnInit {
   tokenData: AccessTokenData;
   lock: LockData;
   passcodes: Passcode[] = []
-  display: boolean = false;
   passcodeName: string;
+  passcodePwd: string;
   passcodeStartTime: string;
   passcodeEndTime: string;
+  display: boolean = false;
+  displayEditar:boolean =false;
   displayForm1: boolean =false;
   displayForm2: boolean =false;
   displayForm3: boolean =false;
@@ -36,6 +38,8 @@ export class PasscodeComponent implements OnInit {
   displayForm12: boolean =false;
   displayForm13: boolean =false;
   displayForm14: boolean =false;
+  toggleDisplay(){this.display = !this.display;}
+  toggleEditar(){this.displayEditar = !this.displayEditar;}
   toggleForm1(){this.displayForm1 = !this.displayForm1;}
   toggleForm2(){this.displayForm2 = !this.displayForm2;}
   toggleForm3(){this.displayForm3 = !this.displayForm3;}
@@ -89,7 +93,7 @@ export class PasscodeComponent implements OnInit {
           this.passcodes = data.list;
         } else {
           console.log("Data not yet available.");
-          this.passcodes = [];
+          this.passcodes = this.passcodes;
         }
       });
     } catch(error) {
@@ -97,8 +101,6 @@ export class PasscodeComponent implements OnInit {
     }
   }
 
-  toggleDisplay(){
-    this.display = !this.display;
-  }
+  
 
 }

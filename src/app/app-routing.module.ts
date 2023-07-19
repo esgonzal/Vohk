@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/register.component';
 import { UserComponent } from './user/user.component';
 import { LockComponent } from './lock/lock.component';
 import { PasscodeComponent } from './passcode/passcode.component';
+import { ICCardComponent } from './iccard/iccard.component';
 
 
 
@@ -13,7 +14,8 @@ const routes: Routes = [
   {path:'register', component:RegisterComponent},
   {path:'users/:id', component:UserComponent},
   {path:'lock/:id', component:LockComponent},
-  {path:'lock/:id/passcode', component:PasscodeComponent}
+  {path:'lock/:id/passcode', component:PasscodeComponent},
+  {path:'lock/:id/card', component:ICCardComponent}
 ];
 
 @NgModule({

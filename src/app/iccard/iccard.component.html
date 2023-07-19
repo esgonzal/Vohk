@@ -1,0 +1,16 @@
+<div *ngFor="let card of cards">
+<ul>
+    <li>Nombre de la card: {{card.cardName}}</li>
+    <li>Numero de la card: {{card.cardNumber}}</li>
+    <li>Tipo de la card: {{card.cardType}}</li>
+    <li>ID de la card: {{card.cardId}}</li>
+    <button (click)="toggleEditarNombre()">Editar Passcode</button>
+    <div class="editarPasscode" *ngIf="displayEditar">
+        <p>
+            Nombre de la Passcode
+            <input type="text" [(ngModel)]="cardName" name="cardName" placeholder="Enter the new name for this Card" required="" />
+        </p>
+        <button type="submit" (click)="this.cardService.changeName(this.tokenData.access_token,this.lockId,card.cardId,cardName)">Confirmar cambios</button>
+    </div>
+</ul>
+</div>

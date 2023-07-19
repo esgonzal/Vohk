@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { Passcode } from '../Passcode';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,10 @@ export class PasscodeServiceService {
     //date= '2023-07-19-09'
     //No es necesario ajustar la hora con shanghai, solo pon tu hora local
     let fechaInShanghai = moment(date, "YYYY-MM-DD-HH").valueOf();
+    if(Number.isNaN(fechaInShanghai)){
+      return date
+      
+    }
     return fechaInShanghai.toString();
   }
 
@@ -68,6 +73,56 @@ export class PasscodeServiceService {
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while generating a random passcode:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
+
+  async deletePasscode(token: string, lockID:number, keyboardPwdId:number){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/keyboardPwd/delete'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockID.toString());
+    body.set('keyboardPwdId', keyboardPwdId.toString());
+    body.set('deleteType', '1');
+    body.set('date', fecha);
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      console.log(response);
+      this.dataSubject.next(response);
+    } catch (error) {
+      console.error("Error while deleting a passcode:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
+
+  async changePasscode(passcode: Passcode, token: string, lockID:number, keyboardPwdId:number, newName:string = passcode.keyboardPwdName, newPwd:string = passcode.keyboardPwd, newStartDate:string = passcode.startDate, newEndDate:string = passcode.endDate){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/keyboardPwd/change'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockID.toString());
+    body.set('keyboardPwdId', keyboardPwdId.toString());
+    body.set('keyboardPwdName', newName);
+    body.set('newKeyboardPwd', newPwd);
+    body.set('startDate', this.convertirDate(newStartDate));
+    body.set('endDate', this.convertirDate(newEndDate));
+    body.set('changeType', '2');
+    body.set('date', fecha);
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      console.log(response);
+      this.dataSubject.next(response);
+    } catch (error) {
+      console.error("Error while editing a passcode:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }

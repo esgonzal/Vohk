@@ -1,5 +1,5 @@
 export interface Passcode {
-    endDate: number;
+    endDate: string;
     sendDate: number;
     keyboardPwdId: number;
     nickName: string;
@@ -7,9 +7,9 @@ export interface Passcode {
     lockId: number;
     keyboardPwdVersion: number;
     isCustom: number;
-    keyboardPwdName?: string; // Optional property
+    keyboardPwdName: string; // Optional property
     keyboardPwd: string;
-    startDate: number;
+    startDate: string;
     senderUsername?: string; // Optional property
     receiverUsername?: string; // Optional property
     status: number;

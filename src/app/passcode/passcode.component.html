@@ -2,7 +2,54 @@
     <ul>
         <li>Nombre de la passcode: {{passcode.keyboardPwdName}}</li>
         <li>Contraseña de la passcode: {{passcode.keyboardPwd}}</li>
-        <li>Tipo de la passcode: {{passcode.keyboardPwdType}}</li>
+        <!--
+        -->
+        <li *ngIf="passcode.keyboardPwdType==1">Tipo de la passcode: One-Time</li>
+        <li *ngIf="passcode.keyboardPwdType==2">Tipo de la passcode: Permanent</li>
+        <li *ngIf="passcode.keyboardPwdType==3">Tipo de la passcode: Timed</li>
+        <li *ngIf="passcode.keyboardPwdType==4">Tipo de la passcode: Erase</li>
+        <li *ngIf="passcode.keyboardPwdType==5">Tipo de la passcode: Weekend Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==6">Tipo de la passcode: Daily Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==7">Tipo de la passcode: Workday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==8">Tipo de la passcode: Monday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==9">Tipo de la passcode: Tuesday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==10">Tipo de la passcode: Wednesday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==11">Tipo de la passcode: Thursday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==12">Tipo de la passcode: Friday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==13">Tipo de la passcode: Saturday Cyclic</li>
+        <li *ngIf="passcode.keyboardPwdType==14">Tipo de la passcode: Sunday Cyclic</li>
+        <li>ID de la passcode: {{passcode.keyboardPwdId }}</li>
+        <!--
+            Para formatear de milisegundos a "YYYY MM DD HH"
+            import moment from 'moment';
+
+            let fecha = 1689876000000
+            let x = moment(fecha).format("YYYY MM DD HH")
+            console.log(x)
+        -->
+        <li>StartDate de la passcode: {{passcode.startDate }}</li>
+        <li>EndDate de la passcode: {{passcode.endDate }}</li>
+        <button (click)="this.passcodeService.deletePasscode(this.tokenData.access_token, this.lockId, passcode.keyboardPwdId)">Borrar Passcode</button>
+        <button (click)="toggleEditar()">Editar Passcode</button>
+        <div class="editarPasscode" *ngIf="displayEditar">
+            <p>
+                Nombre de la Passcode
+                <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter the new name for this Passcode" required="" />
+            </p>
+            <p>
+                Password de la Passcode
+                <input type="text" [(ngModel)]="passcodePwd" name="passcodePwd" placeholder="Enter the new password for this Passcode" required="" />
+                </p>
+            <p>
+                Start Time de la Passcode
+                <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="" />
+            </p>
+            <p>
+                End Time de la Passcode
+                <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="" />
+            </p>
+            <button type="submit" (click)="this.passcodeService.changePasscode(passcode,this.tokenData.access_token,this.lockId,passcode.keyboardPwdId,passcodeName,passcodePwd,passcodeStartTime,passcodeEndTime)">Generar Passcode</button>
+        </div>
     </ul>
     
 </div>

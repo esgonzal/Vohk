@@ -64,4 +64,8 @@ export class LockComponent implements OnInit{
   navigateToPasscode(){
     this.router.navigate(['lock',this.lockId,'passcode']);
   }
+
+  navigateToCard(){
+    this.router.navigate(['lock',this.lockId,'card']);
+  }
 }

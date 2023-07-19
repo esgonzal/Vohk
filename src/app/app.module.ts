@@ -11,6 +11,7 @@ import { RegisterComponent } from './pages/register.component';
 import { UserComponent } from './user/user.component';
 import { LockComponent } from './lock/lock.component';
 import { PasscodeComponent } from './passcode/passcode.component';
+import { ICCardComponent } from './iccard/iccard.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { PasscodeComponent } from './passcode/passcode.component';
     UserComponent,
     LockComponent,
     PasscodeComponent,
+    ICCardComponent,
   ],
   imports: [
     BrowserModule,
