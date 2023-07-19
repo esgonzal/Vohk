@@ -1,0 +1,18 @@
+.generate-button {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+  }
+  
+  /* Add this style to adjust the button width if needed */
+  .generate-button button {
+    width: 90%; /* Adjust the width as needed */
+    max-width: 400px; /* Set a max-width if you want to limit the button's width */
+    padding: 10px 20px;
+    background-color: #2d1cc9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }

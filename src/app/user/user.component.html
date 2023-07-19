@@ -15,16 +15,17 @@
 </div>
 <div class="Chapas">
     <div class="Titulo">
-        TU COLECCION DE CHAPAS
+        <h1>TU COLECCION DE CHAPAS</h1>
         <div *ngIf="locksList">
-            <div *ngFor="let lock of locksList.list">
-              <div>ID de la chapa: {{lock.lockId}}</div>
-              <!--<div>lockData de la chapa: {{lock.lockData}}</div>-->
-              <div>Nombre de la chapa: {{lock.lockName}}</div>
-              <div>Alias de la chapa: {{lock.lockAlias}}</div>
-              <div>Contraseña de la chapa: {{lock.noKeyPwd}}</div>
+            <div class="Info_Chapa" *ngFor="let lock of locksList.list">
+                <button (click)="onLockButtonClick(lock)">
+                    <div>Alias de la chapa: {{lock.lockAlias}}</div>
+                    <div>ID de la chapa: {{lock.lockId}}</div>
+                    <div>Nombre de la chapa: {{lock.lockName}}</div>
+                    <div>Contraseña de la chapa: {{lock.noKeyPwd}}</div>
+                </button>
             </div>
           </div>
     </div>
     
-</div>
+</div><!---->

@@ -21,7 +21,6 @@ export class LoginComponent {
   async login(nombre:string, clave:string){
     this.userService.setnombre_usuario(nombre);
     this.userService.setclave_usuario(clave);
-
     try {
       await this.userService.getAccessToken(nombre, clave);
       this.userService.data$.subscribe((data) => {

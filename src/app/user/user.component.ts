@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { AccessTokenData } from '../AccessToken';
@@ -20,8 +19,9 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   tokenData: AccessTokenData;
   locksList: LockListResponse;
+  lock:LockData;
 
-  constructor(private route: ActivatedRoute, private router: Router, public userService: UserServiceService, public lockService: LockServiceService) {}
+  constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService) {}
     
   ngOnInit(){
     this.username = this.userService.getnombre_usuario();
@@ -41,12 +41,10 @@ export class UserComponent implements OnInit {
         } else {
           console.log("Data not yet available.");
         }
-
       });
     } catch(error) {
       console.error("Error while fetching access token:", error);
     }
-    console.log("Objeto llamado Locks el cual es un array de LockDatas",this.locksList)
   }
     
 
@@ -61,6 +59,12 @@ export class UserComponent implements OnInit {
     this.userService.ResetPassword(username, newPassword);
     this.password = newPassword;
     this.router.navigate(['/login']);
+  }
+
+  onLockButtonClick(lock:LockData){
+    this.lock = lock;
+    let lockId = this.lock.lockId
+    this.router.navigate(['/lock/',lockId]);
   }
 
 

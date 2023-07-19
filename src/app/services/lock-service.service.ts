@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import moment from 'moment';
+import { AccessTokenData } from '../AccessToken';
+import { LockData } from '../Lock';
 
 
 @Injectable({
@@ -31,7 +33,6 @@ export class LockServiceService {
     body.set('pageNo', '1');
     body.set('pageSize', '20');
     body.set('date', fecha.toString());
-
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
@@ -41,5 +42,25 @@ export class LockServiceService {
     }
   }
 
+  async changeLockName(token:string, lockId:number, newLockAlias: string){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/lock/rename'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockId.toString());
+    body.set('lockAlias', newLockAlias);
+    body.set('date', fecha.toString());
+    try {
+      await lastValueFrom(this.http.post(url, body.toString(), options));
+    } catch (error) {
+      console.error("Error while fetching lock list of the account:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+      throw new Error("Lock alias update failed.");
+    }
+  }
 
 }

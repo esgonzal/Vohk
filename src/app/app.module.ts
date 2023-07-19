@@ -8,8 +8,9 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './sharepage/navbar/navbar.component';
 import { LoginComponent } from './pages/login.component';
 import { RegisterComponent } from './pages/register.component';
-import { UserListComponent } from './user-list/user-list.component';
 import { UserComponent } from './user/user.component';
+import { LockComponent } from './lock/lock.component';
+import { PasscodeComponent } from './passcode/passcode.component';
 
 @NgModule({
   declarations: [
@@ -17,8 +18,9 @@ import { UserComponent } from './user/user.component';
     NavbarComponent,
     LoginComponent,
     RegisterComponent,
-    UserListComponent,
     UserComponent,
+    LockComponent,
+    PasscodeComponent,
   ],
   imports: [
     BrowserModule,

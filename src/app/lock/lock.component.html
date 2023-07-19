@@ -1,0 +1,34 @@
+
+<div class="Info_lock">
+    <div *ngIf="lock">
+        <h2>{{ lock.lockAlias }}</h2>
+        <!--<p>ID de la chapa: {{ lock.lockId }}</p>
+        <p>Nombre de la chapa: {{ lock.lockName }}</p>
+        <p>Alias de la chapa: {{ lock.lockAlias }}</p>
+         <button type="submit" (click)="ToggleAliasDisplay()">Cambiar Alias</button>
+        <div *ngIf="newAliasDisplay">
+            <input type="text" [(ngModel)]="newAlias" name="newAlias" placeholder="Nuevo Alias" required="required" />
+            <button type="submit" (click)="cambiarAlias(newAlias)">Cambiar</button>
+        </div>
+        <p>Contraseña de la chapa: {{ lock.noKeyPwd }}</p>-->
+        <!-- Add more attributes as needed -->
+    </div>
+</div>
+<div class="funcionalidades_lock">
+    <div class="row">
+      <div class="button-container">
+        <button>eKeys</button>
+        <button (click)="navigateToPasscode()">Passcodes</button>
+        <button>Cards</button>
+        <button>FingerPrints</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="button-container">
+        <button>Remote</button>
+        <button>Authorized Admin</button>
+        <button>Records</button>
+        <button>Settings</button>
+      </div>
+    </div>
+  </div>

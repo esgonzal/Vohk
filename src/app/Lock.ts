@@ -1,34 +1,57 @@
 export interface MoreLockData{
   groupId: number;
-  logoUrl: string;
-  orgId: number;
-  protocolType: number;
   protocolVersion: number;
+  protocolType: number;
+  orgId: number;
   scene: number;
+  logoUrl: string;  
+  showAdminKbpwdFlag: boolean
 }
 
 export interface LockData {
-  bindDate: number;
-  buildingNumber: number;
   date: number;
-  electricQuantity: number;
-  electricQuantityUpdateDate: number;
-  featureValue: string;
-  floorNumber: number;
-  hasGateway: number;
-  keyboardPwdVersion: number;
   lockAlias: string;
-  lockData: string;
-  lockId: number;
+  lockSound: number;
+  modelNum: string;
   lockMac: string;
+  privacyLock: number;
+  deletePwd: string;
+  featureValue: string;
+  adminPwd: string;
+  soundVolume: number;
+  hasGateway: number;
+  autoLockTime: number;
+  wirelessKeypadFeatureValue: string;
+  floorNumber: number;
+  buildingNumber: number;
+  lockKey: string;
+  isFrozen: number;
   lockName: string;
-  lockVersion: MoreLockData[];
-  showAdminKbpwdFlag: boolean;
+  resetButton: number;
+  firmwareRevision: string;
+  tamperAlert: number;
+  //specialValue: number;
+  displayPasscode: number;
   noKeyPwd: string;
   passageMode: number;
-  specialValue: number;
-  timezoneRawOffset: number;
-  wirelessKeypadFeatureValue: string;
+  passageModeAutoUnlock: number;
+  //timezoneRawOffset: number;
+  lockId: number;
+  electricQuantity: number;
+  lockFlagPos: number;
+  //lockUpdateDate:number
+  keyboardPwdVersion: number;
+  aesKeyStr: string;
+  hardwareRevision: string;
+  openDirection: number;
+  lockVersion: MoreLockData[];
+  sensitivity: number;
+
+  //All of the above are response from GetLockDetails
+
+  bindDate: number;
+  lockData: string;
+  electricQuantityUpdateDate: number;
 }
 
 export interface LockListResponse {
