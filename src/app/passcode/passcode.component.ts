@@ -23,6 +23,7 @@ export class PasscodeComponent implements OnInit {
   passcodePwd: string;
   passcodeStartTime: string;
   passcodeEndTime: string;
+  passcodeType: string;
   display: boolean = false;
   displayEditar:boolean =false;
   displayForm1: boolean =false;
@@ -39,6 +40,7 @@ export class PasscodeComponent implements OnInit {
   displayForm12: boolean =false;
   displayForm13: boolean =false;
   displayForm14: boolean =false;
+  displayFormCustom: boolean =false;
   toggleDisplay(){this.display = !this.display;}
   toggleEditar(){this.displayEditar = !this.displayEditar;}
   toggleForm1(){this.displayForm1 = !this.displayForm1;}
@@ -55,14 +57,13 @@ export class PasscodeComponent implements OnInit {
   toggleForm12(){this.displayForm12 = !this.displayForm12;}
   toggleForm13(){this.displayForm13 = !this.displayForm13;}
   toggleForm14(){this.displayForm14 = !this.displayForm14;}
-
+  toggleFormCustom(){this.displayFormCustom = !this.displayFormCustom}
 
   constructor(private route: ActivatedRoute,
     private router: Router,
     public userService: UserServiceService,
     public lockService: LockServiceService,
-    public passcodeService: PasscodeServiceService,
-    private datePipe: DatePipe
+    public passcodeService: PasscodeServiceService
     ){}
 
   async ngOnInit(): Promise<void> {

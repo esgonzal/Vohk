@@ -77,6 +77,48 @@ export class PasscodeServiceService {
     }
   }
 
+  async generateCustomPasscode(token: string, lockID:number, keyboardPwd:string, keyboardPwdName:string = "", keyboardPwdType: string, startDate:string= this.timestamp(), endDate:string){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/keyboardPwd/add'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockID.toString());
+    body.set('keyboardPwd', keyboardPwd);;
+    body.set('keyboardPwdName', keyboardPwdName);
+    if(keyboardPwdType=="2"){
+      body.set('keyboardPwdType', keyboardPwdType)
+      body.set('addType', "2");
+      body.set('date', fecha);
+      try {
+        const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+        console.log(response);
+        this.dataSubject.next(response);
+      } catch (error) {
+        console.error("Error while generating a custom passcode:", error);
+        this.dataSubject.next(null); // Emit null to dataSubject on error
+      }
+    }
+    else if (keyboardPwdType=="3"){
+      body.set('keyboardPwdType', keyboardPwdType)
+      body.set('startDate', this.convertirDate(startDate));
+      body.set('endDate', this.convertirDate(endDate)); 
+      body.set('addType', "2");
+      body.set('date', fecha);
+      try {
+        const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+        console.log(response);
+        this.dataSubject.next(response);
+      } catch (error) {
+        console.error("Error while generating a custom passcode:", error);
+        this.dataSubject.next(null); // Emit null to dataSubject on error
+      }
+    }
+  }
+
   async deletePasscode(token: string, lockID:number, keyboardPwdId:number){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/delete'
@@ -88,7 +130,7 @@ export class PasscodeServiceService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
     body.set('keyboardPwdId', keyboardPwdId.toString());
-    body.set('deleteType', '1');
+    body.set('deleteType', '2');
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
