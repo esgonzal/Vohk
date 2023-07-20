@@ -10,7 +10,7 @@ export interface Card{
     senderUsername: string;
 }
 
-export interface PasscodeListResponse {
+export interface CardListResponse {
     list: Card[];
     pageNo: number;
     pageSize: number;

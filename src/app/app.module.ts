@@ -16,6 +16,7 @@ import { PasscodeComponent } from './passcode/passcode.component';
 import { ICCardComponent } from './iccard/iccard.component';
 import { FingerprintComponent } from './fingerprint/fingerprint.component';
 import { EkeyComponent } from './ekey/ekey.component';
+import { TextTransformPipe } from './ekey/text.pipe';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { EkeyComponent } from './ekey/ekey.component';
     ICCardComponent,
     FingerprintComponent,
     EkeyComponent,
+    TextTransformPipe
   ],
   imports: [
     BrowserModule,
