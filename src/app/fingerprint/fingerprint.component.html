@@ -1,0 +1,29 @@
+<div *ngFor="let fingerprint of fingerprints">
+    <ul>
+        <li>Nombre de la fingerprint: {{fingerprint.fingerprintName}}</li>
+        <li *ngIf="fingerprint.fingerprintType == 1">Tipo de la fingerprint: Permanente</li>
+        <li *ngIf="fingerprint.fingerprintType == 4">Tipo de la fingerprint: Recurring</li>
+        <li>Creación de la fingerprint: {{ fingerprint.createDate | date: 'yyyy-MM-dd HH:mm' }}</li>
+        <button (click)="this.fingerprintService.deleteFingerprint(this.tokenData.access_token, this.lockId, fingerprint.fingerprintId)">Borrar Fingerprint</button>
+        <button (click)="toggleEditarNombre()">Editar Nombre</button>
+        <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Fingerprint</button>
+        <div class="editarNombreFingerprint" *ngIf="displayEditarNombre">
+            <p>
+                Nombre de la Fingerprint
+                <input type="text" [(ngModel)]="fingerprintName" name="fingerprintName" placeholder="Enter the new name for this Fingerprint" required="" />
+            </p>
+            <button type="submit" (click)="this.fingerprintService.changeName(this.tokenData.access_token,this.lockId,fingerprint.fingerprintId,fingerprintName)">Confirmar cambios</button>
+        </div>
+        <div class="editarPeriodoFingerprint" *ngIf="displayEditarPeriodo">
+            <p>
+                Start Time de la Fingerprint
+                <input type="text" [(ngModel)]="fingerprintStartTime" name="fingerprintStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
+            </p>
+            <p>
+                End Time de la Fingerprint
+                <input type="text" [(ngModel)]="fingerprintEndTime" name="fingerprintEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
+            </p>
+            <button type="submit" (click)="this.fingerprintService.changePeriod(this.tokenData.access_token, this.lockId, fingerprint.fingerprintId, fingerprintStartTime, fingerprintEndTime)">Confirmar cambios</button>
+        </div>
+    </ul>
+</div>

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
+import { DatePipe } from '@angular/common';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,6 +14,8 @@ import { UserComponent } from './user/user.component';
 import { LockComponent } from './lock/lock.component';
 import { PasscodeComponent } from './passcode/passcode.component';
 import { ICCardComponent } from './iccard/iccard.component';
+import { FingerprintComponent } from './fingerprint/fingerprint.component';
+import { EkeyComponent } from './ekey/ekey.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +27,8 @@ import { ICCardComponent } from './iccard/iccard.component';
     LockComponent,
     PasscodeComponent,
     ICCardComponent,
+    FingerprintComponent,
+    EkeyComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,7 +37,7 @@ import { ICCardComponent } from './iccard/iccard.component';
     HttpClientModule
     
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,7 +6,8 @@ import { UserComponent } from './user/user.component';
 import { LockComponent } from './lock/lock.component';
 import { PasscodeComponent } from './passcode/passcode.component';
 import { ICCardComponent } from './iccard/iccard.component';
-
+import { FingerprintComponent } from './fingerprint/fingerprint.component';
+import { EkeyComponent } from './ekey/ekey.component';
 
 
 const routes: Routes = [
@@ -15,7 +16,9 @@ const routes: Routes = [
   {path:'users/:id', component:UserComponent},
   {path:'lock/:id', component:LockComponent},
   {path:'lock/:id/passcode', component:PasscodeComponent},
-  {path:'lock/:id/card', component:ICCardComponent}
+  {path:'lock/:id/card', component:ICCardComponent},
+  {path:'lock/:id/fingerprint', component:FingerprintComponent},
+  {path:'lock/:id/ekey', component:EkeyComponent}
 ];
 
 @NgModule({

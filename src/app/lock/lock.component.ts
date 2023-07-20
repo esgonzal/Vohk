@@ -60,6 +60,9 @@ export class LockComponent implements OnInit{
       console.error("Error while changing lock alias:", error);
     }
   }
+  navigateToEkey(){
+    this.router.navigate(['lock',this.lockId,'ekey']);
+  }
 
   navigateToPasscode(){
     this.router.navigate(['lock',this.lockId,'passcode']);
@@ -68,4 +71,9 @@ export class LockComponent implements OnInit{
   navigateToCard(){
     this.router.navigate(['lock',this.lockId,'card']);
   }
+
+  navigateToFingerprint(){
+    this.router.navigate(['lock',this.lockId,'fingerprint']);
+  }
 }
+

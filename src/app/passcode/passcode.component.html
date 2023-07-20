@@ -2,8 +2,6 @@
     <ul>
         <li>Nombre de la passcode: {{passcode.keyboardPwdName}}</li>
         <li>Contraseña de la passcode: {{passcode.keyboardPwd}}</li>
-        <!--
-        -->
         <li *ngIf="passcode.keyboardPwdType==1">Tipo de la passcode: One-Time</li>
         <li *ngIf="passcode.keyboardPwdType==2">Tipo de la passcode: Permanent</li>
         <li *ngIf="passcode.keyboardPwdType==3">Tipo de la passcode: Timed</li>
@@ -27,8 +25,8 @@
             let x = moment(fecha).format("YYYY MM DD HH")
             console.log(x)
         -->
-        <li>StartDate de la passcode: {{passcode.startDate }}</li>
-        <li>EndDate de la passcode: {{passcode.endDate }}</li>
+        <li>StartDate de la passcode: {{ passcode.startDate | date: 'yyyy-MM-dd HH:mm' }}</li>
+        <li>EndDate de la passcode: {{ passcode.endDate | date: 'yyyy-MM-dd HH:mm' }}</li>
         <button (click)="this.passcodeService.deletePasscode(this.tokenData.access_token, this.lockId, passcode.keyboardPwdId)">Borrar Passcode</button>
         <button (click)="toggleEditar()">Editar Passcode</button>
         <div class="editarPasscode" *ngIf="displayEditar">

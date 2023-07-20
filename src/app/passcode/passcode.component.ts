@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccessTokenData } from '../AccessToken';
 import { PasscodeServiceService } from '../services/passcode-service.service';
 import { Passcode } from '../Passcode';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-passcode',
@@ -60,7 +61,8 @@ export class PasscodeComponent implements OnInit {
     private router: Router,
     public userService: UserServiceService,
     public lockService: LockServiceService,
-    public passcodeService: PasscodeServiceService
+    public passcodeService: PasscodeServiceService,
+    private datePipe: DatePipe
     ){}
 
   async ngOnInit(): Promise<void> {

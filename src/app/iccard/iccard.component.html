@@ -2,15 +2,30 @@
 <ul>
     <li>Nombre de la card: {{card.cardName}}</li>
     <li>Numero de la card: {{card.cardNumber}}</li>
-    <li>Tipo de la card: {{card.cardType}}</li>
+    <li *ngIf="card.cardType==1">Tipo de la card: Permanente</li>
+    <li *ngIf="card.cardType==4">Tipo de la card: Ciclica</li>
     <li>ID de la card: {{card.cardId}}</li>
-    <button (click)="toggleEditarNombre()">Editar Passcode</button>
-    <div class="editarPasscode" *ngIf="displayEditar">
+    <li>Fecha de creación de la card: {{card.createDate | date: 'yyyy-MM-dd HH:mm' }}</li>
+    <button (click)="this.cardService.deleteCard(this.tokenData.access_token, this.lockId, card.cardId)">Borrar Card</button>
+    <button (click)="toggleEditarNombre()">Editar Nombre</button>
+    <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Card</button>
+    <div class="editarNombreCard" *ngIf="displayEditarNombre">
         <p>
-            Nombre de la Passcode
+            Nombre de la Card
             <input type="text" [(ngModel)]="cardName" name="cardName" placeholder="Enter the new name for this Card" required="" />
         </p>
         <button type="submit" (click)="this.cardService.changeName(this.tokenData.access_token,this.lockId,card.cardId,cardName)">Confirmar cambios</button>
+    </div>
+    <div class="editarPeriodoCard" *ngIf="displayEditarPeriodo">
+        <p>
+            Start Time de la Card
+            <input type="text" [(ngModel)]="cardStartTime" name="cardStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
+        </p>
+        <p>
+            End Time de la Card
+            <input type="text" [(ngModel)]="cardEndTime" name="cardEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
+        </p>
+        <button type="submit" (click)="this.cardService.changePeriod(this.tokenData.access_token, this.lockId, card.cardId, cardStartTime, cardEndTime)">Confirmar cambios</button>
     </div>
 </ul>
 </div>

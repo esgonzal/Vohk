@@ -1,36 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { AccessTokenData } from '../AccessToken';
-import { LockData } from '../Lock';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
-import { CardServiceService } from '../services/card-service.service';
-import { Card } from '../Card';
+import { FingerprintServiceService } from '../services/fingerprint-service.service';
+import { AccessTokenData } from '../AccessToken';
+import { LockData } from '../Lock';
+import { Fingerprint } from '../Fingerprint';
 
 @Component({
-  selector: 'app-iccard',
-  templateUrl: './iccard.component.html',
-  styleUrls: ['./iccard.component.css']
+  selector: 'app-fingerprint',
+  templateUrl: './fingerprint.component.html',
+  styleUrls: ['./fingerprint.component.css']
 })
-export class ICCardComponent implements OnInit{
+export class FingerprintComponent {
 
   lockId: number;
   tokenData: AccessTokenData;
   lock: LockData;
-  cards: Card[] = []
+  fingerprints: Fingerprint[] = []
   displayEditarNombre = false;
   displayEditarPeriodo = false
-  cardName:string;
-  cardStartTime: string;
-  cardEndTime: string;
+  fingerprintName:string;
+  fingerprintStartTime: string;
+  fingerprintEndTime: string;
 
   constructor(private route:ActivatedRoute,
     private router: Router,
     public userService: UserServiceService,
     public lockService: LockServiceService,
-    public cardService: CardServiceService
-    ){}
-    
+    public fingerprintService: FingerprintServiceService){}
+
   toggleEditarNombre(){this.displayEditarNombre = !this.displayEditarNombre;}
   toggleEditarPeriodo(){this.displayEditarPeriodo = !this.displayEditarPeriodo}
 
@@ -58,13 +57,13 @@ export class ICCardComponent implements OnInit{
       this.tokenData = data;
     });
     try{
-      await this.cardService.getCardsofLock(this.tokenData.access_token, this.lockId);
-      this.cardService.data$.subscribe((data) => {
+      await this.fingerprintService.getFingerprintsofLock(this.tokenData.access_token, this.lockId);
+      this.fingerprintService.data$.subscribe((data) => {
         if(data?.list) {
-          this.cards = data.list;
+          this.fingerprints = data.list;
         }else {
           console.log("Data not yet available.");
-          this.cards = this.cards
+          this.fingerprints = this.fingerprints
         }
       });
     } catch(error) {
