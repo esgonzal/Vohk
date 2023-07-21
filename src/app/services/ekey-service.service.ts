@@ -158,6 +158,29 @@ export class EkeyServiceService {
     }
   }
 
+  async changePeriod(token:string, ekeyID:number, newStartDate:string, newEndDate:string){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/key/changePeriod'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('keyId', ekeyID.toString());
+    body.set('startDate', this.convertirDate(newStartDate));
+    body.set('endDate', this.convertirDate(newEndDate));
+    body.set('date', fecha);
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      console.log(response);
+      this.dataSubject.next(response);
+    } catch (error) {
+      console.error("Error while changing the validity period of the fingerprint:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
+
   async AuthorizeEkey(token:string, lockID:number, keyID:number){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/authorize'

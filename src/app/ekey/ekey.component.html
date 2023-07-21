@@ -23,10 +23,6 @@
             <button type="submit" (click)="this.ekeyService.AuthorizeEkey(this.tokenData.access_token, this.lockId, ekey.keyId)">Dar autorización de administrador</button>
         </li>
         <button (click)="this.ekeyService.deleteEkey(this.tokenData.access_token, ekey.keyId)">Borrar Ekey</button>
-        
-        
-        
-        
         <button (click)="this.toggleModificar()">Modificar Ekey</button>
         <div *ngIf="displayModificar">
             <p>
@@ -38,6 +34,18 @@
             <input type="text" [(ngModel)]="remoteEnable" name="remoteEnable" placeholder="Enter the new remote for this Ekey" required="" />
             </p>
             <button type="submit" (click)="this.ekeyService.modifyEkey(this.tokenData.access_token, ekey.keyId, keyName, remoteEnable)">Confirmar cambios</button>
+        </div>
+        <button (click)="this.toggleEditarPeriodo()">Cambiar Periodo de Validacion de Ekey</button>
+        <div *ngIf="displayEditarPeriodo">
+            <p>
+            Start Time de la Ekey
+            <input type="text" [(ngModel)]="ekeyStartTime" name="ekeyStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
+            </p>
+            <p>
+            End Time de la Ekey
+            <input type="text" [(ngModel)]="ekeyEndTime" name="ekeyEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
+            </p>
+            <button type="submit" (click)="this.ekeyService.changePeriod(this.tokenData.access_token, ekey.keyId, ekeyStartTime, ekeyEndTime)">Confirmar cambios</button>
         </div>
     </ul>
 </div>

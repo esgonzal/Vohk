@@ -24,9 +24,11 @@ export class EkeyComponent implements OnInit{
   ekeyStartTime:string;
   ekeyEndTime:string;
   displayModificar: boolean =false
+  displayEditarPeriodo: boolean=false
   displaySend: boolean =false;
   displayAuth: boolean=false
   toggleModificar(){this.displayModificar = !this.displayModificar}
+  toggleEditarPeriodo(){this.displayEditarPeriodo = !this.displayEditarPeriodo}
   toggleSend(){this.displaySend = !this.displaySend}
   toggleAuth(){this.displayAuth = !this.displayAuth}
 

@@ -40,11 +40,11 @@
                 </p>
             <p>
                 Start Time de la Passcode
-                <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="" />
+                <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
             </p>
             <p>
                 End Time de la Passcode
-                <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="" />
+                <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
             </p>
             <button type="submit" (click)="this.passcodeService.changePasscode(passcode,this.tokenData.access_token,this.lockId,passcode.keyboardPwdId,passcodeName,passcodePwd,passcodeStartTime,passcodeEndTime)">Generar Passcode</button>
         </div>
