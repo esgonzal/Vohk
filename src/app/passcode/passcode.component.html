@@ -1,281 +1,367 @@
-<div *ngFor="let passcode of passcodes">
-    <ul>
-        <li>Nombre de la passcode: {{passcode.keyboardPwdName}}</li>
-        <li>Contraseña de la passcode: {{passcode.keyboardPwd}}</li>
-        <li *ngIf="passcode.keyboardPwdType==1">Tipo de la passcode: One-Time</li>
-        <li *ngIf="passcode.keyboardPwdType==2">Tipo de la passcode: Permanent</li>
-        <li *ngIf="passcode.keyboardPwdType==3">Tipo de la passcode: Timed</li>
-        <li *ngIf="passcode.keyboardPwdType==4">Tipo de la passcode: Erase</li>
-        <li *ngIf="passcode.keyboardPwdType==5">Tipo de la passcode: Weekend Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==6">Tipo de la passcode: Daily Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==7">Tipo de la passcode: Workday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==8">Tipo de la passcode: Monday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==9">Tipo de la passcode: Tuesday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==10">Tipo de la passcode: Wednesday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==11">Tipo de la passcode: Thursday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==12">Tipo de la passcode: Friday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==13">Tipo de la passcode: Saturday Cyclic</li>
-        <li *ngIf="passcode.keyboardPwdType==14">Tipo de la passcode: Sunday Cyclic</li>
-        <li>ID de la passcode: {{passcode.keyboardPwdId }}</li>
-        <!--
-            Para formatear de milisegundos a "YYYY MM DD HH"
-            import moment from 'moment';
 
-            let fecha = 1689876000000
-            let x = moment(fecha).format("YYYY MM DD HH")
-            console.log(x)
-        -->
-        <li>StartDate de la passcode: {{ passcode.startDate | date: 'yyyy-MM-dd HH:mm' }}</li>
-        <li>EndDate de la passcode: {{ passcode.endDate | date: 'yyyy-MM-dd HH:mm' }}</li>
-        <button (click)="this.passcodeService.deletePasscode(this.tokenData.access_token, this.lockId, passcode.keyboardPwdId)">Borrar Passcode</button>
-        <button (click)="toggleEditar()">Editar Passcode</button>
-        <div class="editarPasscode" *ngIf="displayEditar">
-            <p>
-                Nombre de la Passcode
-                <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter the new name for this Passcode" required="" />
-            </p>
-            <p>
-                Password de la Passcode
-                <input type="text" [(ngModel)]="passcodePwd" name="passcodePwd" placeholder="Enter the new password for this Passcode" required="" />
-                </p>
-            <p>
-                Start Time de la Passcode
-                <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
-            </p>
-            <p>
-                End Time de la Passcode
-                <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
-            </p>
-            <button type="submit" (click)="this.passcodeService.changePasscode(passcode,this.tokenData.access_token,this.lockId,passcode.keyboardPwdId,passcodeName,passcodePwd,passcodeStartTime,passcodeEndTime)">Generar Passcode</button>
+<div class="listado_objetos">
+    <div *ngIf="passcodes">
+        <h1>Passcodes de la cerradura</h1>
+        <div class="display_objeto" *ngFor="let passcode of passcodes">
+            <button class="titulo" (click)="ambasFunciones(passcode)">
+                <div *ngIf="passcode.keyboardPwdName">
+                    {{passcode.keyboardPwdName}}
+                </div>
+                <div *ngIf="!passcode.keyboardPwdName">
+                    passcode sin nombre
+                </div>
+            </button>
+            <div  *ngIf="displayInfo && selectedPasscode===passcode" >
+                <p>Contraseña de la passcode: {{ passcode.keyboardPwd }}</p>
+                <p *ngIf="passcode.keyboardPwdType === 1">Tipo de la passcode: One-Time</p>
+                <p *ngIf="passcode.keyboardPwdType == 2">Tipo de la passcode: Permanent</p>
+                <p *ngIf="passcode.keyboardPwdType == 3">Tipo de la passcode: Timed</p>
+                <p *ngIf="passcode.keyboardPwdType == 4">Tipo de la passcode: Erase</p>
+                <p *ngIf="passcode.keyboardPwdType == 5">Tipo de la passcode: Weekend Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType == 6">Tipo de la passcode: Daily Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType == 7">Tipo de la passcode: Workday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType == 8">Tipo de la passcode: Monday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType == 9">Tipo de la passcode: Tuesday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType === 10">Tipo de la passcode: Wednesday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType === 11">Tipo de la passcode: Thursday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType === 12">Tipo de la passcode: Friday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType === 13">Tipo de la passcode: Saturday Cyclic</p>
+                <p *ngIf="passcode.keyboardPwdType === 14">Tipo de la passcode: Sunday Cyclic</p>
+                <!-- BOTON BORRAR PASSCODE -->
+                <button (click)="borrarPasscode(passcode.keyboardPwdId)">Borrar Passcode</button>
+                <!-- BOTON "EDITAR" PASSCODE -->
+                <button (click)="toggleEditar()">Editar Passcode</button>
+                <!-- BOTON COMPARTIR PASSCODE -->
+                <button (click)="enviarPasscode()">Compartir Passcode</button>
+                <!-- FORMULARIO PARA EDITAR PASSCODE, SOLO APARECE SI SE APRETA EL BOTON "EDITAR" -->
+                <div *ngIf="displayEditar">
+                    <div class="form-area">
+                        <form #editPasscode="ngForm" (ngSubmit)="editarPasscode(passcode, editPasscode.value)" class="common-form">
+                            <p>
+                                Nombre de la Passcode
+                                <input type="text" class="form-input" name="passcodeName" placeholder="Enter the new name for this Passcode" required="" ngModel />
+                            </p>
+                            <p>
+                                Password de la Passcode
+                                <input type="text" class="form-input" name="passcodePwd" placeholder="Enter the new password for this Passcode" required="" ngModel />
+                             </p>
+                            <p *ngIf="passcode.keyboardPwdType">
+                                Start Time de la Passcode
+                                <input type="text" class="form-input" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
+                            </p>
+                            <p>
+                                End Time de la Passcode
+                                <input type="text" class="form-input" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
+                            </p>
+                            <button class="form-button" type="submit">Editar Passcode</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--
+                <li>
+                    EndDate de la passcode: {{ passcode.endDate | date : "yyyy-MM-dd HH:mm" }}
+                </li>
+            -->
         </div>
-    </ul>
-    
+    </div>
 </div>
+<!-- ESTE BOTON ABRE LA SELECCION DE TIPO DE PASSCODE PARA GENERAR UNA NUEVA PASSCODE -->
 <div class="generate-button">
     <button (click)="toggleDisplay()">Generar passcode</button>
 </div>
+<!-- DEPENDIENDO DEL TIPO DE PASSCODE, SE ABRIRÁ EL FORMULARIO QUE LE CORRESPONDE -->
 <div class="elegir_tipo_clave" *ngIf="display">
-    <button (click)="toggleForm1()">One-time (1)</button>
-    <button (click)="toggleForm2()">Permanent (2)</button>
-    <button (click)="toggleForm3()">Period (3)</button>
-    <button (click)="toggleForm4()">Delete (4)</button>
-    <button (click)="toggleForm5()">Weekend (5)</button>
-    <button (click)="toggleForm6()">Daily (6)</button>
-    <button (click)="toggleForm7()">Workday (7)</button>
-    <button (click)="toggleForm8()">Monday (8)</button>
-    <button (click)="toggleForm9()">Tuesday (9)</button>
-    <button (click)="toggleForm10()">Wednesday (10)</button>
-    <button (click)="toggleForm11()">Thursday (11)</button>
-    <button (click)="toggleForm12()">Friday (12)</button>
-    <button (click)="toggleForm13()">Saturday (13)</button>
-    <button (click)="toggleForm14()">Sunday (14)</button>
-    <button (click)="toggleFormCustom()">Custom</button>
+    <div class="col">
+        <p>Selecciona el tipo de passcode: {{ selectedType }}</p>
+        <select #types (change)="onSelected(types.value)">
+            <option default value="">No seleccionado</option>
+            <option value="1">One-time</option>
+            <option value="2">Permanent</option>
+            <option value="3">Period</option>
+            <option value="4">Delete</option>
+            <option value="5">Weekend</option>
+            <option value="6">Daily</option>
+            <option value="7">Workday</option>
+            <option value="8">Monday</option>
+            <option value="9">Tuesday</option>
+            <option value="10">Wednesday</option>
+            <option value="11">Thursday</option>
+            <option value="12">Friday</option>
+            <option value="13">Saturday</option>
+            <option value="14">Sunday</option>
+            <option value="Custom_Permanent">Custom Permanente</option>
+            <option value="Custom_Period">Custom Period</option>
+        </select>
+    </div>
 </div>
-
-<div class="Forma1" *ngIf="displayForm1">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 1, passcodeName)">Generar Passcode</button>
+<!-- LISTA DE FORMAS -->
+<div class="form-area" *ngIf="display && selectedType === '1'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('1', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma2" *ngIf="displayForm2">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 2, passcodeName)">Generar Passcode</button> 
+<div class="form-area" *ngIf="display && selectedType === '2'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('2', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma3" *ngIf="displayForm3">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 3, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '3'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('3', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH"
+                required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required"
+                ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma4" *ngIf="displayForm4">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 4, passcodeName)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '4'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('4', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma5" *ngIf="displayForm5">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 5, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '5'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('5', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma6" *ngIf="displayForm6">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 6, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '6'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('6', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma7" *ngIf="displayForm7">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 7, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '7'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('7', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma8" *ngIf="displayForm8">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 8, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '8'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('8', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma9" *ngIf="displayForm9">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 9, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button></div>
-<div class="Forma10" *ngIf="displayForm10">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 10, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button></div>
-<div class="Forma11" *ngIf="displayForm11">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 11, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button></div>
-<div class="Forma12" *ngIf="displayForm12">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 12, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button></div>
-<div class="Forma13" *ngIf="displayForm13">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 13, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>
+<div class="form-area" *ngIf="display && selectedType === '9'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('9', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="Forma14" *ngIf="displayForm14">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="required" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="required" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, 14, passcodeName, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>    
+<div class="form-area" *ngIf="display && selectedType === '10'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('10', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-<div class="FormaCustom" *ngIf="displayFormCustom">
-    <p>
-    Nombre de la Passcode
-    <input type="text" [(ngModel)]="passcodeName" name="passcodeName" placeholder="Enter a name for this Passcode" required="" />
-    </p>
-    <p>
-    Contraseña de la Passcode
-    <input type="text" [(ngModel)]="passcodePwd" name="passcodePwd" placeholder="Enter a password for this Passcode" required="required"/>
-    </p>
-    <p>
-    <p>
-    Tipo de la Passcode
-    <input type="text" [(ngModel)]="passcodeType" name="passcodeType" placeholder="Enter a type for this Passcode" required="required" />
-    </p>
-    <p>
-    Start Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder="" required="" />
-    </p>
-    <p>
-    End Time de la Passcode
-    <input type="text" [(ngModel)]="passcodeEndTime" name="passcodeEndTime" placeholder="" required="" />
-    </p>
-    <button type="submit" (click)="this.passcodeService.generateCustomPasscode(this.tokenData.access_token, this.lockId, passcodePwd, passcodeName, passcodeType, passcodeStartTime, passcodeEndTime)">Generar Passcode</button>    
+<div class="form-area" *ngIf="display && selectedType === '11'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('11', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
 </div>
-
+<div class="form-area" *ngIf="display && selectedType === '12'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('12', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" [(ngModel)]="passcodeStartTime" name="passcodeStartTime" placeholder=""
+                required="required" />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
+</div>
+<div class="form-area" *ngIf="display && selectedType === '13'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('13', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
+</div>
+<div class="form-area" *ngIf="display && selectedType === '14'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('14', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="required" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
+</div>
+<div class="form-area" *ngIf="display && selectedType === 'Custom_Permanent'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('2', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Contraseña de la Passcode
+            <input type="text" class="form-input" name="passcodePwd" placeholder="Enter a password for this Passcode"
+                required="required" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
+</div>
+<div class="form-area" *ngIf="display && selectedType === 'Custom_Period'">
+    <form #formInput="ngForm" (ngSubmit)="crearPasscode('3', formInput.value)" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="Enter a name for this Passcode"
+                required="" ngModel />
+        </p>
+        <p>
+            Contraseña de la Passcode
+            <input type="text" class="form-input" name="passcodePwd" placeholder="Enter a password for this Passcode"
+                required="required" ngModel />
+        </p>
+        <p>
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="" required="" ngModel />
+        </p>
+        <p>
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="" required="" ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
+</div>

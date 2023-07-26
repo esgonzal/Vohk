@@ -5,7 +5,7 @@ import { LockServiceService } from '../services/lock-service.service';
 import { FingerprintServiceService } from '../services/fingerprint-service.service';
 import { AccessTokenData } from '../AccessToken';
 import { LockData } from '../Lock';
-import { Fingerprint } from '../Fingerprint';
+import { Fingerprint, FingerprintFormulario } from '../Fingerprint';
 
 @Component({
   selector: 'app-fingerprint',
@@ -23,6 +23,17 @@ export class FingerprintComponent {
   fingerprintName:string;
   fingerprintStartTime: string;
   fingerprintEndTime: string;
+
+  displayInfo:boolean=false
+  toggleInfo(){this.displayInfo = !this.displayInfo}
+  selectedFingerprint: Fingerprint;
+  onSelectedFingerprint(fingerprint: Fingerprint){
+    this.selectedFingerprint = fingerprint;
+  }
+  ambasFunciones(fingerprint:Fingerprint){
+    this.toggleInfo();
+    this.onSelectedFingerprint(fingerprint);
+  }
 
   constructor(private route:ActivatedRoute,
     private router: Router,
@@ -69,5 +80,20 @@ export class FingerprintComponent {
     } catch(error) {
       console.error("Error while fetching the passcode:", error);
     }
+  }
+
+  async borrarFingerprint(fingerID:number){
+    this.fingerprintService.deleteFingerprint(this.tokenData.access_token, this.lockId, fingerID);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async cambiarNombre(fingerID:number, datos:FingerprintFormulario){
+    this.fingerprintService.changeName(this.tokenData.access_token, this.lockId, fingerID, datos.fingerprintName);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async cambiarPeriodo(fingerID:number, datos:FingerprintFormulario){
+    this.fingerprintService.changePeriod(this.tokenData.access_token, this.lockId, fingerID,datos.fingerprintStartTime, datos.fingerprintEndTime);
+    this.router.navigate(["lock", this.lockId]);  
   }
 }

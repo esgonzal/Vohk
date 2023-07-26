@@ -10,10 +10,8 @@ export interface Card{
     senderUsername: string;
 }
 
-export interface CardListResponse {
-    list: Card[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number;
+export interface CardFormulario {
+    cardName:string;
+    cardStartTime:string;
+    cardEndTime:string;
   }

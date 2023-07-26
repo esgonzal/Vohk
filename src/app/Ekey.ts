@@ -13,12 +13,19 @@ export interface Ekey{
     senderUsername: string;
     remarks: string;
     date: string;
+    //Recibidos de ekeyService.getEkeysofAccount
+    lockData: string;
+    usertype: string;
+    lockName: string;
+    lockAlias: string;
+    lockMac: string;
+    noKeyPwd: string;
 }
 
-export interface EkeyListResponse {
-    list: Ekey[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number;
+export interface EkeyFormulario {
+    keyName:string;
+    remoteEnable:string;
+    ekeyStartTime:string;
+    ekeyEndTime:string;
+    recieverName:string
   }

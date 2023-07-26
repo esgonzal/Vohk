@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
 import { CardServiceService } from '../services/card-service.service';
-import { Card } from '../Card';
+import { Card, CardFormulario } from '../Card';
 
 @Component({
   selector: 'app-iccard',
@@ -18,11 +18,27 @@ export class ICCardComponent implements OnInit{
   tokenData: AccessTokenData;
   lock: LockData;
   cards: Card[] = []
-  displayEditarNombre = false;
-  displayEditarPeriodo = false
   cardName:string;
   cardStartTime: string;
   cardEndTime: string;
+  ///////////////////////
+  displayEditarNombre = false;
+  toggleEditarNombre(){this.displayEditarNombre = !this.displayEditarNombre;}
+  displayInfo:boolean=false
+  toggleInfo(){this.displayInfo = !this.displayInfo}
+  displayEditarPeriodo = false
+  toggleEditarPeriodo(){this.displayEditarPeriodo = !this.displayEditarPeriodo}
+
+  selectedCard: Card;
+  onSelectedCard(card: Card): void{
+    this.selectedCard = card;
+  }
+
+  ambasFunciones(card: Card){
+    this.toggleInfo();
+    this.onSelectedCard(card);
+  }
+
 
   constructor(private route:ActivatedRoute,
     private router: Router,
@@ -31,8 +47,6 @@ export class ICCardComponent implements OnInit{
     public cardService: CardServiceService
     ){}
     
-  toggleEditarNombre(){this.displayEditarNombre = !this.displayEditarNombre;}
-  toggleEditarPeriodo(){this.displayEditarPeriodo = !this.displayEditarPeriodo}
 
   async ngOnInit(): Promise<void> {
     //Get the lockId and lock
@@ -44,7 +58,7 @@ export class ICCardComponent implements OnInit{
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
           if (!this.lock) {
-            // Handle case when the lock with the specified lockId is not found
+            // BUSCAR EN KEYS 
             this.router.navigate(['/not-found']);
           }
         } else {
@@ -70,5 +84,20 @@ export class ICCardComponent implements OnInit{
     } catch(error) {
       console.error("Error while fetching the passcode:", error);
     }
+  }
+
+  async borrarCard(cardID:number){
+    this.cardService.deleteCard(this.tokenData.access_token, this.lockId, cardID);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async cambiarNombre(cardID:number, datos:CardFormulario){
+    this.cardService.changeName(this.tokenData.access_token, this.lockId, cardID, datos.cardName);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async cambiarPeriodo(cardID:number, datos:CardFormulario){
+    this.cardService.changePeriod(this.tokenData.access_token, this.lockId, cardID,datos.cardStartTime, datos.cardEndTime);
+    this.router.navigate(["lock", this.lockId]);  
   }
 }

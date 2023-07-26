@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
 import { EkeyServiceService } from '../services/ekey-service.service';
-import { Ekey } from '../Ekey';
+import { Ekey, EkeyFormulario } from '../Ekey';
 
 @Component({
   selector: 'app-ekey',
@@ -23,14 +23,27 @@ export class EkeyComponent implements OnInit{
   recieverName:string;
   ekeyStartTime:string;
   ekeyEndTime:string;
+  //////////////
+  displayInfo:boolean=false
+  toggleInfo(){this.displayInfo = !this.displayInfo}
   displayModificar: boolean =false
-  displayEditarPeriodo: boolean=false
-  displaySend: boolean =false;
-  displayAuth: boolean=false
   toggleModificar(){this.displayModificar = !this.displayModificar}
+  displayEditarPeriodo: boolean=false
   toggleEditarPeriodo(){this.displayEditarPeriodo = !this.displayEditarPeriodo}
+  displaySend: boolean =false;
   toggleSend(){this.displaySend = !this.displaySend}
+  displayAuth: boolean=false
   toggleAuth(){this.displayAuth = !this.displayAuth}
+
+  selectedEkey: Ekey;
+  onSelectedEkey(ekey: Ekey){
+    this.selectedEkey = ekey
+  }
+
+  ambasFunciones(key:Ekey){
+    this.toggleInfo();
+    this.onSelectedEkey(key);
+  }
 
   constructor(private route:ActivatedRoute,
     private router: Router,
@@ -40,16 +53,12 @@ export class EkeyComponent implements OnInit{
     ){}
 
   async ngOnInit(): Promise<void> {
-    //Get the lockId and lock
-    // Get the lockId from route parameters 
     this.route.paramMap.subscribe(params => {
       this.lockId = Number(params.get('id'));
-      // Use lockId to get the specific lock data
       this.lockService.data$.subscribe((data) => {
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
           if (!this.lock) {
-            // Handle case when the lock with the specified lockId is not found
             this.router.navigate(['/not-found']);
           }
         } else {
@@ -57,8 +66,6 @@ export class EkeyComponent implements OnInit{
         }
       });
     });
-    //Get the Access Token
-    // Subscribe to the user data
     this.userService.data$.subscribe((data) => {
       this.tokenData = data;
     });
@@ -77,4 +84,32 @@ export class EkeyComponent implements OnInit{
     }
   }
 
+  async congelarEkey(ekeyID:number){
+    await this.ekeyService.freezeEkey(this.tokenData.access_token, ekeyID);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async descongelarEkey(ekeyID:number){
+    await this.ekeyService.unfreezeEkey(this.tokenData.access_token, ekeyID);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async borrarEkey(ekeyID:number){
+    await this.ekeyService.deleteEkey(this.tokenData.access_token, ekeyID);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async editarNameEkey(ekeyID:number, datos:EkeyFormulario){
+    await this.ekeyService.modifyEkey(this.tokenData.access_token, ekeyID, datos.keyName, datos.remoteEnable);
+    this.router.navigate(["lock", this.lockId]);
+  }
+  async editarPeriodEkey(ekeyID:number, datos:EkeyFormulario){
+    await this.ekeyService.changePeriod(this.tokenData.access_token, ekeyID, datos.ekeyStartTime, datos.ekeyEndTime);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async enviarEkey(datos:EkeyFormulario){
+    await this.ekeyService.sendEkey(this.tokenData.access_token, this.lockId, datos.recieverName, datos.keyName, datos.ekeyStartTime, datos.ekeyEndTime);
+    this.router.navigate(["lock", this.lockId]);
+  }
 }

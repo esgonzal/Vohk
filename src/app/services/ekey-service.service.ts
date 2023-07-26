@@ -9,6 +9,8 @@ export class EkeyServiceService {
 
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
+  private dataSubject2 = new BehaviorSubject<any>(null);
+  data2$ = this.dataSubject2.asObservable();
 
   constructor(private http:HttpClient) { }
 
@@ -26,6 +28,27 @@ export class EkeyServiceService {
       
     }
     return fechaInShanghai.toString();
+  }
+
+  async getEkeysofAccount(token:string){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/key/list'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('pageNo', '1');
+    body.set('pageSize', '20');
+    body.set('date', fecha.toString());
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response); // Emit the response to dataSubject
+    } catch (error) {
+      console.error("Error while getting the list of Ekeys of an account:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
   }
 
   async getEkeysofLock(token:string, lockID:number){
@@ -136,7 +159,7 @@ export class EkeyServiceService {
     }
   }
 
-  async modifyEkey(token:string, keyID:number, newName:string = "", remoteEnable:string = "1" ){
+  async modifyEkey(token:string, ekeyID:number, newName:string = "", remoteEnable:string = "1" ){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/update'
     let header = new HttpHeaders({
@@ -145,7 +168,7 @@ export class EkeyServiceService {
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
-    body.set('keyId', keyID.toString());
+    body.set('keyId', ekeyID.toString());
     body.set('keyName', newName);
     body.set('remoteEnable', remoteEnable);
     body.set('date', fecha);

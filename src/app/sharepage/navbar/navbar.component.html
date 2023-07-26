@@ -3,14 +3,24 @@
         <a class="navbar-brand" routerLink="">Vöhk</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        </button>
+        <div *ngIf="menuType==='LoggedOut'" class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link active" routerLink="register">Registrate</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" routerLink="login">Log-In</a>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="menuType==='LoggedIn'" class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" >{{username}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" routerLink="login">Log Out</a>
                 </li>
             </ul>
         </div>

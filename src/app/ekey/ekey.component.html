@@ -1,73 +1,78 @@
-<div *ngFor="let ekey of ekeys">
-    <ul>
-        <li>Nombre de la Ekey: {{ekey.keyName}}</li>
-        <li>ID de la Ekey: {{ekey.keyId}}</li>
-        <li *ngIf="ekey.keyStatus=='110401'">
-            Status de la Ekey: Normal
-            <button (click)="this.ekeyService.freezeEkey(this.tokenData.access_token, ekey.keyId)">Congelar Ekey</button>
-        </li>
-        <li *ngIf="ekey.keyStatus=='110402'">Status de la Ekey: Pending</li>
-        <li *ngIf="ekey.keyStatus=='110405'">
-            Status de la Ekey: Freezed
-            <button (click)="this.ekeyService.unfreezeEkey(this.tokenData.access_token, ekey.keyId)">Descongelar Ekey</button>
-        </li>
-        <li *ngIf="ekey.keyStatus=='110408'">Status de la Ekey: Deleted</li>
-        <li *ngIf="ekey.keyStatus=='110410'">Status de la Ekey: Reseted</li>
-        <!--<li [innerHTML]="ekey.username | texttransform" >Usuario al que le pertenece la Ekey: {{ekey.username}}</li>-->
-        <li *ngIf="ekey.keyRight==1">
-            El usuario {{ekey.username}} esta autorizado para administrar esta Ekey
-            <button type="submit" (click)="this.ekeyService.cancelAuthorizeEkey(this.tokenData.access_token, this.lockId, ekey.keyId)">Quitar autorización de administrador</button>
-        </li>
-        <li *ngIf="ekey.keyRight==0">
-            El usuario {{ekey.username}} no está autorizado para administrar esta Ekey
-            <button type="submit" (click)="this.ekeyService.AuthorizeEkey(this.tokenData.access_token, this.lockId, ekey.keyId)">Dar autorización de administrador</button>
-        </li>
-        <button (click)="this.ekeyService.deleteEkey(this.tokenData.access_token, ekey.keyId)">Borrar Ekey</button>
-        <button (click)="this.toggleModificar()">Modificar Ekey</button>
-        <div *ngIf="displayModificar">
-            <p>
-            Nombre de la Ekey
-            <input type="text" [(ngModel)]="keyName" name="keyName" placeholder="Enter the new name for this Ekey" required="" />
-            </p>
-            <p>
-            remoteEnable de la Ekey
-            <input type="text" [(ngModel)]="remoteEnable" name="remoteEnable" placeholder="Enter the new remote for this Ekey" required="" />
-            </p>
-            <button type="submit" (click)="this.ekeyService.modifyEkey(this.tokenData.access_token, ekey.keyId, keyName, remoteEnable)">Confirmar cambios</button>
+<div class="listado_objetos">
+    <div *ngIf="ekeys">
+        <h1>Ekeys de la cerradura</h1>
+        <div class="display_objeto" *ngFor="let ekey of ekeys" >
+            <button class="titulo" (click)="ambasFunciones(ekey)">
+                {{ekey.username}}
+            </button>
+            <div *ngIf="displayInfo && selectedEkey===ekey">
+                <p>ID de la Ekey: {{ekey.keyId}}</p>
+                <p *ngIf="ekey.keyStatus=='110401'">Status de la Ekey: Normal</p>
+                <p *ngIf="ekey.keyStatus=='110402'">Status de la Ekey: Pending</p>
+                <p *ngIf="ekey.keyStatus=='110405'">Status de la Ekey: Freezed</p>
+                <p *ngIf="ekey.keyStatus=='110408'">Status de la Ekey: Deleted</p>
+                <p *ngIf="ekey.keyStatus=='110410'">Status de la Ekey: Reseted</p>
+                <p *ngIf="ekey.keyRight==1">El usuario {{ekey.username}} esta autorizado para administrar esta Ekey</p>
+                <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>
+                <button (click)="borrarEkey(ekey.keyId)">Borrar Ekey</button>
+                <button (click)="this.toggleModificar()">Modificar Ekey</button>
+                <button (click)="this.toggleEditarPeriodo()">Cambiar Periodo de Validacion de Ekey</button>
+                <div *ngIf="ekey.keyStatus=='110401'"><button type="submit" (click)="congelarEkey(ekey.keyId)">Congelar</button></div>
+                <div *ngIf="ekey.keyStatus=='110405'"><button type="submit" (click)="descongelarEkey(ekey.keyId)">Descongelar</button></div>
+                <div *ngIf="ekey.keyRight==1"><button type="submit">Remover Acceso</button></div>
+                <div *ngIf="ekey.keyRight==0"><button type="submit">Dar Acceso</button></div>
+                <div *ngIf="displayModificar">
+                    <div class="form-area">
+                        <form #editNameEkey="ngForm" (ngSubmit)="editarNameEkey(ekey.keyId, editNameEkey.value)" class="common-form">
+                            <p>
+                                Nombre de la Ekey
+                                <input type="text" class="form-input" name="keyName" placeholder="Nuevo nombre" required="" ngModel />
+                            </p>
+                            <p>
+                                remoteEnable de la Ekey
+                                <input type="text" class="form-input" name="remoteEnable" placeholder="Nuevo remoteEnable" required="" ngModel />
+                            </p>
+                            <button class="form-button" type="submit">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </div>
+                <div *ngIf="displayEditarPeriodo">
+                    <div class="form-area">
+                        <form #editPeriodEkey="ngForm" (ngSubmit)="editarPeriodEkey(ekey.keyId, editPeriodEkey.value)" class="common-form">
+                            Start Time de la Ekey
+                            <input type="text" class="form-input" name="ekeyStartTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
+                            End Time de la Ekey
+                            <input type="text" class="form-input" name="ekeyEndTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
+                            <button class="form-button" type="submit">Editar Periodo</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button (click)="this.toggleEditarPeriodo()">Cambiar Periodo de Validacion de Ekey</button>
-        <div *ngIf="displayEditarPeriodo">
-            <p>
-            Start Time de la Ekey
-            <input type="text" [(ngModel)]="ekeyStartTime" name="ekeyStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
-            </p>
-            <p>
-            End Time de la Ekey
-            <input type="text" [(ngModel)]="ekeyEndTime" name="ekeyEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
-            </p>
-            <button type="submit" (click)="this.ekeyService.changePeriod(this.tokenData.access_token, ekey.keyId, ekeyStartTime, ekeyEndTime)">Confirmar cambios</button>
-        </div>
-    </ul>
+    </div>
 </div>
 <div class="generate-button">
     <button (click)="toggleSend()">Send Ekey</button>
 </div>
-<div *ngIf="displaySend">
-    <p>
-        Nombre de la Recipiente
-        <input type="text" [(ngModel)]="recieverName" name="recieverName" placeholder="Enter the name of the reciever" required="required" />
+<div class="form-area" *ngIf="displaySend">
+    <form #sendEkey="ngForm" (ngSubmit)="enviarEkey(sendEkey.value)" class="common-form">
+        <p>
+            Nombre de el Recipiente
+            <input type="text" class="form-input" name="recieverName" required="required" ngModel />
         </p>
         <p>
-        Nombre de la Ekey
-        <input type="text" [(ngModel)]="keyName" name="keyName" placeholder="Enter the name for this Ekey" required="required" />
+            Nombre de la Ekey
+            <input type="text" class="form-input" name="keyName" required="required" ngModel />
         </p>
         <p>
-        StartDate de la Ekey
-        <input type="text" [(ngModel)]="ekeyStartTime" name="ekeyStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
+            Nombre de el Recipiente
+            <input type="text" class="form-input" name="ekeyStartTime" required="required" ngModel />
         </p>
         <p>
-        EndDate de la Ekey
-        <input type="text" [(ngModel)]="ekeyEndTime" name="ekeyEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
+            Nombre de la Ekey
+            <input type="text" class="form-input" name="ekeyStartTime" required="required" ngModel />
         </p>
-        <button type="submit" (click)="this.ekeyService.sendEkey(this.tokenData.access_token, this.lockId, recieverName, keyName, ekeyStartTime, ekeyEndTime)">Confirmar cambios</button>
+        <button class="form-button" type="submit">Enviar</button>
+
+    </form>
 </div>

@@ -1,29 +1,49 @@
-<div *ngFor="let fingerprint of fingerprints">
-    <ul>
-        <li>Nombre de la fingerprint: {{fingerprint.fingerprintName}}</li>
-        <li *ngIf="fingerprint.fingerprintType == 1">Tipo de la fingerprint: Permanente</li>
-        <li *ngIf="fingerprint.fingerprintType == 4">Tipo de la fingerprint: Recurring</li>
-        <li>Creación de la fingerprint: {{ fingerprint.createDate | date: 'yyyy-MM-dd HH:mm' }}</li>
-        <button (click)="this.fingerprintService.deleteFingerprint(this.tokenData.access_token, this.lockId, fingerprint.fingerprintId)">Borrar Fingerprint</button>
-        <button (click)="toggleEditarNombre()">Editar Nombre</button>
-        <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Fingerprint</button>
-        <div class="editarNombreFingerprint" *ngIf="displayEditarNombre">
-            <p>
-                Nombre de la Fingerprint
-                <input type="text" [(ngModel)]="fingerprintName" name="fingerprintName" placeholder="Enter the new name for this Fingerprint" required="" />
-            </p>
-            <button type="submit" (click)="this.fingerprintService.changeName(this.tokenData.access_token,this.lockId,fingerprint.fingerprintId,fingerprintName)">Confirmar cambios</button>
+<div class="listado_objetos">
+    <div *ngIf="fingerprints">
+        <h1>Fingerprints de la cerradura</h1>
+        <div class="display_objeto" *ngFor="let fingerprint of fingerprints">
+            <button class="titulo" (click)="ambasFunciones(fingerprint)">
+                <div *ngIf="fingerprint.fingerprintName">
+                    {{fingerprint.fingerprintName}}
+                </div>
+                <div *ngIf="!fingerprint.fingerprintName">
+                    fingerprint sin nombre
+                </div>
+            </button>
+            <div *ngIf="displayInfo && selectedFingerprint===fingerprint">
+                <p *ngIf="fingerprint.fingerprintType == 1">Tipo de la fingerprint: Permanente</p>
+                <p *ngIf="fingerprint.fingerprintType == 4">Tipo de la fingerprint: Recurring</p>
+                <p>Creación de la fingerprint: {{ fingerprint.createDate | date: 'yyyy-MM-dd HH:mm' }}</p>
+                <button (click)="borrarFingerprint(fingerprint.fingerprintId)">Borrar Fingerprint</button>
+                <button (click)="toggleEditarNombre()">Editar Nombre</button>
+                <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Fingerprint</button>
+                <div *ngIf="displayEditarNombre">
+                    <div class="form-area">
+                        <form #editNameFinger="ngForm" (ngSubmit)="cambiarNombre(fingerprint.fingerprintId, editNameFinger.value)" class="common-form">
+                            <p>
+                                Nombre de la Fingerprint
+                                <input type="text" class="form-input" name="fingerprintName" required="required" ngModel>
+                                <button class="form-button" type="submit">Guardar Cambios</button>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+                <div *ngIf="displayEditarPeriodo">
+                    <div class="form-area">
+                        <form #editPeriodFinger="ngForm" (ngSubmit)="cambiarPeriodo(fingerprint.fingerprintId, editPeriodFinger.value)" class="common-form">
+                            <p>
+                                Start Time de la Fingerprint
+                                <input type="text" class="form-input" name="fingerprintStartTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel>
+                            </p>
+                            <p>
+                                End Time de la Fingerprint
+                                <input type="text" class="form-input" name="fingerprintEndTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel>
+                            </p>
+                            <button class="form-button" type="submit">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="editarPeriodoFingerprint" *ngIf="displayEditarPeriodo">
-            <p>
-                Start Time de la Fingerprint
-                <input type="text" [(ngModel)]="fingerprintStartTime" name="fingerprintStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
-            </p>
-            <p>
-                End Time de la Fingerprint
-                <input type="text" [(ngModel)]="fingerprintEndTime" name="fingerprintEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
-            </p>
-            <button type="submit" (click)="this.fingerprintService.changePeriod(this.tokenData.access_token, this.lockId, fingerprint.fingerprintId, fingerprintStartTime, fingerprintEndTime)">Confirmar cambios</button>
-        </div>
-    </ul>
+    </div>
 </div>

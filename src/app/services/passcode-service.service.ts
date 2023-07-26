@@ -45,14 +45,14 @@ export class PasscodeServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while fetching access token:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
+      this.dataSubject.next(null);
     }
   }
 
-  async generatePasscode(token: string, lockID:number, type: number, name:string = "", startDate:string = this.timestamp(), endDate:string = ""){
+  async generatePasscode(token: string, lockID:number, type: string, name:string = "", startDate:string = this.timestamp(), endDate:string = ""){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/get'
     let header = new HttpHeaders({
@@ -62,7 +62,7 @@ export class PasscodeServiceService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
-    body.set('keyboardPwdType', type.toString());
+    body.set('keyboardPwdType', type);
     body.set('keyboardPwdName', name);
     body.set('startDate', this.convertirDate(startDate));
     body.set('endDate', this.convertirDate(endDate));
@@ -73,7 +73,7 @@ export class PasscodeServiceService {
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while generating a random passcode:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
+      this.dataSubject.next(null);
     }
   }
 
@@ -89,7 +89,7 @@ export class PasscodeServiceService {
     body.set('lockId', lockID.toString());
     body.set('keyboardPwd', keyboardPwd);;
     body.set('keyboardPwdName', keyboardPwdName);
-    if(keyboardPwdType=="2"){
+    if(keyboardPwdType=="2"){//PERMANENT
       body.set('keyboardPwdType', keyboardPwdType)
       body.set('addType', "2");
       body.set('date', fecha);
@@ -99,10 +99,10 @@ export class PasscodeServiceService {
         this.dataSubject.next(response);
       } catch (error) {
         console.error("Error while generating a custom passcode:", error);
-        this.dataSubject.next(null); // Emit null to dataSubject on error
+        this.dataSubject.next(null);
       }
     }
-    else if (keyboardPwdType=="3"){
+    else if (keyboardPwdType=="3"){//PERIOD
       body.set('keyboardPwdType', keyboardPwdType)
       body.set('startDate', this.convertirDate(startDate));
       body.set('endDate', this.convertirDate(endDate)); 
@@ -114,7 +114,7 @@ export class PasscodeServiceService {
         this.dataSubject.next(response);
       } catch (error) {
         console.error("Error while generating a custom passcode:", error);
-        this.dataSubject.next(null); // Emit null to dataSubject on error
+        this.dataSubject.next(null);
       }
     }
   }
@@ -161,11 +161,17 @@ export class PasscodeServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response);
+      console.log("LOCKS: ",response);
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while editing a passcode:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
+
+  compartir(){
+    
+  }
+
+
 }

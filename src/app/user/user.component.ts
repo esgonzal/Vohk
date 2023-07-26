@@ -4,6 +4,7 @@ import { UserServiceService } from '../services/user-service.service';
 import { AccessTokenData } from '../AccessToken';
 import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Lock';
+import { EkeyServiceService } from '../services/ekey-service.service';
 
 @Component({
   selector: 'app-user',
@@ -19,9 +20,10 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   tokenData: AccessTokenData;
   locksList: LockListResponse;
+  ekeylist: LockListResponse;
   lock:LockData;
 
-  constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService) {}
+  constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
     
   ngOnInit(){
     this.username = this.userService.getnombre_usuario();
@@ -30,9 +32,25 @@ export class UserComponent implements OnInit {
       this.tokenData = data;
     });
     this.EncontrarLocksdelUsuario(this.tokenData.access_token);
+    this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
   }
 
-  async EncontrarLocksdelUsuario(token: string){
+  async EncontrarLocks_EkeysdelUsuario(token: string){//locks y tambien ekeys
+    try{
+      await this.ekeyService.getEkeysofAccount(token);
+      this.ekeyService.data$.subscribe((data) => {
+        if (data.list) {
+          this.ekeylist = data;
+        } else {
+          console.log("Data not yet available.");
+        }
+      });
+    } catch(error) {
+      console.error("Error while fetching access token:", error);
+    }
+  }
+
+  async EncontrarLocksdelUsuario(token: string){//locks
     try{
       await this.lockService.getLockListAccount(token);
       this.lockService.data$.subscribe((data) => {
@@ -61,10 +79,12 @@ export class UserComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  onLockButtonClick(lock:LockData){
-    this.lock = lock;
-    let lockId = this.lock.lockId
-    this.router.navigate(['/lock/',lockId]);
+  onLockButtonClick(lockID: number, userType:string, keyRight:number){
+    if (userType === '110301' || keyRight === 1){
+      this.router.navigate(['/lock/',lockID]);
+    } else{
+      console.log("No tiene acceso a las funcionalidades de esta cerradura.")
+    }
   }
 
 

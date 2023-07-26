@@ -1,31 +1,46 @@
-<div *ngFor="let card of cards">
-<ul>
-    <li>Nombre de la card: {{card.cardName}}</li>
-    <li>Numero de la card: {{card.cardNumber}}</li>
-    <li *ngIf="card.cardType==1">Tipo de la card: Permanente</li>
-    <li *ngIf="card.cardType==4">Tipo de la card: Ciclica</li>
-    <li>ID de la card: {{card.cardId}}</li>
-    <li>Fecha de creación de la card: {{card.createDate | date: 'yyyy-MM-dd HH:mm' }}</li>
-    <button (click)="this.cardService.deleteCard(this.tokenData.access_token, this.lockId, card.cardId)">Borrar Card</button>
-    <button (click)="toggleEditarNombre()">Editar Nombre</button>
-    <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Card</button>
-    <div class="editarNombreCard" *ngIf="displayEditarNombre">
-        <p>
-            Nombre de la Card
-            <input type="text" [(ngModel)]="cardName" name="cardName" placeholder="Enter the new name for this Card" required="" />
-        </p>
-        <button type="submit" (click)="this.cardService.changeName(this.tokenData.access_token,this.lockId,card.cardId,cardName)">Confirmar cambios</button>
+<div class="listado_objetos">
+    <div *ngIf="cards">
+        <h1>Cards de la cerradura</h1>
+        <div class="display_objeto" *ngFor="let card of cards">
+            <button class="titulo" (click)="ambasFunciones(card)">
+                <div *ngIf="card.cardName">
+                    {{card.cardName}}
+                </div>
+                <div *ngIf="!card.cardName">
+                    card sin nombre
+                </div>
+            </button>
+            <div *ngIf="displayInfo && selectedCard===card">
+                <p>Numero de la card: {{card.cardNumber}}</p>
+                <p *ngIf="card.cardType==1">Tipo de la card: Permanente</p>
+                <p *ngIf="card.cardType==4">Tipo de la card: Ciclica</p>
+                <p>Fecha de creación de la card: {{card.createDate | date: 'yyyy-MM-dd HH:mm' }}</p>
+                <button (click)="borrarCard(card.cardId)">Borrar Card</button>
+                <button (click)="toggleEditarNombre()">Editar Nombre</button>
+                <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Card</button>
+                <div *ngIf="displayEditarNombre">
+                    <form #editNameCard="ngForm" (ngSubmit)="cambiarNombre(card.cardId,editNameCard.value)" class="common-form">
+                        <p>
+                            Nombre de la Card
+                            <input type="text" class="form-input" name="cardName" placeholder="Nuevo nombre" required="" ngModel />
+                        </p>
+                        <button class="form-button" type="submit">Guardar Cambios</button>
+                    </form>
+                </div>
+                <div *ngIf="displayEditarPeriodo">
+                    <form #editPeriodCard="ngForm" (ngSubmit)="cambiarPeriodo(card.cardId,editPeriodCard.value)" class="common-form">
+                        <p>
+                            Start Time de la Card
+                            <input type="text" class="form-input" name="cardStartTime" placeholder="YYYY-MM-DD-HH" required="" ngModel />
+                        </p>
+                        <p>
+                            End Time de la Card
+                            <input type="text" class="form-input" name="cardEndTime" placeholder="YYYY-MM-DD-HH" required="" ngModel />
+                        </p>
+                        <button class="form-button" type="submit">Guardar Cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="editarPeriodoCard" *ngIf="displayEditarPeriodo">
-        <p>
-            Start Time de la Card
-            <input type="text" [(ngModel)]="cardStartTime" name="cardStartTime" placeholder="YYYY-MM-DD-HH" required="required" />
-        </p>
-        <p>
-            End Time de la Card
-            <input type="text" [(ngModel)]="cardEndTime" name="cardEndTime" placeholder="YYYY-MM-DD-HH" required="required" />
-        </p>
-        <button type="submit" (click)="this.cardService.changePeriod(this.tokenData.access_token, this.lockId, card.cardId, cardStartTime, cardEndTime)">Confirmar cambios</button>
-    </div>
-</ul>
 </div>

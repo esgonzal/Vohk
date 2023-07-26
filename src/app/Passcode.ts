@@ -15,10 +15,9 @@ export interface Passcode {
     status: number;
   }
   
-  export interface PasscodeListResponse {
-    list: Passcode[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number;
+  export interface PasscodeFormulario {
+    passcodeName: string;
+    passcodePwd: string;
+    passcodeStartTime: string;
+    passcodeEndTime: string;
   }

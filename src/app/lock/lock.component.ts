@@ -4,6 +4,7 @@ import { LockData } from '../Lock';
 import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EkeyServiceService } from '../services/ekey-service.service';
 
 @Component({
   selector: 'app-lock',
@@ -21,7 +22,8 @@ export class LockComponent implements OnInit{
   constructor(private route: ActivatedRoute, 
     private router: Router, 
     public userService: UserServiceService, 
-    public lockService: LockServiceService){}
+    public lockService: LockServiceService,
+    public ekeyService: EkeyServiceService){}
 
   ngOnInit(): void {
     // Get the lockId from route parameters
@@ -31,9 +33,15 @@ export class LockComponent implements OnInit{
       this.lockService.data$.subscribe((data) => {
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
-          if (!this.lock) {
-            // Handle case when the lock with the specified lockId is not found
-            this.router.navigate(['/not-found']);
+          if (!this.lock) {//NO SE ENCONTRO EN LOCKLIST PORQUE ESTA EN EKEYLIST
+            this.ekeyService.data$.subscribe((data) => {
+              if (data.list) {
+                this.lock = data.list.find((lock: { lockId: number;}) => lock.lockId === this.lockId);
+                if (!this.lock){
+                  this.router.navigate(['/not-found']);
+                }
+              }
+            })
           }
         } else {
           console.log("Data not yet available(ngOnInit de lock component).");

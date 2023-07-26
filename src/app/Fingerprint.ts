@@ -11,10 +11,8 @@ export interface Fingerprint{
     senderUsername: string;
 }
 
-export interface PasscodeListResponse {
-    list: Fingerprint[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number;
+export interface FingerprintFormulario {
+    fingerprintName:string;
+    fingerprintStartTime:string;
+    fingerprintEndTime:string;
   }

@@ -1,0 +1,32 @@
+.form-area {
+  text-align: center;
+}
+
+.form-area h1 {
+  margin-top: 50px;
+  margin-bottom: 80px;
+}
+
+.form-area p {
+  color: red;
+}
+
+.common-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: auto;
+}
+
+.form-input {
+  height: 35px;
+  margin-bottom: 20px;
+  border: 1px, solid black;
+  padding-left: 15px;
+}
+
+.form-button {
+  height: 35px;
+  border: 1px, solid black;
+  cursor: pointer;
+}

@@ -5,13 +5,15 @@ import { LockData } from '../Lock';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccessTokenData } from '../AccessToken';
 import { PasscodeServiceService } from '../services/passcode-service.service';
-import { Passcode } from '../Passcode';
-import { DatePipe } from '@angular/common';
+import { Passcode, PasscodeFormulario } from '../Passcode';
+import {MatExpansionModule} from '@angular/material/expansion';
+
+
 
 @Component({
   selector: 'app-passcode',
   templateUrl: './passcode.component.html',
-  styleUrls: ['./passcode.component.css']
+  styleUrls: ['./passcode.component.css'],
 })
 export class PasscodeComponent implements OnInit {
 
@@ -24,47 +26,35 @@ export class PasscodeComponent implements OnInit {
   passcodeStartTime: string;
   passcodeEndTime: string;
   passcodeType: string;
+  //////////////
   display: boolean = false;
-  displayEditar:boolean =false;
-  displayForm1: boolean =false;
-  displayForm2: boolean =false;
-  displayForm3: boolean =false;
-  displayForm4: boolean =false;
-  displayForm5: boolean =false;
-  displayForm6: boolean =false;
-  displayForm7: boolean =false;
-  displayForm8: boolean =false;
-  displayForm9: boolean =false;
-  displayForm10: boolean =false;
-  displayForm11: boolean =false;
-  displayForm12: boolean =false;
-  displayForm13: boolean =false;
-  displayForm14: boolean =false;
-  displayFormCustom: boolean =false;
   toggleDisplay(){this.display = !this.display;}
-  toggleEditar(){this.displayEditar = !this.displayEditar;}
-  toggleForm1(){this.displayForm1 = !this.displayForm1;}
-  toggleForm2(){this.displayForm2 = !this.displayForm2;}
-  toggleForm3(){this.displayForm3 = !this.displayForm3;}
-  toggleForm4(){this.displayForm4 = !this.displayForm4;}
-  toggleForm5(){this.displayForm5 = !this.displayForm5;}
-  toggleForm6(){this.displayForm6 = !this.displayForm6;}
-  toggleForm7(){this.displayForm7 = !this.displayForm7;}
-  toggleForm8(){this.displayForm8 = !this.displayForm8;}
-  toggleForm9(){this.displayForm9 = !this.displayForm9;}
-  toggleForm10(){this.displayForm10 = !this.displayForm10;}
-  toggleForm11(){this.displayForm11 = !this.displayForm11;}
-  toggleForm12(){this.displayForm12 = !this.displayForm12;}
-  toggleForm13(){this.displayForm13 = !this.displayForm13;}
-  toggleForm14(){this.displayForm14 = !this.displayForm14;}
-  toggleFormCustom(){this.displayFormCustom = !this.displayFormCustom}
+  displayInfo:boolean=false
+  toggleInfo(){this.displayInfo = !this.displayInfo}
+  displayEditar: boolean = false;
+  toggleEditar() { this.displayEditar = !this.displayEditar; }
+  
+  selectedType = '';
+  onSelected(value: string): void {
+    this.selectedType = value;
+  }
+
+  selectedPasscode: Passcode;
+  onSelectedPasscode(pass: Passcode): void{
+    this.selectedPasscode = pass;
+  }
+
+  ambasFunciones(pass: Passcode){
+    this.toggleInfo();
+    this.onSelectedPasscode(pass);
+  }
 
   constructor(private route: ActivatedRoute,
     private router: Router,
     public userService: UserServiceService,
     public lockService: LockServiceService,
     public passcodeService: PasscodeServiceService
-    ){}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     //Get the lockId and lock
@@ -89,7 +79,7 @@ export class PasscodeComponent implements OnInit {
     this.userService.data$.subscribe((data) => {
       this.tokenData = data;
     });
-    try{
+    try {
       await this.passcodeService.getPasscodesofLock(this.tokenData.access_token, this.lockId);
       this.passcodeService.data$.subscribe((data) => {
         if (data?.list) {
@@ -99,11 +89,33 @@ export class PasscodeComponent implements OnInit {
           this.passcodes = this.passcodes;
         }
       });
-    } catch(error) {
+    } catch (error) {
       console.error("Error while fetching the passcode:", error);
     }
   }
 
-  
+  async crearPasscode(type: string, datos: PasscodeFormulario) {
+    if (datos.passcodePwd) {//SI EXISTE CONTRASEÑA, ENTONCES ES CUSTOM
+      await this.passcodeService.generateCustomPasscode(this.tokenData.access_token, this.lockId, datos.passcodePwd, datos.passcodeName, type, datos.passcodeStartTime, datos.passcodeEndTime)
+      this.router.navigate(["lock", this.lockId]);
+    } else {//ES CONTRASEÑA RANDOM
+      await this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, type, datos.passcodeName, datos.passcodeStartTime, datos.passcodeEndTime)
+      this.router.navigate(["lock", this.lockId]);
+    }
+  }
+
+  async editarPasscode(passcode: Passcode, datos: PasscodeFormulario) {
+    await this.passcodeService.changePasscode(passcode, this.tokenData.access_token, this.lockId, passcode.keyboardPwdId, datos.passcodeName, datos.passcodePwd, datos.passcodeStartTime, datos.passcodeEndTime);
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async borrarPasscode(passcodeID: number) {
+    await this.passcodeService.deletePasscode(this.tokenData.access_token, this.lockId, passcodeID)
+    this.router.navigate(["lock", this.lockId]);
+  }
+
+  async enviarPasscode(){
+    
+  }
 
 }

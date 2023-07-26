@@ -1,9 +1,8 @@
-import { Component, Input} from '@angular/core';
+import { Component} from '@angular/core';
 import { UserServiceService } from '../services/user-service.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; 
+import { HttpClient } from '@angular/common/http'; 
 import { Router } from '@angular/router';
-import { lastValueFrom } from 'rxjs';
-import { AccessTokenData } from '../AccessToken';
+import { User } from '../User';
 
 @Component({
   selector: 'app-login',
@@ -12,28 +11,27 @@ import { AccessTokenData } from '../AccessToken';
   providers: []
 })
 export class LoginComponent {
-  username: string;
-  password: string;
-  data: AccessTokenData;
+
+  loginError:string = "";
 
   constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) {}
 
-  async login(nombre:string, clave:string){
-    this.userService.setnombre_usuario(nombre);
-    this.userService.setclave_usuario(clave);
+  async login(data:User){
+    this.userService.setnombre_usuario(data.username);
+    this.userService.setclave_usuario(data.password);
     try {
-      await this.userService.getAccessToken(nombre, clave);
-      this.userService.data$.subscribe((data) => {
-        if (data) {
-          this.router.navigate(['/users/', nombre]); // Navigate to the user page with the username
+      await this.userService.getAccessToken(data.username, data.password);
+      this.userService.data$.subscribe((res) => {
+        if (res.access_token) {
+          this.router.navigate(['/users/', data.username]); // Navigate to the user page with the username
         } else {
-          console.log("Data not yet available.");
+          this.loginError = "Nombre de usuario y/o contraseña inválidos";
         }
       });
     } catch (error) {
       console.error("Error while fetching access token:", error);
     }
-
+    localStorage.setItem('user', data.username)
   }
 }
 

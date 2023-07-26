@@ -17,22 +17,12 @@ export class UserServiceService {
 
   constructor(private http: HttpClient) { }
 
-  getnombre_usuario(): string{
-    return this.nombre_usuario;
-  }
-  setnombre_usuario(nombre:string): void{
-    this.nombre_usuario = nombre;
-  }
-  getclave_usuario(): string{
-    return this.clave_usuario;
-  }
-  setclave_usuario(clave:string): void{
-    this.clave_usuario = clave;
-  }
+  getnombre_usuario():string{return this.nombre_usuario;}
+  setnombre_usuario(nombre:string): void{this.nombre_usuario = nombre;}
+  getclave_usuario(): string{return this.clave_usuario;}
+  setclave_usuario(clave:string): void{this.clave_usuario = clave;}
 
-  public getMD5(clave:string){
-    return Md5.hashStr(clave);
-  }
+  public getMD5(clave:string){return Md5.hashStr(clave);}
 
   public timestamp(){
     let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
@@ -70,7 +60,6 @@ export class UserServiceService {
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
     body.set('username', username);
     body.set('password', clave_encriptada);
-
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject

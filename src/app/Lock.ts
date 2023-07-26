@@ -51,7 +51,10 @@ export interface LockData {
 
   bindDate: number;
   lockData: string;
+  userType:string;
   electricQuantityUpdateDate: number;
+
+  keyRight: number;
 }
 
 export interface LockListResponse {
