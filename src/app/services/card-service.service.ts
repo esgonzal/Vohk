@@ -10,6 +10,9 @@ export class CardServiceService {
 
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
+  token: string;
+  lockID: number;
+  cardID: number;
 
   constructor(private http:HttpClient) { }
 
@@ -51,7 +54,7 @@ export class CardServiceService {
     }
   }
 
-  async changeName(token:string,lockID:number, cardID:number, newName:string){
+  async changeName(token:string, lockID:number, cardID:number, newName:string){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/rename'
     let header = new HttpHeaders({

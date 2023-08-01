@@ -20,12 +20,6 @@ export class EkeyComponent {
   ekeyEndTime:string;
   ////
 
-  async cambiarNombre(datos:EkeyFormulario){
-    await this.ekeyService.modifyEkey(datos.keyName);
-    this.ekeyService.cambiarNombre = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
-  }
 
   
 

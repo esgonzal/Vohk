@@ -80,9 +80,9 @@
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
                     <td mat-cell *matCellDef="let ekey" class="table-cell">
-                      <button mat-button (click)="borrarEkey(ekey.ekeyId)">Eliminar</button>
+                      <button mat-button (click)="borrarEkey(ekey.keyId)">Eliminar</button>
                       <button mat-button (click)="cambiarNombreEkey(ekey.keyId)" >Editar Nombre</button>
-                      <button mat-button (click)="cambiarPeriodoEkey(ekey.ekeyId)" >Editar Periodo</button>
+                      <button mat-button (click)="cambiarPeriodoEkey(ekey.keyId)" >Editar Periodo</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -133,9 +133,9 @@
                   <!---->
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell"><button mat-button
-                        (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button><button
-                        mat-button>Editar</button></td>
+                    <td mat-cell *matCellDef="let passcode" class="table-cell">
+                      <button mat-button (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
+                      <button mat-button>Editar</button></td>
                   </ng-container>
                   <!---->
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsPasscode"></tr>
@@ -181,8 +181,11 @@
                   <!---->
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell"><button mat-button
-                        (click)="borrarCard(card.cardId)">Eliminar</button><button mat-button>Editar</button></td>
+                    <td mat-cell *matCellDef="let card" class="table-cell">
+                      <button mat-button (click)="borrarCard(card.cardId)">Eliminar</button>
+                      <button mat-button (click)="cambiarNombreCard(card.cardId)">Editar Nombre</button>
+                      <button mat-button (click)="cambiarPeriodoCard(card.cardId)">Editar Periodo</button>
+                    </td>
                   </ng-container>
                   <!---->
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsCard"></tr>
@@ -223,9 +226,11 @@
                   <!---->
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell"><button mat-button
-                        (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button><button
-                        mat-button>Editar</button></td>
+                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">
+                      <button mat-button (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
+                      <button mat-button (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)" >Editar Nombre</button>
+                      <button mat-button (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
+                    </td>
                   </ng-container>
                   <!---->
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsFingerprint"></tr>
@@ -573,4 +578,4 @@
     </div>
   </div>
 </div>
-<app-pop-up *ngIf="this.popupService.confirmDelete"></app-pop-up>
+<app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo"></app-pop-up>

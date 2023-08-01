@@ -1,18 +1,4 @@
-<div *ngIf="ekeyService.cambiarNombre">
-    <div class="form-area">
-        <form #editNameEkey="ngForm" (ngSubmit)="cambiarNombre(editNameEkey.value)" class="common-form">
-            <p>
-                Nombre de la Ekey
-                <input type="text" class="form-input" name="keyName" placeholder="Nuevo nombre" required="" ngModel />
-            </p>
-            <!--<p>
-                remoteEnable de la Ekey
-                <input type="text" class="form-input" name="remoteEnable" placeholder="Nuevo remoteEnable" required="" ngModel />
-            </p>-->
-            <button class="form-button" type="submit">Guardar Cambios</button>
-        </form>
-    </div>
-</div>
+
 
 <!--<div class="listado_objetos">
     <div *ngIf="ekeys">

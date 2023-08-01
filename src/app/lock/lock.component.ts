@@ -346,22 +346,25 @@ export class LockComponent implements OnInit{
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
     this.popupService.confirmDelete = true;
-    //await this.ekeyService.deleteEkey(this.tokenData.access_token, ekeyID);
-    //this.router.navigate(["lock", this.lockId]);
 
   }
   cambiarNombreEkey(ekeyID:number){
-    this.ekeyService.token = this.tokenData.access_token;
-    this.ekeyService.lockID = this.lockId;
-    this.ekeyService.ekeyID = ekeyID;
-    this.ekeyService.cambiarNombre = true;
-    this.router.navigate(["lock", this.lockId, "ekey"]);
-    //await this.ekeyService.modifyEkey(this.tokenData.access_token, ekeyID, datos.keyName, datos.remoteEnable);
-    //this.router.navigate(["lock", this.lockId]);
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementType = 'ekey';
+    this.popupService.elementID = ekeyID;
+    this.popupService.cambiarNombre = true;
   }
-  async cambiarPeriodoEkey(ekeyID:number/*, datos:EkeyFormulario*/){
-    //await this.ekeyService.changePeriod(this.tokenData.access_token, ekeyID, datos.ekeyStartTime, datos.ekeyEndTime);
-    //this.router.navigate(["lock", this.lockId]);
+  async cambiarPeriodoEkey(ekeyID:number){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementType = 'ekey';
+    this.popupService.elementID = ekeyID;
+    this.popupService.cambiarPeriodo = true;
+    console.log("token: ", this.popupService.token)
+    console.log("lockID: ", this.popupService.lockID)
+    console.log("elementType: ", this.popupService.elementType)
+    console.log("elementID: ", this.popupService.elementID)
   }
   async crearEkey(datos:EkeyFormulario){
     await this.ekeyService.sendEkey(this.tokenData.access_token, this.lockId, datos.recieverName, datos.keyName, datos.ekeyStartTime, datos.ekeyEndTime);
@@ -378,7 +381,6 @@ export class LockComponent implements OnInit{
 
   //FUNCIONES PASSCODE
   async crearPasscode(type: string, datos: PasscodeFormulario) {
-    console.log(datos)
     if (datos.passcodePwd) {//SI EXISTE CONTRASEÑA, ENTONCES ES CUSTOM
       await this.passcodeService.generateCustomPasscode(this.tokenData.access_token, this.lockId, datos.passcodePwd, datos.passcodeName, type, datos.passcodeStartTime, datos.passcodeEndTime)
       this.router.navigate(["lock", this.lockId]);
@@ -411,13 +413,21 @@ export class LockComponent implements OnInit{
     //this.router.navigate(["lock", this.lockId]);
 
   }
-  async cambiarNombreCard(cardID:number, datos:CardFormulario){
-    this.cardService.changeName(this.tokenData.access_token, this.lockId, cardID, datos.cardName);
-    this.router.navigate(["lock", this.lockId]);
+  cambiarNombreCard(cardID:number){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementType = 'card';
+    this.popupService.elementID = cardID;
+    this.popupService.cambiarNombre = true;
+    //this.cardService.changeName(this.tokenData.access_token, this.lockId, cardID, datos.cardName);
+    //this.router.navigate(["lock", this.lockId]);
   }
-  async cambiarPeriodoCard(cardID:number, datos:CardFormulario){
-    this.cardService.changePeriod(this.tokenData.access_token, this.lockId, cardID,datos.cardStartTime, datos.cardEndTime);
-    this.router.navigate(["lock", this.lockId]);  
+  async cambiarPeriodoCard(cardID:number){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementType = 'card';
+    this.popupService.elementID = cardID;
+    this.popupService.cambiarPeriodo = true;
   }
   //FUNCIONES FINGERPRINT
   async borrarFingerprint(fingerID:number){
@@ -429,13 +439,21 @@ export class LockComponent implements OnInit{
     //this.fingerprintService.deleteFingerprint(this.tokenData.access_token, this.lockId, fingerID);
     //this.router.navigate(["lock", this.lockId]);
   }
-  async cambiarNombreFingerprint(fingerID:number, datos:FingerprintFormulario){
-    this.fingerprintService.changeName(this.tokenData.access_token, this.lockId, fingerID, datos.fingerprintName);
-    this.router.navigate(["lock", this.lockId]);
+  cambiarNombreFingerprint(fingerID:number){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementType = 'fingerprint';
+    this.popupService.elementID = fingerID;
+    this.popupService.cambiarNombre = true;
+    //this.fingerprintService.changeName(this.tokenData.access_token, this.lockId, fingerID, datos.fingerprintName);
+    //this.router.navigate(["lock", this.lockId]);
   }
-  async cambiarPeriodoFingerprint(fingerID:number, datos:FingerprintFormulario){
-    this.fingerprintService.changePeriod(this.tokenData.access_token, this.lockId, fingerID,datos.fingerprintStartTime, datos.fingerprintEndTime);
-    this.router.navigate(["lock", this.lockId]);  
+  async cambiarPeriodoFingerprint(fingerID:number){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementType = 'fingerprint';
+    this.popupService.elementID = fingerID;
+    this.popupService.cambiarPeriodo = true;
   }
 }
 

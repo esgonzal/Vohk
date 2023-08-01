@@ -13,8 +13,6 @@ export class EkeyServiceService {
   token: string;
   lockID: number;
   ekeyID: number;
-  cambiarNombre = false;
-  cambiarPeriodo = false;
 
   constructor(private http:HttpClient) { }
 
@@ -163,7 +161,7 @@ export class EkeyServiceService {
     }
   }
 
-  async modifyEkey(newName:string = "", remoteEnable:string = "1" ){
+  async modifyEkey(token:string, ekeyID:number, newName:string = "", remoteEnable:string = "1" ){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/update'
     let header = new HttpHeaders({
@@ -171,8 +169,8 @@ export class EkeyServiceService {
     let options = { headers: header};
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', this.token);
-    body.set('keyId', this.ekeyID.toString());
+    body.set('accessToken', token);
+    body.set('keyId', ekeyID.toString());
     body.set('keyName', newName);
     body.set('remoteEnable', remoteEnable);
     body.set('date', fecha);
