@@ -169,9 +169,4 @@ export class PasscodeServiceService {
     }
   }
 
-  compartir(){
-    
-  }
-
-
 }

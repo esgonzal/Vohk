@@ -3,4 +3,5 @@ export interface Formulario {
     startTime:string;
     endTime:string;
     recieverName:string;
+    passcodePwd:string;
 }

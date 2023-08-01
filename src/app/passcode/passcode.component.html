@@ -37,7 +37,7 @@
                         <form #editPasscode="ngForm" (ngSubmit)="editarPasscode(passcode, editPasscode.value)" class="common-form">
                             <p>
                                 Nombre de la Passcode
-                                <input type="text" class="form-input" name="passcodeName" placeholder="Enter the new name for this Passcode" required="" ngModel />
+                                <input type="text" class="form-input" name="name" placeholder="Enter the new name for this Passcode" required="" ngModel />
                             </p>
                             <p>
                                 Password de la Passcode
@@ -45,11 +45,11 @@
                              </p>
                             <p *ngIf="passcode.keyboardPwdType">
                                 Start Time de la Passcode
-                                <input type="text" class="form-input" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
+                                <input type="text" class="form-input" name="startTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
                             </p>
                             <p>
                                 End Time de la Passcode
-                                <input type="text" class="form-input" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
+                                <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
                             </p>
                             <button class="form-button" type="submit">Editar Passcode</button>
                         </form>

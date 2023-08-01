@@ -100,4 +100,13 @@ export class PopUpComponent {
     this.router.navigate(['/users', username]);
   }
 
+  async editarPasscode(datos: Formulario){
+    if(this.popupService.editarPasscode){
+      await this.passcodeService.changePasscode(this.popupService.passcode, this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, datos.startTime, datos.endTime);
+    }
+    this.popupService.editarPasscode = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
+
 }
