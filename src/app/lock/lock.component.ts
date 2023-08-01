@@ -340,7 +340,7 @@ export class LockComponent implements OnInit{
     await this.ekeyService.unfreezeEkey(this.tokenData.access_token, ekeyID);
     this.router.navigate(["lock", this.lockId]);
   }
-  async borrarEkey(ekeyID:number){
+  borrarEkey(ekeyID:number){
     this.popupService.token = this.tokenData.access_token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
@@ -350,13 +350,18 @@ export class LockComponent implements OnInit{
     //this.router.navigate(["lock", this.lockId]);
 
   }
-  async cambiarNombreEkey(ekeyID:number, datos:EkeyFormulario){
-    await this.ekeyService.modifyEkey(this.tokenData.access_token, ekeyID, datos.keyName, datos.remoteEnable);
-    this.router.navigate(["lock", this.lockId]);
+  cambiarNombreEkey(ekeyID:number){
+    this.ekeyService.token = this.tokenData.access_token;
+    this.ekeyService.lockID = this.lockId;
+    this.ekeyService.ekeyID = ekeyID;
+    this.ekeyService.cambiarNombre = true;
+    this.router.navigate(["lock", this.lockId, "ekey"]);
+    //await this.ekeyService.modifyEkey(this.tokenData.access_token, ekeyID, datos.keyName, datos.remoteEnable);
+    //this.router.navigate(["lock", this.lockId]);
   }
-  async cambiarPeriodoEkey(ekeyID:number, datos:EkeyFormulario){
-    await this.ekeyService.changePeriod(this.tokenData.access_token, ekeyID, datos.ekeyStartTime, datos.ekeyEndTime);
-    this.router.navigate(["lock", this.lockId]);
+  async cambiarPeriodoEkey(ekeyID:number/*, datos:EkeyFormulario*/){
+    //await this.ekeyService.changePeriod(this.tokenData.access_token, ekeyID, datos.ekeyStartTime, datos.ekeyEndTime);
+    //this.router.navigate(["lock", this.lockId]);
   }
   async crearEkey(datos:EkeyFormulario){
     await this.ekeyService.sendEkey(this.tokenData.access_token, this.lockId, datos.recieverName, datos.keyName, datos.ekeyStartTime, datos.ekeyEndTime);

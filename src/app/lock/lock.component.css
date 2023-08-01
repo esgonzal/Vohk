@@ -46,10 +46,11 @@ app-pop-up{
   height: 50px;
   font-size: 20px;
 }
-.mat-tab-group.mat-primary .mat-ink-bar{
-  background: brown;
-  height: 5px;
-} 
+
+.mat-mdc-tab-group.mat-background-primary, .mat-mdc-tab-nav-bar.mat-background-primary {
+  --mat-tab-header-with-background-background-color: rgb(207, 213, 214);
+  --mat-tab-header-with-background-foreground-color: black;
+}
 
 
 .table{

@@ -79,8 +79,11 @@
                   <!---->
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell"><button mat-button
-                        (click)="borrarEkey(ekey.ekeyId)">Eliminar</button><button mat-button>Editar</button></td>
+                    <td mat-cell *matCellDef="let ekey" class="table-cell">
+                      <button mat-button (click)="borrarEkey(ekey.ekeyId)">Eliminar</button>
+                      <button mat-button (click)="cambiarNombreEkey(ekey.keyId)" >Editar Nombre</button>
+                      <button mat-button (click)="cambiarPeriodoEkey(ekey.ekeyId)" >Editar Periodo</button>
+                    </td>
                   </ng-container>
                   <!---->
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsEkey"></tr>
@@ -206,7 +209,7 @@
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Asignacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez/th>
+                    <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
                     <td mat-cell *matCellDef="let fingerprint" class="table-cell">
                       {{periodoValidez(fingerprint.startDate, fingerprint.endDate)}}</td>
                   </ng-container>
@@ -251,7 +254,8 @@
                   <!---->
                   <ng-container matColumnDef="Estado">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let record" class="table-cell">{{consultarSuccess(record.success)}}</td>
+                    <td mat-cell *matCellDef="let record" class="table-cell" [style.color]="consultarSuccess(record.success) === 'Exito' ? 'green' : 'red'">
+                      {{consultarSuccess(record.success)}}</td>
                   </ng-container>
                   <!---->
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsRecord"></tr>

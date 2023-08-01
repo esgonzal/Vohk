@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { EkeyServiceService } from '../services/ekey-service.service';
+import { EkeyFormulario } from '../Ekey';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ekey',
@@ -7,23 +10,24 @@ import { Component } from '@angular/core';
 })
 export class EkeyComponent {
 
-  
+  constructor(private router: Router, public ekeyService: EkeyServiceService){}
+
+  //VARIABLES QUE RECIBEN LOS VALORES DE LOS FORMULARIOS//
   keyName: string;
   remoteEnable:string;
   recieverName:string;
   ekeyStartTime:string;
   ekeyEndTime:string;
+  ////
 
-  displayModificar: boolean =false
-  toggleModificar(){this.displayModificar = !this.displayModificar}
-  displayEditarPeriodo: boolean=false
-  toggleEditarPeriodo(){this.displayEditarPeriodo = !this.displayEditarPeriodo}
-  displaySend: boolean =false;
-  toggleSend(){this.displaySend = !this.displaySend}
-  displayAuth: boolean=false
-  toggleAuth(){this.displayAuth = !this.displayAuth}
+  async cambiarNombre(datos:EkeyFormulario){
+    await this.ekeyService.modifyEkey(datos.keyName);
+    this.ekeyService.cambiarNombre = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
 
-  constructor(){}
+  
 
   
 }

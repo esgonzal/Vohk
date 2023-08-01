@@ -1,3 +1,19 @@
+<div *ngIf="ekeyService.cambiarNombre">
+    <div class="form-area">
+        <form #editNameEkey="ngForm" (ngSubmit)="cambiarNombre(editNameEkey.value)" class="common-form">
+            <p>
+                Nombre de la Ekey
+                <input type="text" class="form-input" name="keyName" placeholder="Nuevo nombre" required="" ngModel />
+            </p>
+            <!--<p>
+                remoteEnable de la Ekey
+                <input type="text" class="form-input" name="remoteEnable" placeholder="Nuevo remoteEnable" required="" ngModel />
+            </p>-->
+            <button class="form-button" type="submit">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+
 <!--<div class="listado_objetos">
     <div *ngIf="ekeys">
         <h1>Ekeys de la cerradura</h1>
@@ -24,21 +40,7 @@
                 <div *ngIf="ekey.keyStatus=='110405'"><button type="submit" (click)="descongelarEkey(ekey.keyId)">Descongelar</button></div>
                 <div *ngIf="ekey.keyRight==1"><button type="submit" (click)="quitarAutorizacion(ekey.keyId)">Remover Acceso</button></div>
                 <div *ngIf="ekey.keyRight==0"><button type="submit" (click)="darAutorizacion(ekey.keyId)">Dar Acceso</button></div>
-                <div *ngIf="displayModificar">
-                    <div class="form-area">
-                        <form #editNameEkey="ngForm" (ngSubmit)="editarNameEkey(ekey.keyId, editNameEkey.value)" class="common-form">
-                            <p>
-                                Nombre de la Ekey
-                                <input type="text" class="form-input" name="keyName" placeholder="Nuevo nombre" required="" ngModel />
-                            </p>
-                            <p>
-                                remoteEnable de la Ekey
-                                <input type="text" class="form-input" name="remoteEnable" placeholder="Nuevo remoteEnable" required="" ngModel />
-                            </p>
-                            <button class="form-button" type="submit">Guardar Cambios</button>
-                        </form>
-                    </div>
-                </div>
+                
                 <div *ngIf="displayEditarPeriodo">
                     <div class="form-area">
                         <form #editPeriodEkey="ngForm" (ngSubmit)="editarPeriodEkey(ekey.keyId, editPeriodEkey.value)" class="common-form">
