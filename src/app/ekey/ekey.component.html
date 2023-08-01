@@ -1,4 +1,4 @@
-<div class="listado_objetos">
+<!--<div class="listado_objetos">
     <div *ngIf="ekeys">
         <h1>Ekeys de la cerradura</h1>
         <div class="display_objeto" *ngFor="let ekey of ekeys" >
@@ -14,13 +14,16 @@
                 <p *ngIf="ekey.keyStatus=='110410'">Status de la Ekey: Reseted</p>
                 <p *ngIf="ekey.keyRight==1">El usuario {{ekey.username}} esta autorizado para administrar esta Ekey</p>
                 <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>
-                <button (click)="borrarEkey(ekey.keyId)">Borrar Ekey</button>
-                <button (click)="this.toggleModificar()">Modificar Ekey</button>
-                <button (click)="this.toggleEditarPeriodo()">Cambiar Periodo de Validacion de Ekey</button>
+                <div>
+                    <button (click)="borrarEkey(ekey.keyId)">Borrar Ekey</button>
+                    <button (click)="this.toggleModificar()">Modificar Ekey</button>
+                    <button (click)="this.toggleEditarPeriodo()">Cambiar Periodo de Validacion de Ekey</button>
+                </div>
+                
                 <div *ngIf="ekey.keyStatus=='110401'"><button type="submit" (click)="congelarEkey(ekey.keyId)">Congelar</button></div>
                 <div *ngIf="ekey.keyStatus=='110405'"><button type="submit" (click)="descongelarEkey(ekey.keyId)">Descongelar</button></div>
-                <div *ngIf="ekey.keyRight==1"><button type="submit">Remover Acceso</button></div>
-                <div *ngIf="ekey.keyRight==0"><button type="submit">Dar Acceso</button></div>
+                <div *ngIf="ekey.keyRight==1"><button type="submit" (click)="quitarAutorizacion(ekey.keyId)">Remover Acceso</button></div>
+                <div *ngIf="ekey.keyRight==0"><button type="submit" (click)="darAutorizacion(ekey.keyId)">Dar Acceso</button></div>
                 <div *ngIf="displayModificar">
                     <div class="form-area">
                         <form #editNameEkey="ngForm" (ngSubmit)="editarNameEkey(ekey.keyId, editNameEkey.value)" class="common-form">
@@ -75,4 +78,4 @@
         <button class="form-button" type="submit">Enviar</button>
 
     </form>
-</div>
+</div>-->

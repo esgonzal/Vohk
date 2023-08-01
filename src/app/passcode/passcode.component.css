@@ -16,13 +16,16 @@
 .titulo {
   width: 100%;
 }
-.display_objeto div {
+
+.display_objeto div div {
   margin-top: 10px;
   margin-left: 10px;
+  display: flex;
 }
-.display_objeto div button {
-  align-self: flex-end;
-  width: 100px;
+
+.display_objeto div div button {
+  width: 200px;
+  height: 100px;
   margin-right: 5px;
   margin-bottom: 10px;
 }

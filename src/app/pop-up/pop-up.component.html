@@ -1,0 +1,24 @@
+<div id="container" *ngIf="popupService.confirmRegister">
+    <div id="header">
+        Gracias por registrarse en nuestra plataforma
+    </div>
+    <div id="content">
+        {{ popupService.welcomingMessage }}
+    </div>
+    <div id="actions">
+        <button (click)="navigateToLogin()">Iniciar Sesión</button>
+    </div>
+</div>
+
+<div id="container" *ngIf="popupService.confirmDelete">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea eliminar esta {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.confirmDelete = false">No</button>
+        <button (click)="onConfirm()">Si</button>
+    </div>
+</div>

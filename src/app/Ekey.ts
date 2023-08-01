@@ -14,12 +14,12 @@ export interface Ekey{
     remarks: string;
     date: string;
     //Recibidos de ekeyService.getEkeysofAccount
-    lockData: string;
-    usertype: string;
-    lockName: string;
-    lockAlias: string;
-    lockMac: string;
-    noKeyPwd: string;
+    //lockData: string;
+    //usertype: string;
+    //lockName: string;
+    //lockAlias: string;
+    //lockMac: string;
+    //noKeyPwd: string;
 }
 
 export interface EkeyFormulario {

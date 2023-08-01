@@ -1,5 +1,5 @@
 
-<div class="listado_objetos">
+<!--<div class="listado_objetos">
     <div *ngIf="passcodes">
         <h1>Passcodes de la cerradura</h1>
         <div class="display_objeto" *ngFor="let passcode of passcodes">
@@ -27,13 +27,11 @@
                 <p *ngIf="passcode.keyboardPwdType === 12">Tipo de la passcode: Friday Cyclic</p>
                 <p *ngIf="passcode.keyboardPwdType === 13">Tipo de la passcode: Saturday Cyclic</p>
                 <p *ngIf="passcode.keyboardPwdType === 14">Tipo de la passcode: Sunday Cyclic</p>
-                <!-- BOTON BORRAR PASSCODE -->
-                <button (click)="borrarPasscode(passcode.keyboardPwdId)">Borrar Passcode</button>
-                <!-- BOTON "EDITAR" PASSCODE -->
-                <button (click)="toggleEditar()">Editar Passcode</button>
-                <!-- BOTON COMPARTIR PASSCODE -->
-                <button (click)="enviarPasscode()">Compartir Passcode</button>
-                <!-- FORMULARIO PARA EDITAR PASSCODE, SOLO APARECE SI SE APRETA EL BOTON "EDITAR" -->
+                <div>
+                    <button (click)="borrarPasscode(passcode.keyboardPwdId)">Borrar Passcode</button>
+                    <button (click)="toggleEditar()">Editar Passcode</button>
+                    <button (click)="enviarPasscode()">Compartir Passcode</button>
+                </div>
                 <div *ngIf="displayEditar">
                     <div class="form-area">
                         <form #editPasscode="ngForm" (ngSubmit)="editarPasscode(passcode, editPasscode.value)" class="common-form">
@@ -58,19 +56,17 @@
                     </div>
                 </div>
             </div>
-            <!--
+            
                 <li>
                     EndDate de la passcode: {{ passcode.endDate | date : "yyyy-MM-dd HH:mm" }}
                 </li>
-            -->
+            
         </div>
     </div>
 </div>
-<!-- ESTE BOTON ABRE LA SELECCION DE TIPO DE PASSCODE PARA GENERAR UNA NUEVA PASSCODE -->
 <div class="generate-button">
     <button (click)="toggleDisplay()">Generar passcode</button>
 </div>
-<!-- DEPENDIENDO DEL TIPO DE PASSCODE, SE ABRIRÁ EL FORMULARIO QUE LE CORRESPONDE -->
 <div class="elegir_tipo_clave" *ngIf="display">
     <div class="col">
         <p>Selecciona el tipo de passcode: {{ selectedType }}</p>
@@ -95,7 +91,6 @@
         </select>
     </div>
 </div>
-<!-- LISTA DE FORMAS -->
 <div class="form-area" *ngIf="display && selectedType === '1'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('1', formInput.value)" class="common-form">
         <p>
@@ -364,4 +359,4 @@
         </p>
         <button class="form-button" type="submit">Generar</button>
     </form>
-</div>
+</div>-->

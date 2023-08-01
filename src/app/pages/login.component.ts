@@ -17,6 +17,9 @@ export class LoginComponent {
   constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) {}
 
   async login(data:User){
+    if(data.username == '' || data.password == ''){
+      this.loginError = 'Nombre de usuario y/o contraseña inválidos '
+    }
     this.userService.setnombre_usuario(data.username);
     this.userService.setclave_usuario(data.password);
     try {

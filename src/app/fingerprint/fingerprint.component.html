@@ -1,4 +1,4 @@
-<div class="listado_objetos">
+<!--<div class="listado_objetos">
     <div *ngIf="fingerprints">
         <h1>Fingerprints de la cerradura</h1>
         <div class="display_objeto" *ngFor="let fingerprint of fingerprints">
@@ -14,9 +14,11 @@
                 <p *ngIf="fingerprint.fingerprintType == 1">Tipo de la fingerprint: Permanente</p>
                 <p *ngIf="fingerprint.fingerprintType == 4">Tipo de la fingerprint: Recurring</p>
                 <p>Creación de la fingerprint: {{ fingerprint.createDate | date: 'yyyy-MM-dd HH:mm' }}</p>
-                <button (click)="borrarFingerprint(fingerprint.fingerprintId)">Borrar Fingerprint</button>
-                <button (click)="toggleEditarNombre()">Editar Nombre</button>
-                <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Fingerprint</button>
+                <div>
+                    <button (click)="borrarFingerprint(fingerprint.fingerprintId)">Borrar Fingerprint</button>
+                    <button (click)="toggleEditarNombre()">Editar Nombre</button>
+                    <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Fingerprint</button>
+                </div>
                 <div *ngIf="displayEditarNombre">
                     <div class="form-area">
                         <form #editNameFinger="ngForm" (ngSubmit)="cambiarNombre(fingerprint.fingerprintId, editNameFinger.value)" class="common-form">
@@ -46,4 +48,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->

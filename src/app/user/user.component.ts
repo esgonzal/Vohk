@@ -25,14 +25,14 @@ export class UserComponent implements OnInit {
 
   constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
     
-  ngOnInit(){
+  async ngOnInit(){
     this.username = this.userService.getnombre_usuario();
     this.password = this.userService.getclave_usuario();
     this.userService.data$.subscribe((data) => {
       this.tokenData = data;
     });
-    this.EncontrarLocksdelUsuario(this.tokenData.access_token);
-    this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
+    await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
+    //this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
   }
 
   async EncontrarLocks_EkeysdelUsuario(token: string){//locks y tambien ekeys
@@ -79,12 +79,8 @@ export class UserComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  onLockButtonClick(lockID: number, userType:string, keyRight:number){
-    if (userType === '110301' || keyRight === 1){
+  onLockButtonClick(lockID: number){
       this.router.navigate(['/lock/',lockID]);
-    } else{
-      console.log("No tiene acceso a las funcionalidades de esta cerradura.")
-    }
   }
 
 

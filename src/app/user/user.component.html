@@ -14,13 +14,12 @@
     </div>
 </div>
 <div class="listado_objetos">
-        <div *ngIf="ekeylist">
-            <div class="display_objeto" *ngFor="let lock of ekeylist.list">
-                <button (click)="onLockButtonClick(lock.lockId, lock.userType, lock.keyRight)">
+        <div *ngIf="locksList">
+            <div class="display_objeto" *ngFor="let lock of locksList.list">
+                <button (click)="onLockButtonClick(lock.lockId)">
                     {{lock.lockAlias}}
-                    <div *ngIf="lock.userType==='110302' && lock.keyRight===0">Usuario común de cerradura sin autorización de admin</div>
-                    <div *ngIf="lock.userType==='110302' && lock.keyRight===1">Usuario común de cerradura con autorización de admin</div>
-                    <div *ngIf="lock.userType==='110301'"> Administrador de cerradura</div>
+                    
+                    <div class="aviso_hub" *ngIf="lock.hasGateway===0">Esta cerradura no está conectada con un gateway o hub, por lo que la cantidad de funcionalidades ofrecidas en esta plataforma es limitada.</div>
                 </button>
             </div>
           </div>  

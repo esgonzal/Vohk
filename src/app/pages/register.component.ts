@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { UserServiceService } from '../services/user-service.service';
-import { Router } from '@angular/router';
 import { User } from '../User';
-
+import { PopUpComponent } from '../pop-up/pop-up.component';
+import { UserServiceService } from '../services/user-service.service';
+import { PopUpService } from '../services/pop-up.service';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-register',
@@ -12,12 +13,32 @@ import { User } from '../User';
 })
 export class RegisterComponent {
 
-  constructor(private router:Router, private userService: UserServiceService) {}
+  constructor(private userService: UserServiceService, public popupService: PopUpService) {}
 
   ngOnInit() {}
 
+  registerError:string = "";
+
   signUp(data:User){
-    this.userService.UserRegister(data.username, data.password);
-      this.router.navigate(['/login']);
+    if(data.username == '' || data.password == '' || data.confirmPassword == ''){
+      this.registerError = 'Nombre de usuario y/o contraseña inválidos '
+    } 
+    else {
+      if(data.password !== data.confirmPassword){
+        this.registerError = 'Las contraseñas son diferentes'
+      } 
+      else {
+        const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if( !passwordPattern.test(data.password)){
+          this.registerError = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos dos tipos de números, letras y símbolos'
+        } 
+        else {
+          //this.userService.UserRegister(data.username, data.password);
+          this.popupService.confirmRegister = true;
+          this.popupService.welcomingMessage = `Bienvenido, ${data.username}! Presione el siguiente botón para iniciar sesión en su cuenta.`;
+        }
+      }
+    }
   }
+
 }

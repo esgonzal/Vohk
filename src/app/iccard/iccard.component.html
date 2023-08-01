@@ -1,4 +1,4 @@
-<div class="listado_objetos">
+<!--<div class="listado_objetos">
     <div *ngIf="cards">
         <h1>Cards de la cerradura</h1>
         <div class="display_objeto" *ngFor="let card of cards">
@@ -15,9 +15,11 @@
                 <p *ngIf="card.cardType==1">Tipo de la card: Permanente</p>
                 <p *ngIf="card.cardType==4">Tipo de la card: Ciclica</p>
                 <p>Fecha de creación de la card: {{card.createDate | date: 'yyyy-MM-dd HH:mm' }}</p>
-                <button (click)="borrarCard(card.cardId)">Borrar Card</button>
-                <button (click)="toggleEditarNombre()">Editar Nombre</button>
-                <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Card</button>
+                <div>
+                    <button (click)="borrarCard(card.cardId)">Borrar Card</button>
+                    <button (click)="toggleEditarNombre()">Editar Nombre</button>
+                    <button (click)="toggleEditarPeriodo()">Editar Periodo de validación de la Card</button>
+                </div>
                 <div *ngIf="displayEditarNombre">
                     <form #editNameCard="ngForm" (ngSubmit)="cambiarNombre(card.cardId,editNameCard.value)" class="common-form">
                         <p>
@@ -43,4 +45,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->

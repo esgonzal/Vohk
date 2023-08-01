@@ -1,6 +1,6 @@
 export interface Passcode {
     endDate: string;
-    sendDate: number;
+    sendDate: string;
     keyboardPwdId: number;
     nickName: string;
     keyboardPwdType: number;

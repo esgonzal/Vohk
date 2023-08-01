@@ -2,14 +2,11 @@
   text-align: center;
 }
 
-.form-area h1 {
-  margin-top: 50px;
-  margin-bottom: 80px;
-}
-
-.form-area p {
-  color: red;
-}
+.form-area h1{
+    font-size: 36px; 
+    margin-top: 50px;
+    margin-bottom: 80px;
+  }
 
 .common-form {
   display: flex;
@@ -21,12 +18,18 @@
 .form-input {
   height: 35px;
   margin-bottom: 20px;
-  border: 1px, solid black;
+  border: 1px solid black;
   padding-left: 15px;
+  font-size: 16px; 
 }
 
 .form-button {
-  height: 35px;
-  border: 1px, solid black;
+  height: 45px;
+  border: 1px solid black;
   cursor: pointer;
+  font-size: 18px; 
+}
+
+.loginError{
+  color: red;
 }
