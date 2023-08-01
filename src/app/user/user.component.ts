@@ -5,6 +5,7 @@ import { AccessTokenData } from '../AccessToken';
 import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
+import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty, faGear} from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-user',
@@ -22,6 +23,12 @@ export class UserComponent implements OnInit {
   locksList: LockListResponse;
   ekeylist: LockListResponse;
   lock:LockData;
+  faBatteryFull= faBatteryFull
+  faBatteryThreeQuarters= faBatteryThreeQuarters
+  faBatteryHalf= faBatteryHalf
+  faBatteryQuarter= faBatteryQuarter
+  faBatteryEmpty= faBatteryEmpty
+  faGear= faGear
 
   constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
     

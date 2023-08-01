@@ -32,14 +32,14 @@
             <form #editName="ngForm" (ngSubmit)="cambiarNombre(editName.value)" class="common-form">
                 <p>
                     Nombre 
-                    <input type="text" class="form-input" name="name" placeholder="Nuevo nombre" required="" ngModel />
+                    <input type="text" class="form-input" name="name" placeholder="..." required="" ngModel />
                 </p>
-                <button class="cancel" (click)="popupService.cambiarNombre = false">Volver</button>
-                <button class="form-button" type="submit">Guardar Cambios</button>
+                <div id="actions">
+                    <button class="cancel" (click)="popupService.cambiarNombre = false">Volver</button>
+                    <button type="submit">Guardar</button>
+                </div>
             </form>
         </div>
-    </div>
-    <div id="actions">
     </div>
 </div>
 
@@ -52,18 +52,18 @@
             <form #editPeriod="ngForm" (ngSubmit)="cambiarPeriodo(editPeriod.value)" class="common-form">
                 <p>
                     Start Time 
-                    <input type="text" class="form-input" name="startTime" placeholder="YYYY-MM-DD-HH" required="" ngModel />
+                    <input type="text" class="form-input" name="startTime" placeholder="YYYY-MM-DD-HH" ngModel />
                 </p>
                 <p>
                     End Time 
-                    <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" required="" ngModel />
+                    <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" ngModel />
                 </p>
-                <button class="cancel" (click)="popupService.cambiarPeriodo = false">Volver</button>
-                <button class="form-button" type="submit">Guardar Cambios</button>
+                <div id="actions">
+                    <button class="cancel" (click)="popupService.cambiarPeriodo = false">Volver</button>
+                    <button type="submit">Guardar</button>
+                </div>
             </form>
         </div>
-    </div>
-    <div id="actions">
     </div>
 </div>
 
@@ -76,11 +76,11 @@
             <form #editPasscode="ngForm" (ngSubmit)="editarPasscode(editPasscode.value)" class="common-form">
                 <p>
                     Nombre de la Passcode
-                    <input type="text" class="form-input" name="name" placeholder="Enter the new name for this Passcode" ngModel />
+                    <input type="text" class="form-input" name="name" placeholder="..." ngModel />
                 </p>
                 <p>
                     Password de la Passcode
-                    <input type="password" class="form-input" name="passcodePwd" placeholder="Enter the new password for this Passcode" required ngModel />
+                    <input type="password" class="form-input" name="passcodePwd" placeholder="..." required ngModel />
                  </p>
                 <p *ngIf="popupService.passcode.keyboardPwdType != 2">
                     Start Time de la Passcode
@@ -90,11 +90,11 @@
                     End Time de la Passcode
                     <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" ngModel />
                 </p>
-                <button class="cancel" (click)="popupService.editarPasscode= false">Volver</button>
-                <button class="form-button" type="submit">Guardar Cambios</button>
+                <div id="actions">
+                    <button class="cancel" (click)="popupService.editarPasscode= false">Volver</button>
+                    <button type="submit">Guardar</button>
+                </div>
             </form>
         </div>
-    </div>
-    <div id="actions">
     </div>
 </div>

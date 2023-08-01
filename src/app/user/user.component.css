@@ -3,28 +3,11 @@
 }
 
 .listado_objetos {
-  background-color: rgb(219, 219, 219);
+  background-color: rgb(255, 255, 255);
   margin: 20px;
-  border-style: solid;
-  border-color: black;
-  border-width: 2px;
 }
 
-.display_objeto {
-  margin: 10px;
-  background-color: white;
-}
-
-.display_objeto button {
-  width: 100%;
-  height: 100px;
-}
-
-.aviso_admin{
-  font-size: small;
-}
-
-.aviso_hub{
-  color:red;
-  font-size: smaller;
+.bateria_cerradura {
+  display: flex;
+  justify-content: space-around;
 }

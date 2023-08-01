@@ -61,3 +61,21 @@ button{
   border:1px solid #F9C114;
   color: #F9C114;
 }
+
+.form-area {
+  text-align: center;
+}
+
+.common-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: auto;
+}
+
+.form-input {
+  height: 35px;
+  margin-bottom: 20px;
+  border: 1px, solid black;
+  padding-left: 15px;
+}
