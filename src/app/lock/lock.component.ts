@@ -51,8 +51,7 @@ export class LockComponent implements OnInit{
   toggleInfo(){this.displayInfo = !this.displayInfo}
   displayEditar: boolean = false;
   toggleEditar() {this.displayEditar = !this.displayEditar}
-  selectedType = '';
-  onSelected(value: string): void {this.selectedType = value}
+  
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -131,7 +130,7 @@ export class LockComponent implements OnInit{
       })}
     catch (error) {console.error("Error while fetching the records:", error)}
   }
-  
+  //FUNCIONES PARA FORMATO DE TABLA
   periodoValidez(start:number, end:number){
     if(end === 0){return 'Permanente'} 
     else {
@@ -139,7 +138,6 @@ export class LockComponent implements OnInit{
       var final = moment(end).format("YYYY/MM/DD HH:mm")
       var retorno = inicio.toString().concat(' - ').concat(final.toString());
       return retorno}}
-
   consultarEstado(end:number){
     if(end === 0){return 'Valido'} 
     else {
@@ -147,12 +145,10 @@ export class LockComponent implements OnInit{
       var final = moment(end).format("YYYY/MM/DD HH:mm")
       if(moment(final).isBefore(ahora)){return 'Invalido'} 
     else {return 'Valido'}}}
-
   consultarSuccess(success:number){
     if (success == 0){ return 'Fallido'}
     else {return 'Exito'}
   }
-
   consultarMetodo(tipo:number, operador:string) {
     switch (tipo) {
       case 1:
@@ -330,7 +326,6 @@ export class LockComponent implements OnInit{
         return 'Unknown type';
     }
   }
-
   //FUNCIONES EKEY
   async congelar(ekeyID:number){
     await this.ekeyService.freezeEkey(this.tokenData.access_token, ekeyID);
@@ -376,14 +371,17 @@ export class LockComponent implements OnInit{
   }
 
   //FUNCIONES PASSCODE
-  async crearPasscode(type: string, datos: PasscodeFormulario) {
+  crearPasscode() {
+    this.passcodeService.lockAlias = this.lock.lockAlias;
+    this.router.navigate(["lock",this.lockId,"passcode"])
+    /*
     if (datos.passcodePwd) {//SI EXISTE CONTRASEÑA, ENTONCES ES CUSTOM
       await this.passcodeService.generateCustomPasscode(this.tokenData.access_token, this.lockId, datos.passcodePwd, datos.passcodeName, type, datos.passcodeStartTime, datos.passcodeEndTime)
       this.router.navigate(["lock", this.lockId]);
     } else {//ES CONTRASEÑA RANDOM
       await this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, type, datos.passcodeName, datos.passcodeStartTime, datos.passcodeEndTime)
       this.router.navigate(["lock", this.lockId]);
-    }
+    }*/
   }
   cambiarPasscode(passcode: Passcode) {
     this.popupService.token = this.tokenData.access_token;

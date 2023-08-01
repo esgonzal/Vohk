@@ -1,75 +1,7 @@
 
-<!--<div class="listado_objetos">
-    <div *ngIf="passcodes">
-        <h1>Passcodes de la cerradura</h1>
-        <div class="display_objeto" *ngFor="let passcode of passcodes">
-            <button class="titulo" (click)="ambasFunciones(passcode)">
-                <div *ngIf="passcode.keyboardPwdName">
-                    {{passcode.keyboardPwdName}}
-                </div>
-                <div *ngIf="!passcode.keyboardPwdName">
-                    passcode sin nombre
-                </div>
-            </button>
-            <div  *ngIf="displayInfo && selectedPasscode===passcode" >
-                <p>Contraseña de la passcode: {{ passcode.keyboardPwd }}</p>
-                <p *ngIf="passcode.keyboardPwdType === 1">Tipo de la passcode: One-Time</p>
-                <p *ngIf="passcode.keyboardPwdType == 2">Tipo de la passcode: Permanent</p>
-                <p *ngIf="passcode.keyboardPwdType == 3">Tipo de la passcode: Timed</p>
-                <p *ngIf="passcode.keyboardPwdType == 4">Tipo de la passcode: Erase</p>
-                <p *ngIf="passcode.keyboardPwdType == 5">Tipo de la passcode: Weekend Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType == 6">Tipo de la passcode: Daily Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType == 7">Tipo de la passcode: Workday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType == 8">Tipo de la passcode: Monday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType == 9">Tipo de la passcode: Tuesday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType === 10">Tipo de la passcode: Wednesday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType === 11">Tipo de la passcode: Thursday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType === 12">Tipo de la passcode: Friday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType === 13">Tipo de la passcode: Saturday Cyclic</p>
-                <p *ngIf="passcode.keyboardPwdType === 14">Tipo de la passcode: Sunday Cyclic</p>
-                <div>
-                    <button (click)="borrarPasscode(passcode.keyboardPwdId)">Borrar Passcode</button>
-                    <button (click)="toggleEditar()">Editar Passcode</button>
-                    <button (click)="enviarPasscode()">Compartir Passcode</button>
-                </div>
-                <div *ngIf="displayEditar">
-                    <div class="form-area">
-                        <form #editPasscode="ngForm" (ngSubmit)="editarPasscode(passcode, editPasscode.value)" class="common-form">
-                            <p>
-                                Nombre de la Passcode
-                                <input type="text" class="form-input" name="name" placeholder="Enter the new name for this Passcode" required="" ngModel />
-                            </p>
-                            <p>
-                                Password de la Passcode
-                                <input type="text" class="form-input" name="passcodePwd" placeholder="Enter the new password for this Passcode" required="" ngModel />
-                             </p>
-                            <p *ngIf="passcode.keyboardPwdType">
-                                Start Time de la Passcode
-                                <input type="text" class="form-input" name="startTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
-                            </p>
-                            <p>
-                                End Time de la Passcode
-                                <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
-                            </p>
-                            <button class="form-button" type="submit">Editar Passcode</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            
-                <li>
-                    EndDate de la passcode: {{ passcode.endDate | date : "yyyy-MM-dd HH:mm" }}
-                </li>
-            
-        </div>
-    </div>
-</div>
-<div class="generate-button">
-    <button (click)="toggleDisplay()">Generar passcode</button>
-</div>
-<div class="elegir_tipo_clave" *ngIf="display">
+<div class="elegir_tipo_clave">
     <div class="col">
-        <p>Selecciona el tipo de passcode: {{ selectedType }}</p>
+        Seleccione un tipo de contraseña
         <select #types (change)="onSelected(types.value)">
             <option default value="">No seleccionado</option>
             <option value="1">One-time</option>
@@ -91,7 +23,32 @@
         </select>
     </div>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '1'">
+<div class="form-area">
+    <form #formInput="ngForm" class="common-form">
+        <p>
+            Nombre de la Passcode
+            <input type="text" class="form-input" name="passcodeName" placeholder="..." ngModel/>
+        </p>
+        <p *ngIf="selectedType === 'Custom_Permanent' || selectedType === 'Custom_Period' ">
+            Contraseña de la Passcode
+            <input type="text" class="form-input" name="passcodePwd" placeholder="Enter a password for this Passcode"
+                required="required" ngModel />
+        </p>
+        <p *ngIf="selectedType !== '1' && selectedType !== '2' && selectedType !== '4' && selectedType !== 'Custom_Permanent' && selectedType !== ''">
+            Start Time de la Passcode
+            <input type="text" class="form-input" name="passcodeStartTime" placeholder="YYYY-MM-DD-HH"
+                required="required" ngModel />
+        </p>
+        <p  *ngIf="selectedType !== '1' && selectedType !== '2' && selectedType !== '4' && selectedType !== 'Custom_Permanent' && selectedType !== ''">
+            End Time de la Passcode
+            <input type="text" class="form-input" name="passcodeEndTime" placeholder="YYYY-MM-DD-HH" required="required"
+                ngModel />
+        </p>
+        <button class="form-button" type="submit">Generar</button>
+    </form>
+</div>
+<!--
+<div class="form-area" *ngIf="selectedType === '1'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('1', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -101,7 +58,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '2'">
+<div class="form-area" *ngIf="selectedType === '2'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('2', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -111,7 +68,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '3'">
+<div class="form-area" *ngIf="diselectedType === '3'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('3', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -131,7 +88,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '4'">
+<div class="form-area" *ngIf="selectedType === '4'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('4', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -141,7 +98,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '5'">
+<div class="form-area" *ngIf="selectedType === '5'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('5', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -159,7 +116,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '6'">
+<div class="form-area" *ngIf="selectedType === '6'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('6', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -177,7 +134,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '7'">
+<div class="form-area" *ngIf="selectedType === '7'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('7', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -195,7 +152,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '8'">
+<div class="form-area" *ngIf="selectedType === '8'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('8', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -213,7 +170,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '9'">
+<div class="form-area" *ngIf="selectedType === '9'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('9', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -231,7 +188,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '10'">
+<div class="form-area" *ngIf="selectedType === '10'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('10', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -249,7 +206,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '11'">
+<div class="form-area" *ngIf="selectedType === '11'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('11', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -267,7 +224,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '12'">
+<div class="form-area" *ngIf="selectedType === '12'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('12', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -286,7 +243,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '13'">
+<div class="form-area" *ngIf="selectedType === '13'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('13', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -304,7 +261,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === '14'">
+<div class="form-area" *ngIf="selectedType === '14'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('14', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -322,7 +279,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === 'Custom_Permanent'">
+<div class="form-area" *ngIf="selectedType === 'Custom_Permanent'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('2', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode
@@ -337,7 +294,7 @@
         <button class="form-button" type="submit">Generar</button>
     </form>
 </div>
-<div class="form-area" *ngIf="display && selectedType === 'Custom_Period'">
+<div class="form-area" *ngIf="selectedType === 'Custom_Period'">
     <form #formInput="ngForm" (ngSubmit)="crearPasscode('3', formInput.value)" class="common-form">
         <p>
             Nombre de la Passcode

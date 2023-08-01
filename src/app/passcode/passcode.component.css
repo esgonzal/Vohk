@@ -49,6 +49,10 @@
   border-radius: 5px;
 }
 
+.elegir_tipo_clave {
+  padding-top: 30px;
+}
+
 .col {
   display: flex;
   flex-wrap: nowrap;
@@ -58,6 +62,7 @@
 
 .form-area {
   text-align: center;
+  margin-top: 50px;
 }
 
 .common-form {

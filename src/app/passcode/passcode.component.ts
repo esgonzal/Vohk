@@ -15,6 +15,8 @@ export class PasscodeComponent {
   passcodeEndTime: string;
   passcodeType: string;
   
+  selectedType = '';
+  onSelected(value: string): void {this.selectedType = value}
   display: boolean = false;
   toggleDisplay(){this.display = !this.display;}
   displayInfo:boolean=false

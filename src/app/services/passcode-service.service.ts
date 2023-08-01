@@ -11,6 +11,7 @@ export class PasscodeServiceService {
   
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
+  lockAlias:string;
 
   constructor(private http:HttpClient) { }
 
@@ -25,7 +26,6 @@ export class PasscodeServiceService {
     let fechaInShanghai = moment(date, "YYYY-MM-DD-HH").valueOf();
     if(Number.isNaN(fechaInShanghai)){
       return date
-      
     }
     return fechaInShanghai.toString();
   }

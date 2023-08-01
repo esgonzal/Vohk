@@ -48,7 +48,7 @@ app-pop-up{
 }
 
 .mat-mdc-tab-group.mat-background-primary, .mat-mdc-tab-nav-bar.mat-background-primary {
-  --mat-tab-header-with-background-background-color: rgb(207, 213, 214);
+  --mat-tab-header-with-background-background-color: #F9C114;
   --mat-tab-header-with-background-foreground-color: black;
 }
 
@@ -57,27 +57,13 @@ app-pop-up{
   table-layout: fixed;
   width: 80%;
   border-collapse: collapse;
-}
-
+} 
 .table-cell{
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
 
-.generate-button {
-  display: flex;
-  justify-content: right;
-}
-
-.generate-button button {
-  width: 10%; 
-  max-width: 400px; 
-  padding: 10px 20px;
-  background-color: #6f63e2;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
 
 .col {
   display: flex;
