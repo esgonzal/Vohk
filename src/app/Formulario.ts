@@ -4,4 +4,9 @@ export interface Formulario {
     endTime:string;
     recieverName:string;
     passcodePwd:string;
+    passcodeType:string;
+    startDate:string;
+    startHour:string;
+    endDate:string;
+    endHour:string;
 }

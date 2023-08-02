@@ -40,19 +40,6 @@ export class LockComponent implements OnInit{
   tokenData: AccessTokenData;
   lock:LockData;
   ////////////////////////////////////////////////////////////
-  passcodeName: string;
-  passcodePwd: string;
-  passcodeStartTime: string;
-  passcodeEndTime: string;
-  passcodeType: string;
-  display: boolean = false;
-  toggleDisplay(){this.display = !this.display;}
-  displayInfo:boolean=false
-  toggleInfo(){this.displayInfo = !this.displayInfo}
-  displayEditar: boolean = false;
-  toggleEditar() {this.displayEditar = !this.displayEditar}
-  
-  ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
   fingerprints: Fingerprint[] = []
@@ -373,15 +360,9 @@ export class LockComponent implements OnInit{
   //FUNCIONES PASSCODE
   crearPasscode() {
     this.passcodeService.lockAlias = this.lock.lockAlias;
+    this.passcodeService.token = this.tokenData.access_token;
+    this.passcodeService.lockID = this.lockId;
     this.router.navigate(["lock",this.lockId,"passcode"])
-    /*
-    if (datos.passcodePwd) {//SI EXISTE CONTRASEÑA, ENTONCES ES CUSTOM
-      await this.passcodeService.generateCustomPasscode(this.tokenData.access_token, this.lockId, datos.passcodePwd, datos.passcodeName, type, datos.passcodeStartTime, datos.passcodeEndTime)
-      this.router.navigate(["lock", this.lockId]);
-    } else {//ES CONTRASEÑA RANDOM
-      await this.passcodeService.generatePasscode(this.tokenData.access_token, this.lockId, type, datos.passcodeName, datos.passcodeStartTime, datos.passcodeEndTime)
-      this.router.navigate(["lock", this.lockId]);
-    }*/
   }
   cambiarPasscode(passcode: Passcode) {
     this.popupService.token = this.tokenData.access_token;

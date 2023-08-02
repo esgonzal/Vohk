@@ -12,6 +12,8 @@ export class PasscodeServiceService {
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
   lockAlias:string;
+  token:string;
+  lockID:number;
 
   constructor(private http:HttpClient) { }
 
@@ -23,7 +25,7 @@ export class PasscodeServiceService {
   public convertirDate(date:string){
     //date= '2023-07-19-09'
     //No es necesario ajustar la hora con shanghai, solo pon tu hora local
-    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH").valueOf();
+    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
     if(Number.isNaN(fechaInShanghai)){
       return date
     }
