@@ -51,12 +51,36 @@
         <div class="form-area">
             <form #editPeriod="ngForm" (ngSubmit)="cambiarPeriodo(editPeriod.value)" class="common-form">
                 <p>
-                    Start Time 
-                    <input type="text" class="form-input" name="startTime" placeholder="YYYY-MM-DD-HH" ngModel />
+                    Fecha de inicio
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha</mat-label>
+                        <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="YYYY-MM-DD" required="required" ngModel>
+                        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #startDatePicker></mat-datepicker>
+                    </mat-form-field>
+
+                    Hora de inicio
+                    <mat-form-field appearance="fill">
+                        <mat-label>Hora</mat-label>
+                        <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                    </mat-form-field>
+                    <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                 </p>
                 <p>
-                    End Time 
-                    <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" ngModel />
+                    Fecha de finalización
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha</mat-label>
+                        <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="YYYY-MM-DD" required="required" ngModel>
+                        <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
+
+                    Hora de finalización
+                    <mat-form-field appearance="fill">
+                        <mat-label>Hora</mat-label>
+                        <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                    </mat-form-field>
+                    <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                 </p>
                 <div id="actions">
                     <button class="cancel" (click)="popupService.cambiarPeriodo = false">Volver</button>
@@ -83,12 +107,36 @@
                     <input type="password" class="form-input" name="passcodePwd" placeholder="..." required ngModel />
                  </p>
                 <p *ngIf="popupService.passcode.keyboardPwdType != 2">
-                    Start Time de la Passcode
-                    <input type="text" class="form-input" name="startTime" placeholder="YYYY-MM-DD-HH" ngModel />
+                    Fecha de inicio
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha</mat-label>
+                        <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="YYYY-MM-DD" required="required" ngModel>
+                        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #startDatePicker></mat-datepicker>
+                    </mat-form-field>
+
+                    Hora de inicio
+                    <mat-form-field appearance="fill">
+                        <mat-label>Hora</mat-label>
+                        <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                    </mat-form-field>
+                    <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                 </p>
                 <p *ngIf="popupService.passcode.keyboardPwdType != 2">
-                    End Time de la Passcode
-                    <input type="text" class="form-input" name="endTime" placeholder="YYYY-MM-DD-HH" ngModel />
+                    Fecha de finalización
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha</mat-label>
+                        <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="YYYY-MM-DD" required="required" ngModel>
+                        <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
+
+                    Hora de finalización
+                    <mat-form-field appearance="fill">
+                        <mat-label>Hora</mat-label>
+                        <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                    </mat-form-field>
+                    <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                 </p>
                 <div id="actions">
                     <button class="cancel" (click)="popupService.editarPasscode= false">Volver</button>

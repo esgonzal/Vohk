@@ -21,7 +21,7 @@ export class FingerprintServiceService {
   public convertirDate(date:string){
     //date= '2023-07-19-09'
     //No es necesario ajustar la hora con shanghai, solo pon tu hora local
-    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH").valueOf();
+    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
     if(Number.isNaN(fechaInShanghai)){
       return date
       

@@ -7,6 +7,7 @@ import { FingerprintServiceService } from '../services/fingerprint-service.servi
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Formulario } from '../Formulario';
+import moment from 'moment';
 
 
 @Component({
@@ -79,16 +80,20 @@ export class PopUpComponent {
   }
 
   async cambiarPeriodo(datos: Formulario){
+    const startDate = moment(datos.startDate).format("YYYY-MM-DD");
+    const endDate = moment(datos.endDate).format("YYYY-MM-DD");
+    const fechaInicial = startDate.concat('-').concat(datos.startHour);
+    const fechaFinal = endDate.concat('-').concat(datos.endHour);
     if(this.popupService.cambiarPeriodo){
       switch(this.popupService.elementType){
         case 'ekey':
-          await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, datos.startTime, datos.endTime);
+          await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, fechaInicial, fechaFinal);
           break;
         case 'card':
-          await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.startTime, datos.endTime);
+          await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, fechaInicial, fechaFinal);
           break;
         case 'fingerprint':
-          await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.startTime, datos.endTime);
+          await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, fechaInicial, fechaFinal);
           break;
         default:
           console.error('Invalid element type for deletion:', this.popupService.elementID);
@@ -101,8 +106,12 @@ export class PopUpComponent {
   }
 
   async editarPasscode(datos: Formulario){
+    const startDate = moment(datos.startDate).format("YYYY-MM-DD");
+    const endDate = moment(datos.endDate).format("YYYY-MM-DD");
+    const fechaInicial = startDate.concat('-').concat(datos.startHour);
+    const fechaFinal = endDate.concat('-').concat(datos.endHour);
     if(this.popupService.editarPasscode){
-      await this.passcodeService.changePasscode(this.popupService.passcode, this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, datos.startTime, datos.endTime);
+      await this.passcodeService.changePasscode(this.popupService.passcode, this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, fechaInicial, fechaFinal);
     }
     this.popupService.editarPasscode = false;
     const username = localStorage.getItem('user')
