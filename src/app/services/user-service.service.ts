@@ -12,6 +12,7 @@ export class UserServiceService {
 
   nombre_usuario:string;
   clave_usuario:string;
+  fullNombre_usuario:string;
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
 

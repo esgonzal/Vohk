@@ -9,6 +9,16 @@
             <input type="text" class="form-input" name="name" placeholder="..." ngModel/>
         </div>
         <div class="fila">
+            Tipo de contraseña
+            <select #types name="ekeyType" (change)="onSelected(types.value)" ngModel style="width: 202px; height: 35px;">
+                <option default value="">No seleccionado</option>
+                <option value="1">Permanente</option>
+                <option value="2">Periódica</option>
+                <option value="3">De un uso</option>
+                <option value="4">Solicitante</option>
+            </select>
+        </div>
+        <div class="fila" *ngIf="selectedType==='2'">
             Fecha de inicio de la Ekey
             <mat-form-field appearance="fill">
                 <mat-label>Fecha</mat-label>
@@ -24,7 +34,7 @@
             </mat-form-field>
             <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
         </div>
-        <div class="fila">
+        <div class="fila" *ngIf="selectedType==='2'">
             Fecha de finalización de la Ekey
             <mat-form-field appearance="fill">
                 <mat-label>Fecha</mat-label>
@@ -51,9 +61,5 @@
                 <p *ngIf="ekey.keyStatus=='110408'">Status de la Ekey: Deleted</p>
                 <p *ngIf="ekey.keyStatus=='110410'">Status de la Ekey: Reseted</p>
                 <p *ngIf="ekey.keyRight==1">El usuario {{ekey.username}} esta autorizado para administrar esta Ekey</p>
-                <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>                
-                <div *ngIf="ekey.keyStatus=='110401'"><button type="submit" (click)="congelarEkey(ekey.keyId)">Congelar</button></div>
-                <div *ngIf="ekey.keyStatus=='110405'"><button type="submit" (click)="descongelarEkey(ekey.keyId)">Descongelar</button></div>
-                <div *ngIf="ekey.keyRight==1"><button type="submit" (click)="quitarAutorizacion(ekey.keyId)">Remover Acceso</button></div>
-                <div *ngIf="ekey.keyRight==0"><button type="submit" (click)="darAutorizacion(ekey.keyId)">Dar Acceso</button></div>
+                <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>          
 -->

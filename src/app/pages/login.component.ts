@@ -18,7 +18,7 @@ export class LoginComponent {
 
   async login(data:User){
     if(data.username == '' || data.password == ''){
-      this.loginError = 'Nombre de usuario y/o contraseña inválidos '
+      this.loginError = 'Debe ingresar un nombre de usuario y/o contraseña '
     }
     this.userService.setnombre_usuario(data.username);
     this.userService.setclave_usuario(data.password);
@@ -34,7 +34,10 @@ export class LoginComponent {
     } catch (error) {
       console.error("Error while fetching access token:", error);
     }
+    const prefixname = 'bhaaa_'.concat(data.username);
     localStorage.setItem('user', data.username)
+    localStorage.setItem('fullName', prefixname);
+    this.userService.fullNombre_usuario = prefixname;
   }
 }
 

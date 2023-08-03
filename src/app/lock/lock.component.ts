@@ -4,10 +4,10 @@ import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faB
 import moment from 'moment';
 import { AccessTokenData } from '../AccessToken';
 import { LockData } from '../Lock';
-import { Ekey, EkeyFormulario } from '../Ekey';
-import { Fingerprint, FingerprintFormulario } from '../Fingerprint';
-import { Card, CardFormulario } from '../Card';
-import { Passcode, PasscodeFormulario } from '../Passcode';
+import { Ekey } from '../Ekey';
+import { Fingerprint } from '../Fingerprint';
+import { Card } from '../Card';
+import { Passcode } from '../Passcode';
 import { Record } from '../Record';
 import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
@@ -71,7 +71,6 @@ export class LockComponent implements OnInit{
       this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
-          console.log("La cerradura elegida: ",this.lock)
           if (!this.lock) {this.router.navigate(['/not-found']);}
         } else {console.log("Data not yet available(ngOnInit de lock component).");}
       })});
@@ -89,7 +88,7 @@ export class LockComponent implements OnInit{
     try {
       await this.passcodeService.getPasscodesofLock(this.tokenData.access_token, this.lockId);
       this.passcodeService.data$.subscribe((data) => {
-        if (data?.list) {this.passcodes = data.list} 
+        if (data?.list) {this.passcodes = data.list;console.log(this.passcodes)} 
         else {console.log("Data not yet available.")}
       })} 
     catch (error) {console.error("Error while fetching the passcodes:", error)}
@@ -126,6 +125,74 @@ export class LockComponent implements OnInit{
       var final = moment(end).format("YYYY/MM/DD HH:mm")
       var retorno = inicio.toString().concat(' - ').concat(final.toString());
       return retorno}}
+  periodoValidezPasscode(passcode: Passcode){
+    var respuesta
+    if(passcode.keyboardPwdType===1){
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(' Una Vez');
+    }
+    if(passcode.keyboardPwdType===2){
+      respuesta = 'Permanente'
+    }
+    if(passcode.keyboardPwdType===3){
+      var inicio = moment(passcode.startDate).format("YYYY/MM/DD HH:mm")
+      var final = moment(passcode.endDate).format("YYYY/MM/DD HH:mm")
+      respuesta = inicio.toString().concat(' - ').concat(final.toString());
+    }
+    if(passcode.keyboardPwdType===4){
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(' Borrar');
+    }
+    if(passcode.keyboardPwdType===5){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Fin de Semana")
+    }
+    if(passcode.keyboardPwdType===6){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Diaria")
+    }
+    if(passcode.keyboardPwdType===7){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Dia de Trabajo")
+    }
+    if(passcode.keyboardPwdType===8){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Lunes")
+    }
+    if(passcode.keyboardPwdType===9){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Martes")
+    }
+    if(passcode.keyboardPwdType===10){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Miercoles")
+    }
+    if(passcode.keyboardPwdType===11){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Jueves")
+    }
+    if(passcode.keyboardPwdType===12){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Viernes")
+    }
+    if(passcode.keyboardPwdType===13){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Sabado")
+    }
+    if(passcode.keyboardPwdType===14){
+      var inicio = moment(passcode.startDate).format(" HH:mm")
+      var final = moment(passcode.endDate).format(" HH:mm")
+      respuesta = moment(passcode.sendDate).format("YYYY/MM/DD HH:mm").concat(", ",inicio," - ",final," Domingo")
+    }
+    return respuesta;
+  }
   consultarEstado(end:number){
     if(end === 0){return 'Valido'} 
     else {
@@ -133,6 +200,9 @@ export class LockComponent implements OnInit{
       var final = moment(end).format("YYYY/MM/DD HH:mm")
       if(moment(final).isBefore(ahora)){return 'Invalido'} 
     else {return 'Valido'}}}
+  consulatEstadoPasscode(passcode: Passcode){
+
+  }
   consultarSuccess(success:number){
     if (success == 0){ return 'Fallido'}
     else {return 'Exito'}
@@ -314,6 +384,7 @@ export class LockComponent implements OnInit{
         return 'Unknown type';
     }
   }
+  getFullName(){return this.userService.fullNombre_usuario}
   //FUNCIONES EKEY
   congelar(ekeyID:number, user:string){
     this.popupService.token = this.tokenData.access_token;

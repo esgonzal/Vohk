@@ -33,7 +33,7 @@ export class RegisterComponent {
           this.registerError = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos dos tipos de números, letras y símbolos'
         } 
         else {
-          //this.userService.UserRegister(data.username, data.password);
+          this.userService.UserRegister(data.username, data.password);
           this.popupService.confirmRegister = true;
           this.popupService.welcomingMessage = `Bienvenido, ${data.username}! Presione el siguiente botón para iniciar sesión en su cuenta.`;
         }
