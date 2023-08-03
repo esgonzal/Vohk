@@ -19,10 +19,17 @@ export class PasscodeComponent {
   constructor(private passcodeService: PasscodeServiceService, private router: Router) { }
 
   async validarNuevaPass(datos: Formulario){
-    const startDate = moment(datos.startDate).format("YYYY-MM-DD");
-    const endDate = moment(datos.endDate).format("YYYY-MM-DD");
-    const fechaInicial = startDate.concat('-').concat(datos.startHour);
-    const fechaFinal = endDate.concat('-').concat(datos.endHour);
+    let fechaInicial:string = '';
+    let fechaFinal:string = '';
+    if(datos.startDate){
+      const startDate = moment(datos.startDate).format("YYYY-MM-DD");
+      const endDate = moment(datos.endDate).format("YYYY-MM-DD");
+      fechaInicial = startDate.concat('-').concat(datos.startHour);
+      fechaFinal = endDate.concat('-').concat(datos.endHour);
+    } else {
+      fechaInicial = datos.startHour;
+      fechaFinal = datos.endHour;
+    }
     if (datos.passcodePwd){//ES CUSTOM PASSWORD
       await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, datos.name, datos.passcodeType, fechaInicial, fechaFinal);
       this.router.navigate(["lock", this.passcodeService.lockID]);

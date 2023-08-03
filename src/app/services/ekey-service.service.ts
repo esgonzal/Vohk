@@ -9,10 +9,11 @@ export class EkeyServiceService {
 
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
+  private dataSubject2 = new BehaviorSubject<any>(null);
+  data2$ = this.dataSubject2.asObservable();
 
   token: string;
   lockID: number;
-  ekeyID: number;
 
   constructor(private http:HttpClient) { }
 
@@ -46,10 +47,10 @@ export class EkeyServiceService {
     body.set('date', fecha.toString());
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject2.next(response); // Emit the response to dataSubject
     } catch (error) {
       console.error("Error while getting the list of Ekeys of an account:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
+      this.dataSubject2.next(null); // Emit null to dataSubject on error
     }
   }
 

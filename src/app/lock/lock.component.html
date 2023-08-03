@@ -33,7 +33,12 @@
               </div>
             </div>
             <div class="rol_usuario">
-              Administrador
+              <div *ngIf="lock.userType==='110301'">
+                Administrador
+              </div>
+              <div *ngIf="lock.userType==='110302'">
+                Administrador autorizado // {{lock.startDate | date: 'yyyy/MM/dd HH:mm'}} - {{lock.endDate | date: 'yyyy/MM/dd HH:mm'}}
+              </div>
             </div>
           </div>
         </div>
@@ -44,7 +49,8 @@
             <mat-tab-group backgroundColor="primary" color="warn">
               <mat-tab label="ekeys">
                 <!--     BOTON DE NUEVA EKEY     -->
-                <!--                             -->
+                <button (click)="crearEkey()">Nueva</button>
+                <!--------------------------------->
                 <table mat-table [dataSource]="ekeys" class="table">
                   <!---->
                   <ng-container matColumnDef="keyName">
@@ -85,6 +91,10 @@
                       <button mat-button (click)="borrarEkey(ekey.keyId)">Eliminar</button>
                       <button mat-button (click)="cambiarNombreEkey(ekey.keyId)" >Editar Nombre</button>
                       <button mat-button (click)="cambiarPeriodoEkey(ekey.keyId)" >Editar Periodo</button>
+                      <button mat-button *ngIf="ekey.keyRight===0" (click)="Autorizar(ekey.keyId, ekey.username)">Autorizar</button>
+                      <button mat-button *ngIf="ekey.keyRight===1" (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
+                      <button mat-button *ngIf="ekey.keyStatus==='110401'" (click)="congelar(ekey.keyId, ekey.username)" >Congelar</button>
+                      <button mat-button *ngIf="ekey.keyStatus==='110405'" (click)="descongelar(ekey.keyId, ekey.username)" >Descongelar</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -95,10 +105,7 @@
               <mat-tab label="Passcodes">
                 <!--   BOTON DE NUEVA PASSCODE   -->
                 <button (click)="crearPasscode()">Nueva</button>
-                <!--                             -->
-                <!--<div class="generate-button">
-                  <button (click)="toggleDisplay()">Generar passcode</button>
-                </div>-->
+                <!--------------------------------->
                 <table mat-table [dataSource]="passcodes" class="table">
                   <!---->
                   <ng-container matColumnDef="keyboardPwdName">
@@ -281,4 +288,4 @@
     </div>
   </div>
 </div>
-<app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode" style="z-index: 10;"></app-pop-up>
+<app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || this.popupService.confirmDescongelar" style="z-index: 10;"></app-pop-up>

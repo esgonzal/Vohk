@@ -68,9 +68,10 @@ export class LockComponent implements OnInit{
     this.route.paramMap.subscribe(params => {
       this.lockId = Number(params.get('id'));
       // Use lockId to get the specific lock data
-      this.lockService.data$.subscribe((data) => {
+      this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
+          console.log("La cerradura elegida: ",this.lock)
           if (!this.lock) {this.router.navigate(['/not-found']);}
         } else {console.log("Data not yet available(ngOnInit de lock component).");}
       })});
@@ -214,7 +215,7 @@ export class LockComponent implements OnInit{
       case 39:
         return 'unlock by IC card failed—The door has been double locked';
       case 40:
-        return 'unlock by fingerprint failed—The door has been double locked';
+        return 'Abrir con huella digital';
       case 41:
         return 'unlock by app failed—The door has been double locked';
       case 42:
@@ -224,13 +225,13 @@ export class LockComponent implements OnInit{
       case 44:
         return 'Tamper alert';
       case 45:
-        return 'Auto Lock';
+        return 'Se cierra automáticamente al final del Modo de Paso';
       case 46:
         return 'unlock by unlock key';
       case 47:
         return 'lock by lock key';
       case 48:
-        return 'System locked (Caused by, for example: Using INVALID Passcode/Fingerprint/Card several times)';
+        return '¡Detectados intentos de acceso no autorizados!';
       case 49:
         return 'unlock by hotel card';
       case 50:
@@ -314,13 +315,19 @@ export class LockComponent implements OnInit{
     }
   }
   //FUNCIONES EKEY
-  async congelar(ekeyID:number){
-    await this.ekeyService.freezeEkey(this.tokenData.access_token, ekeyID);
-    this.router.navigate(["lock", this.lockId]);
+  congelar(ekeyID:number, user:string){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementID = ekeyID;
+    this.popupService.elementType = user;
+    this.popupService.confirmCongelar = true;
   }
-  async descongelar(ekeyID:number){
-    await this.ekeyService.unfreezeEkey(this.tokenData.access_token, ekeyID);
-    this.router.navigate(["lock", this.lockId]);
+  descongelar(ekeyID:number, user:string){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementID = ekeyID;
+    this.popupService.elementType = user;
+    this.popupService.confirmDescongelar = true;
   }
   borrarEkey(ekeyID:number){
     this.popupService.token = this.tokenData.access_token;
@@ -337,24 +344,32 @@ export class LockComponent implements OnInit{
     this.popupService.elementID = ekeyID;
     this.popupService.cambiarNombre = true;
   }
-  async cambiarPeriodoEkey(ekeyID:number){
+  cambiarPeriodoEkey(ekeyID:number){
     this.popupService.token = this.tokenData.access_token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
     this.popupService.cambiarPeriodo = true;
   }
-  async crearEkey(datos:EkeyFormulario){
-    await this.ekeyService.sendEkey(this.tokenData.access_token, this.lockId, datos.recieverName, datos.keyName, datos.ekeyStartTime, datos.ekeyEndTime);
-    this.router.navigate(["lock", this.lockId]);
+  crearEkey(){
+    this.passcodeService.lockAlias = this.lock.lockAlias;
+    this.ekeyService.token = this.tokenData.access_token;
+    this.ekeyService.lockID = this.lockId
+    this.router.navigate(["lock",this.lockId,"ekey"]);
   }
-  async Autorizar(ekeyID:number){
-    await this.ekeyService.AuthorizeEkey(this.tokenData.access_token,this.lockId, ekeyID);
-    this.router.navigate(["lock", this.lockId]);
+  Autorizar(ekeyID:number, user:string){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementID = ekeyID;
+    this.popupService.elementType = user;
+    this.popupService.confirmAutorizar = true;
   }
-  async Desautorizar(ekeyID:number){
-    await this.ekeyService.cancelAuthorizeEkey(this.tokenData.access_token,this.lockId, ekeyID);
-    this.router.navigate(["lock", this.lockId]);
+  Desautorizar(ekeyID:number, user:string){
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
+    this.popupService.elementID = ekeyID;
+    this.popupService.elementType = user;
+    this.popupService.confirmDesautorizar = true;
   }
 
   //FUNCIONES PASSCODE
@@ -362,7 +377,7 @@ export class LockComponent implements OnInit{
     this.passcodeService.lockAlias = this.lock.lockAlias;
     this.passcodeService.token = this.tokenData.access_token;
     this.passcodeService.lockID = this.lockId;
-    this.router.navigate(["lock",this.lockId,"passcode"])
+    this.router.navigate(["lock",this.lockId,"passcode"]);
   }
   cambiarPasscode(passcode: Passcode) {
     this.popupService.token = this.tokenData.access_token;

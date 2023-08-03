@@ -21,7 +21,7 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   tokenData: AccessTokenData;
   locksList: LockListResponse;
-  ekeylist: LockListResponse;
+  ekeyList: LockListResponse;
   lock:LockData;
   faBatteryFull= faBatteryFull
   faBatteryThreeQuarters= faBatteryThreeQuarters
@@ -39,21 +39,21 @@ export class UserComponent implements OnInit {
       this.tokenData = data;
     });
     await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
-    //this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
+    await this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
   }
 
   async EncontrarLocks_EkeysdelUsuario(token: string){//locks y tambien ekeys
     try{
       await this.ekeyService.getEkeysofAccount(token);
-      this.ekeyService.data$.subscribe((data) => {
+      this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
-          this.ekeylist = data;
+          this.ekeyList = data;
         } else {
           console.log("Data not yet available.");
         }
       });
     } catch(error) {
-      console.error("Error while fetching access token:", error);
+      console.error("Error while fetching eKeyList:", error);
     }
   }
 
@@ -68,27 +68,9 @@ export class UserComponent implements OnInit {
         }
       });
     } catch(error) {
-      console.error("Error while fetching access token:", error);
+      console.error("Error while fetching lockList:", error);
     }
   }
-    
 
-  Eliminar(){
-    this.userService.DeleteUser(this.username)
-    this.router.navigate(['']);
-  }
-
-  ToggleDisplay(){ this.newPasswordDisplay = !this.newPasswordDisplay }
-
-  cambiarPass(username: string, newPassword: string){
-    this.userService.ResetPassword(username, newPassword);
-    this.password = newPassword;
-    this.router.navigate(['/login']);
-  }
-
-  onLockButtonClick(lockID: number){
-      this.router.navigate(['/lock/',lockID]);
-  }
-
-
+  onLockButtonClick(lockID: number){this.router.navigate(['/lock/',lockID])}
 }

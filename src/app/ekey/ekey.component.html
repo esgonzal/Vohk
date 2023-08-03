@@ -1,69 +1,59 @@
+<div class="form-area">
+    <form #formInput="ngForm" (ngSubmit)="validarNuevaEkey(formInput.value)" class="common-form">
+        <div class="fila">
+            Nombre del Recipiente
+            <input type="text" class="form-input" name="recieverName" placeholder="..." ngModel/>
+        </div>
+        <div class="fila">
+            Nombre de la Ekey
+            <input type="text" class="form-input" name="name" placeholder="..." ngModel/>
+        </div>
+        <div class="fila">
+            Fecha de inicio de la Ekey
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
 
+            Hora de inicio de la Ekey
+            <mat-form-field appearance="fill">
+                <mat-label>Hora</mat-label>
+                <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+            </mat-form-field>
+            <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+        </div>
+        <div class="fila">
+            Fecha de finalización de la Ekey
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
 
-<!--<div class="listado_objetos">
-    <div *ngIf="ekeys">
-        <h1>Ekeys de la cerradura</h1>
-        <div class="display_objeto" *ngFor="let ekey of ekeys" >
-            <button class="titulo" (click)="ambasFunciones(ekey)">
-                {{ekey.username}}
-            </button>
-            <div *ngIf="displayInfo && selectedEkey===ekey">
-                <p>ID de la Ekey: {{ekey.keyId}}</p>
+            Hora de finalización de la Ekey
+            <mat-form-field appearance="fill">
+                <mat-label>Hora</mat-label>
+                <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+            </mat-form-field>
+            <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+        </div>
+        <button class="form-button" type="submit">Enviar</button>
+    </form>
+</div>
+
+<!--
                 <p *ngIf="ekey.keyStatus=='110401'">Status de la Ekey: Normal</p>
                 <p *ngIf="ekey.keyStatus=='110402'">Status de la Ekey: Pending</p>
                 <p *ngIf="ekey.keyStatus=='110405'">Status de la Ekey: Freezed</p>
                 <p *ngIf="ekey.keyStatus=='110408'">Status de la Ekey: Deleted</p>
                 <p *ngIf="ekey.keyStatus=='110410'">Status de la Ekey: Reseted</p>
                 <p *ngIf="ekey.keyRight==1">El usuario {{ekey.username}} esta autorizado para administrar esta Ekey</p>
-                <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>
-                <div>
-                    <button (click)="borrarEkey(ekey.keyId)">Borrar Ekey</button>
-                    <button (click)="this.toggleModificar()">Modificar Ekey</button>
-                    <button (click)="this.toggleEditarPeriodo()">Cambiar Periodo de Validacion de Ekey</button>
-                </div>
-                
+                <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>                
                 <div *ngIf="ekey.keyStatus=='110401'"><button type="submit" (click)="congelarEkey(ekey.keyId)">Congelar</button></div>
                 <div *ngIf="ekey.keyStatus=='110405'"><button type="submit" (click)="descongelarEkey(ekey.keyId)">Descongelar</button></div>
                 <div *ngIf="ekey.keyRight==1"><button type="submit" (click)="quitarAutorizacion(ekey.keyId)">Remover Acceso</button></div>
                 <div *ngIf="ekey.keyRight==0"><button type="submit" (click)="darAutorizacion(ekey.keyId)">Dar Acceso</button></div>
-                
-                <div *ngIf="displayEditarPeriodo">
-                    <div class="form-area">
-                        <form #editPeriodEkey="ngForm" (ngSubmit)="editarPeriodEkey(ekey.keyId, editPeriodEkey.value)" class="common-form">
-                            Start Time de la Ekey
-                            <input type="text" class="form-input" name="ekeyStartTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
-                            End Time de la Ekey
-                            <input type="text" class="form-input" name="ekeyEndTime" placeholder="YYYY-MM-DD-HH" required="required" ngModel />
-                            <button class="form-button" type="submit">Editar Periodo</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="generate-button">
-    <button (click)="toggleSend()">Send Ekey</button>
-</div>
-<div class="form-area" *ngIf="displaySend">
-    <form #sendEkey="ngForm" (ngSubmit)="enviarEkey(sendEkey.value)" class="common-form">
-        <p>
-            Nombre de el Recipiente
-            <input type="text" class="form-input" name="recieverName" required="required" ngModel />
-        </p>
-        <p>
-            Nombre de la Ekey
-            <input type="text" class="form-input" name="keyName" required="required" ngModel />
-        </p>
-        <p>
-            Nombre de el Recipiente
-            <input type="text" class="form-input" name="ekeyStartTime" required="required" ngModel />
-        </p>
-        <p>
-            Nombre de la Ekey
-            <input type="text" class="form-input" name="ekeyStartTime" required="required" ngModel />
-        </p>
-        <button class="form-button" type="submit">Enviar</button>
-
-    </form>
-</div>-->
+-->

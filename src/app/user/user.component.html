@@ -1,4 +1,4 @@
-<div class="Perfil">
+<!--<div class="Perfil">
     <div class="Titulo">TU PERFIL</div>
     <div *ngIf="tokenData">
     <div>ID del usuario: {{tokenData.uid}}</div>
@@ -12,37 +12,39 @@
     </div>
     <button type="submit" (click)="Eliminar()">Borrar Usuario</button>
     </div>
-</div>
+</div>-->
 <div class="listado_objetos">
-        <div *ngIf="locksList">
+        <div *ngIf="ekeyList">
             <mat-grid-list cols="4" rowHeight="100px">
-                <mat-grid-tile *ngFor="let lock of locksList.list" (click)="onLockButtonClick(lock.lockId)">
+                <mat-grid-tile *ngFor="let lock of ekeyList.list" (click)="onLockButtonClick(lock.lockId)">
+                  <div *ngIf="lock.userType==='110301' || (lock.userType==='110302' && lock.keyRight===1)">
                     <mat-card class="lock">
-                        <mat-card-header>
-                            <button mat-button>
-                                <mat-card-title> {{ lock.lockAlias }}</mat-card-title>
-                                <mat-card-content>
-                                    <div class="bateria_cerradura">
-                                        <div class="icono_bateria">
-                                          <div *ngIf="lock.electricQuantity > 90 || lock.electricQuantity == 90" [ngStyle]="{color: 'green'}">
-                                            <fa-icon [icon]="faBatteryFull"></fa-icon></div>
-                                          <div *ngIf="lock.electricQuantity < 90 && lock.electricQuantity > 60 || lock.electricQuantity == 60"
-                                            [ngStyle]="{color: 'green'}"> <fa-icon [icon]="faBatteryThreeQuarters"></fa-icon></div>
-                                          <div *ngIf="lock.electricQuantity < 60 && lock.electricQuantity > 40 || lock.electricQuantity == 40"
-                                            [ngStyle]="{color: 'green'}"><fa-icon [icon]="faBatteryHalf"></fa-icon></div>
-                                          <div *ngIf="lock.electricQuantity < 40 && lock.electricQuantity > 0" [ngStyle]="{color: 'red'}">
-                                            <fa-icon [icon]="faBatteryQuarter"></fa-icon></div>
-                                          <div *ngIf="lock.electricQuantity == 0" [ngStyle]="{color: 'red'}"><fa-icon
-                                              [icon]="faBatteryEmpty"></fa-icon></div>
-                                        </div>
-                                        <div class="numero_bateria">
-                                          {{lock.electricQuantity}}%
-                                        </div>
+                      <mat-card-header>
+                          <button mat-button>
+                              <mat-card-title> {{ lock.lockAlias }}</mat-card-title>
+                              <mat-card-content>
+                                  <div class="bateria_cerradura">
+                                      <div class="icono_bateria">
+                                        <div *ngIf="lock.electricQuantity > 90 || lock.electricQuantity == 90" [ngStyle]="{color: 'green'}">
+                                          <fa-icon [icon]="faBatteryFull"></fa-icon></div>
+                                        <div *ngIf="lock.electricQuantity < 90 && lock.electricQuantity > 60 || lock.electricQuantity == 60"
+                                          [ngStyle]="{color: 'green'}"> <fa-icon [icon]="faBatteryThreeQuarters"></fa-icon></div>
+                                        <div *ngIf="lock.electricQuantity < 60 && lock.electricQuantity > 40 || lock.electricQuantity == 40"
+                                          [ngStyle]="{color: 'green'}"><fa-icon [icon]="faBatteryHalf"></fa-icon></div>
+                                        <div *ngIf="lock.electricQuantity < 40 && lock.electricQuantity > 0" [ngStyle]="{color: 'red'}">
+                                          <fa-icon [icon]="faBatteryQuarter"></fa-icon></div>
+                                        <div *ngIf="lock.electricQuantity == 0" [ngStyle]="{color: 'red'}"><fa-icon
+                                            [icon]="faBatteryEmpty"></fa-icon></div>
                                       </div>
-                                </mat-card-content>
-                            </button>
-                        </mat-card-header>
-                      </mat-card>
+                                      <div class="numero_bateria">
+                                        {{lock.electricQuantity}}%
+                                      </div>
+                                    </div>
+                              </mat-card-content>
+                          </button>
+                      </mat-card-header>
+                    </mat-card>
+                  </div>
                 </mat-grid-tile>
             </mat-grid-list>
           </div>  

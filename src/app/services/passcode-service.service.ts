@@ -27,7 +27,11 @@ export class PasscodeServiceService {
     //No es necesario ajustar la hora con shanghai, solo pon tu hora local
     let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
     if(Number.isNaN(fechaInShanghai)){
-      return date
+      let hora = moment(date, "HH:mm").valueOf();
+      if(Number.isNaN(hora)){
+        return date;
+      }
+      return hora.toString();
     }
     return fechaInShanghai.toString();
   }

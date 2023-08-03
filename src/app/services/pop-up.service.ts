@@ -6,16 +6,20 @@ import { Passcode } from '../Passcode';
 })
 export class PopUpService {
 
-  confirmRegister=false;
-  confirmDelete=false;
-  cambiarNombre=false;
-  cambiarPeriodo=false;
-  editarPasscode=false;
-  welcomingMessage:string;
-  token:string;
-  lockID:number;
-  elementType:string;
-  elementID:number;
+  confirmRegister = false;
+  confirmDelete = false;
+  confirmAutorizar = false;
+  confirmDesautorizar = false;
+  confirmCongelar = false;
+  confirmDescongelar = false;
+  cambiarNombre = false;
+  cambiarPeriodo = false;
+  editarPasscode = false;
+  welcomingMessage: string;
+  token: string;
+  lockID: number;
+  elementType: string;
+  elementID: number;
   passcode: Passcode;
 
   constructor() { }

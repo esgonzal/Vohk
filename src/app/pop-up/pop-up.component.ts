@@ -56,7 +56,35 @@ export class PopUpComponent {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
+
+  async autorizar(){
+    await this.ekeyService.AuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
+    this.popupService.confirmAutorizar = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
+
+  async desautorizar(){
+    await this.ekeyService.cancelAuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
+    this.popupService.confirmDesautorizar = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
+
+  async congelar(){
+    await this.ekeyService.freezeEkey(this.popupService.token, this.popupService.elementID);
+    this.popupService.confirmCongelar = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
   
+  async descongelar(){
+    await this.ekeyService.unfreezeEkey(this.popupService.token, this.popupService.elementID);
+    this.popupService.confirmDescongelar = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
+
   async cambiarNombre(datos: Formulario){
     if(this.popupService.cambiarNombre){
       switch(this.popupService.elementType){

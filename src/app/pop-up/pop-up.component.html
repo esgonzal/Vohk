@@ -9,7 +9,6 @@
         <button (click)="navigateToLogin()">Iniciar Sesión</button>
     </div>
 </div>
-
 <div id="container" *ngIf="popupService.confirmDelete">
     <div id="header">
         Por favor confirme sus acciones
@@ -22,7 +21,54 @@
         <button (click)="delete()">Si</button>
     </div>
 </div>
-
+<div id="container" *ngIf="popupService.confirmAutorizar">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea autorizar a {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.confirmAutorizar = false">No</button>
+        <button (click)="autorizar()">Si</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.confirmDesautorizar">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea desautorizar a {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.confirmAutorizar = false">No</button>
+        <button (click)="desautorizar()">Si</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.confirmCongelar">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea congelar a {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.confirmCongelar = false">No</button>
+        <button (click)="congelar()">Si</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.confirmDescongelar">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea descongelar a {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.confirmDescongelar = false">No</button>
+        <button (click)="descongelar()">Si</button>
+    </div>
+</div>
 <div id="container" *ngIf="popupService.cambiarNombre">
     <div id="header">
         Actualizar {{popupService.elementType}}
@@ -42,7 +88,6 @@
         </div>
     </div>
 </div>
-
 <div id="container" *ngIf="popupService.cambiarPeriodo">
     <div id="header">
         Actualizar {{popupService.elementType}}
@@ -90,7 +135,6 @@
         </div>
     </div>
 </div>
-
 <div id="container" *ngIf="popupService.editarPasscode">
     <div id="header">
         Actualizar {{popupService.elementType}}
