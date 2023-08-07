@@ -29,7 +29,32 @@
                 </div>
               </div>
               <div class="settings_cerradura">
-                <button><fa-icon [icon]="faGear"></fa-icon></button>
+                <button [matMenuTriggerFor]="menu" aria-label="Settings">
+                  <fa-icon [icon]="faGear"></fa-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="Esencial()" >
+                    <span>Esencial</span>
+                  </button>
+                  <button mat-menu-item *ngIf="lock.userType==='110301'">
+                    <span>Transferir Dispositivos</span>
+                  </button>
+                  <button mat-menu-item *ngIf="lock.userType==='110301'">
+                    <span>Notificación de Apertura</span>
+                  </button>
+                  <button mat-menu-item (click)="Gateway()" >
+                    <span>Gateway</span>
+                  </button>
+                  <button mat-menu-item >
+                    <span>Hora del Dispositivo</span>
+                  </button>
+                  <button mat-menu-item (click)="PassageMode()">
+                    <span>Modo de Paso</span>
+                  </button>
+                  <button mat-menu-item >
+                    <span>Cierre Automático</span>
+                  </button>
+                </mat-menu>
               </div>
             </div>
             <div class="rol_usuario">
@@ -37,10 +62,10 @@
                 Administrador Principal
               </div>
               <div *ngIf="lock.userType==='110302' && lock.keyRight===1">
-                Administrador Secundario // {{lock.startDate | date: 'yyyy/MM/dd HH:mm'}} - {{lock.endDate | date: 'yyyy/MM/dd HH:mm'}}
+               Administrador Secundario // {{periodoValidez(lock.startDate,lock.endDate)}}
               </div>
               <div *ngIf="lock.userType==='110302' && lock.keyRight===0">
-                Usuario // {{lock.startDate | date: 'yyyy/MM/dd HH:mm'}} - {{lock.endDate | date: 'yyyy/MM/dd HH:mm'}}
+                <!--Usuario // {{periodoValidez(lock.startDate,lock.endDate)}}-->
               </div>
             </div>
           </div>
@@ -73,7 +98,7 @@
                   <!---->
                   <ng-container matColumnDef="date">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.date | date: 'yyyy-MM-dd HH:mm'}}</td>
+                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.date | date: 'yyyy-MM-dd HH:mm'}} </td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Asignacion">
@@ -174,15 +199,26 @@
                   <ng-container matColumnDef="Estado">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
                     <td mat-cell *matCellDef="let passcode" class="table-cell"
-                      [style.color]="consultarEstado(passcode.endDate) === 'Valido' ? 'green' : 'red'">
-                      {{consultarEstado(passcode.endDate)}}</td>
+                      [style.color]="consultarEstadoPasscode(passcode) === 'Valido' ? 'green' : 'red'">
+                      {{consultarEstadoPasscode(passcode)}}</td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
                     <td mat-cell *matCellDef="let passcode" class="table-cell">
-                      <button mat-button (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
-                      <button mat-button (click)="cambiarPasscode(passcode)">Editar</button>
+                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR PASSCODE:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA PASSCODE O 
+                        - {user} ES DUEÑO DE LA PASSCODE
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && lock.keyRight===1 && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
+                      
+                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PASSCODE
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA PASSCODE O 
+                        - {user} ES DUEÑO DE LA PASSCODE
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && lock.keyRight===1 && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button (click)="cambiarPasscode(passcode)">Editar</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -207,7 +243,7 @@
                   <!---->
                   <ng-container matColumnDef="senderUsername">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">{{card.senderUsername}}</td>
+                    <td mat-cell *matCellDef="let card" class="table-cell">{{card.nickName}}</td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="createDate">
@@ -232,9 +268,23 @@
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
                     <td mat-cell *matCellDef="let card" class="table-cell">
-                      <button mat-button (click)="borrarCard(card.cardId)">Eliminar</button>
-                      <button mat-button (click)="cambiarNombreCard(card.cardId)">Editar Nombre</button>
-                      <button mat-button (click)="cambiarPeriodoCard(card.cardId)">Editar Periodo</button>
+                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR CARD:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES EL RESPONSABLE DE LA CARD
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && card.senderUsername===getFullName()))" mat-button (click)="borrarCard(card.cardId)">Eliminar</button>
+                      
+                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR EL NOMBRE CARD:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES EL RESPONSABLE DE LA CARD
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && card.senderUsername===getFullName()))" mat-button (click)="cambiarNombreCard(card.cardId)">Editar Nombre</button>
+                      
+                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR EL PERIODO CARD:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES EL RESPONSABLE DE LA CARD
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && card.senderUsername===getFullName()))" mat-button (click)="cambiarPeriodoCard(card.cardId)">Editar Periodo</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -252,7 +302,7 @@
                   <!---->
                   <ng-container matColumnDef="senderUsername">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.senderUsername}}</td>
+                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.nickName  }}</td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="createDate">
@@ -264,7 +314,7 @@
                   <ng-container matColumnDef="Asignacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
                     <td mat-cell *matCellDef="let fingerprint" class="table-cell">
-                      {{periodoValidez(fingerprint.startDate, fingerprint.endDate)}}</td>
+                      {{periodoValidezFingerprint(fingerprint)}}</td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Estado">
@@ -277,9 +327,21 @@
                   <ng-container matColumnDef="Operacion">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
                     <td mat-cell *matCellDef="let fingerprint" class="table-cell">
-                      <button mat-button (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
-                      <button mat-button (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)" >Editar Nombre</button>
-                      <button mat-button (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
+                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR FINGERPRINT:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES EL RESPONSABLE DE LA FINGERPRINT
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
+                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR NOMBRE FINGERPRINT:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES EL RESPONSABLE DE LA FINGERPRINT
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)" >Editar Nombre</button>
+                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PERIODO FINGERPRINT:
+                        - {user} ES ADMIN PRINCIPAL O 
+                        - {user} ES EL RESPONSABLE DE LA FINGERPRINT
+                      -->
+                      <button *ngIf="( lock.userType==='110301' || (lock.userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -324,4 +386,6 @@
     </div>
   </div>
 </div>
-<app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || this.popupService.confirmDescongelar" style="z-index: 10;"></app-pop-up>
+<app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || 
+                  this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || 
+                  this.popupService.confirmDescongelar || this.popupService.Esencial || this.popupService.Gateway" style="z-index: 10;"></app-pop-up>

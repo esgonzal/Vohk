@@ -1,0 +1,60 @@
+<mat-slide-toggle [(ngModel)]="isPassageModeToggleOn" (change)="onPassageModeToggleChange($event)"></mat-slide-toggle>
+
+<div *ngIf="isPassageModeToggleOn">
+    <form #formInput="ngForm" (ngSubmit)="cambiarPassageMode()" class="common-form">
+        <div>
+            <div class="texto">
+                En estos días
+            </div>
+            <div class="opcion">
+                <!--CHOOSE 1 OR MORE DAYS OF THE WEEK-->
+                <div *ngFor="let day of weekDays">
+                    <label>
+                        <input type="checkbox" name="selectedDays" [(ngModel)]="selectedDays[day.value - 1]"
+                            [value]="day.value" />
+                        {{ day.name }}
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="texto">
+                Todas las Horas
+            </div>
+            <div class="opcion">
+                <mat-slide-toggle [(ngModel)]="isAllHoursToggleOn" name="isAllHoursToggleOn"
+                    (change)="onAllHoursToggleChange($event)"></mat-slide-toggle>
+            </div>
+        </div>
+        <!-- Timepicker section -->
+        <div *ngIf="isAllHoursToggleOn">
+            <div class="texto">
+                Hora de inicio
+            </div>
+            <div class="opcion">
+                <mat-form-field appearance="fill">
+                    <mat-label>Hora</mat-label>
+                    <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm"
+                        required="required" [format]="24" [(ngModel)]="startHour" />
+                </mat-form-field>
+                <ngx-material-timepicker #startTimePicker></ngx-material-timepicker>
+            </div>
+        </div>
+
+        <div *ngIf="isAllHoursToggleOn">
+            <div class="texto">
+                Hora de finalización
+            </div>
+            <div class="opcion">
+                <mat-form-field appearance="fill">
+                    <mat-label>Hora</mat-label>
+                    <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm"
+                        required="required" [format]="24" [(ngModel)]="endHour" />
+                </mat-form-field>
+                <ngx-material-timepicker #endTimePicker></ngx-material-timepicker>
+            </div>
+        </div>
+
+        <button class="form-button" type="submit">Guardar</button>
+    </form>
+</div>

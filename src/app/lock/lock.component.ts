@@ -3,12 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty, faGear} from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { AccessTokenData } from '../AccessToken';
-import { LockData } from '../Lock';
-import { Ekey } from '../Ekey';
-import { Fingerprint } from '../Fingerprint';
-import { Card } from '../Card';
-import { Passcode } from '../Passcode';
-import { Record } from '../Record';
+import { LockData, LockDetails } from '../Interfaces/Lock';
+import { Ekey, Passcode, Card, Fingerprint, Record } from '../Interfaces/Elements';
 import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
 import { EkeyServiceService } from '../services/ekey-service.service';
@@ -17,6 +13,10 @@ import { CardServiceService } from '../services/card-service.service';
 import { FingerprintServiceService } from '../services/fingerprint-service.service';
 import { RecordServiceService } from '../services/record-service.service';
 import { PopUpService } from '../services/pop-up.service';
+import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
+import { GatewayService } from '../services/gateway.service';
+import { PassageMode } from '../Interfaces/PassageMode';
+import { PassageModeService } from '../services/passage-mode.service';
 
 
 @Component({
@@ -39,12 +39,17 @@ export class LockComponent implements OnInit{
   lockId: number;
   tokenData: AccessTokenData;
   lock:LockData;
+  lockDetails: LockDetails;
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
   fingerprints: Fingerprint[] = []
   cards: Card[] = []
   records: Record[] = []
+  gatewaysOfLock: GatewayLock[] = []
+  gatewaysOfAccount: GatewayAccount[] = []
+  passageMode: PassageMode;
+  ////////////////////////////////////////////////////////////
   displayedColumnsEkey: string[] = ['keyName', 'username', 'senderUsername', 'date', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsPasscode: string[] = ['keyboardPwdName', 'keyboardPwd', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsCard: string[] = ['cardName', 'cardNumber', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
@@ -54,13 +59,15 @@ export class LockComponent implements OnInit{
   constructor(private route: ActivatedRoute, 
     private router: Router, 
     public popupService: PopUpService,
-    private userService: UserServiceService, 
+    private userService: UserServiceService,
     private lockService: LockServiceService,
     private ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
     private fingerprintService: FingerprintServiceService,
     private recordService: RecordServiceService,
+    private gatewayService: GatewayService,
+    private passageModeService: PassageModeService
     ){}
 
   async ngOnInit() {
@@ -76,6 +83,37 @@ export class LockComponent implements OnInit{
       })});
     // Subscribe to the user data
     this.userService.data$.subscribe((data) => {this.tokenData = data});
+    //Traer LockDetails
+    try{
+      await this.lockService.getLockDetails(this.tokenData.access_token, this.lockId);
+      this.lockService.data$.subscribe((data) => {
+        if(data){this.lockDetails = data}
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the Lock details:", error);}
+    //Traer Configuracion de Modo de Paso de la Lock
+    try {
+      await this.lockService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
+      this.lockService.data$.subscribe((data) => {
+        if(data){this.passageMode = data;console.log(this.passageMode)}
+      })
+    }
+    catch (error) {console.error("Error while fetching passage mode configurations:", error)}
+    //Traer Gateways
+    try{
+      await this.gatewayService.getGatewayListOfLock(this.tokenData.access_token, this.lockId);
+      this.gatewayService.data$.subscribe((data) => {
+        if(data.list){this.gatewaysOfLock = data.list}
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the gateways:", error);}
+    try{
+      await this.gatewayService.getGatewaysAccount(this.tokenData.access_token);
+      this.gatewayService.data2$.subscribe((data) => {
+        if(data.list){this.gatewaysOfAccount = data.list}
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the gateways:", error);}
     //Traer ekeys
     try{
       await this.ekeyService.getEkeysofLock(this.tokenData.access_token, this.lockId);
@@ -88,7 +126,7 @@ export class LockComponent implements OnInit{
     try {
       await this.passcodeService.getPasscodesofLock(this.tokenData.access_token, this.lockId);
       this.passcodeService.data$.subscribe((data) => {
-        if (data?.list) {this.passcodes = data.list;console.log(this.passcodes)} 
+        if (data?.list) {this.passcodes = data.list} 
         else {console.log("Data not yet available.")}
       })} 
     catch (error) {console.error("Error while fetching the passcodes:", error)}
@@ -193,15 +231,130 @@ export class LockComponent implements OnInit{
     }
     return respuesta;
   }
+  periodoValidezFingerprint(fingerprint: Fingerprint){
+    if(fingerprint.fingerprintType===1){  
+      return this.periodoValidez(fingerprint.startDate, fingerprint.endDate)
+    }
+    else{
+      var HoraInicio:string;
+      var HoraFinal:string;
+      var minutosInicio;
+      var minutosFinal;
+      var fechaInicio = moment(fingerprint.startDate)
+      var fechaFinal = moment(fingerprint.endDate)
+      var dia:string;
+      var retorno = fechaInicio.format("YYYY/MM/DD").toString().concat(' - ').concat(fechaFinal.format("YYYY/MM/DD").toString().concat("\n"));
+      for (let index = 0; index < fingerprint.cyclicConfig.length; index++) {
+        if(fingerprint.cyclicConfig[index].weekDay===1){
+          dia = ', Lunes'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+        if(fingerprint.cyclicConfig[index].weekDay===2){
+          dia = ', Martes'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+        if(fingerprint.cyclicConfig[index].weekDay===3){
+          dia = ', Miercoles'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+        if(fingerprint.cyclicConfig[index].weekDay===4){
+          dia = ', Jueves'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+        if(fingerprint.cyclicConfig[index].weekDay===5){
+          dia = ', Viernes'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+        if(fingerprint.cyclicConfig[index].weekDay===6){
+          dia = ', Sabado'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+        if(fingerprint.cyclicConfig[index].weekDay===7){
+          dia = ', Domingo'
+          retorno = retorno.concat(dia);
+          minutosInicio = fingerprint.cyclicConfig[index].startTime
+          minutosFinal = fingerprint.cyclicConfig[index].endTime
+        }
+      }
+      //SE AGREGA EL TIEMPO DE CICLO A LA FECHA
+      fechaInicio.add(minutosInicio,'minutes')
+      fechaFinal.add(minutosFinal, 'minutes')
+      fechaFinal.add(1, 'minutes');//POR ALGUNA RAZON LE FALTA UN MINUTO A LA HORA FINAL TALVEZ REDONDEA MAL
+      //AGREGAR UN 0 AL INICIO PARA QUE QUEDE 09:00 EN VEZ DE 9:00
+      if(fechaInicio.hours()<10){
+        var cero = "0";
+        cero = cero.concat(fechaInicio.hours().toString())
+        HoraInicio = cero
+      } else { HoraInicio = fechaInicio.hours().toString()}
+      //SE HACE LO MISMO CON MINUTOS Y SE JUNTAN PARA QUE QUEDE 09:08 EN VEZ DE 09:8
+      if(fechaInicio.minutes()<10){
+        var cero = "0";
+        cero = cero.concat(fechaInicio.minutes().toString())
+        HoraInicio = HoraInicio.concat(":").concat(cero);
+      } else { HoraInicio = HoraInicio.concat(":").concat(fechaInicio.minutes().toString())}
+      //HACER LO MISMO CON HORA FINAL
+      if(fechaFinal.hours()<10){
+        var cero = "0";
+        cero = cero.concat(fechaFinal.hours().toString())
+        HoraFinal = cero
+      } else { HoraFinal = fechaFinal.hours().toString()}
+      if(fechaFinal.minutes()<10){
+        var cero = "0";
+        cero = cero.concat(fechaFinal.minutes().toString())
+        HoraFinal = HoraFinal.concat(":").concat(cero);
+      } else { HoraFinal = HoraFinal.concat(":").concat(fechaFinal.minutes().toString())}
+      retorno = retorno.concat("\n").concat(HoraInicio).concat(" ~ ").concat(HoraFinal)
+      return retorno
+    }
+  }
   consultarEstado(end:number){
     if(end === 0){return 'Valido'} 
     else {
       var ahora = moment().format("YYYY/MM/DD HH:mm")
       var final = moment(end).format("YYYY/MM/DD HH:mm")
       if(moment(final).isBefore(ahora)){return 'Invalido'} 
-    else {return 'Valido'}}}
-  consulatEstadoPasscode(passcode: Passcode){
-
+      else {return 'Valido'}}}
+  consultarEstadoPasscode(passcode: Passcode){
+    if(passcode.keyboardPwdType===1){
+      let seisHoras = moment(passcode.startDate).add(6,'hours')
+      let ahora = moment()
+      if(ahora.isAfter(seisHoras)){
+        return 'Caducado'
+      } else {
+        return 'Valido'
+      }
+    }
+    if(passcode.keyboardPwdType===2){
+      return 'Valido'
+    }
+    if(passcode.keyboardPwdType===3){
+      let ahora = moment()
+      let inicio = moment(passcode.startDate)
+      let final = moment(passcode.endDate)
+      if (ahora.isBefore(inicio) || ahora.isAfter(final) || final.isBefore(inicio)){
+        return 'Invalido'
+      } else {
+        return 'Valido'
+      }
+    }
+    if(passcode.keyboardPwdType===4){
+      return 'Valido'
+    } 
+    else {
+      return 'Valido'
+    }
   }
   consultarSuccess(success:number){
     if (success == 0){ return 'Fallido'}
@@ -385,6 +538,20 @@ export class LockComponent implements OnInit{
     }
   }
   getFullName(){return this.userService.fullNombre_usuario}
+  //SETTINGS
+  Esencial(){
+    this.popupService.detalles = this.lockDetails;
+    this.popupService.Esencial = true;
+  }
+  Gateway(){
+    this.popupService.gatewaysOfLock = this.gatewaysOfLock
+    this.popupService.gatewaysOfAccount = this.gatewaysOfAccount;
+    this.popupService.Gateway = true;
+  }
+  PassageMode(){
+    this.passageModeService.passageModeConfig = this.passageMode;
+    this.router.navigate(["lock",this.lockId,"passageMode"]);
+  }
   //FUNCIONES EKEY
   congelar(ekeyID:number, user:string){
     this.popupService.token = this.tokenData.access_token;

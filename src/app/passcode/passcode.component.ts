@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Formulario } from '../Formulario';
+import { Formulario } from '../Interfaces/Formulario';
 import { PasscodeServiceService } from '../services/passcode-service.service';
 import { Router } from '@angular/router';
 import moment from 'moment';

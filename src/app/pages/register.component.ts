@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { User } from '../User';
+import { User } from '../Interfaces/User';
 import { PopUpComponent } from '../pop-up/pop-up.component';
 import { UserServiceService } from '../services/user-service.service';
 import { PopUpService } from '../services/pop-up.service';

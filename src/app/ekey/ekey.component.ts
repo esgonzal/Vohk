@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { Router } from '@angular/router';
-import { Formulario } from '../Formulario';
+import { Formulario } from '../Interfaces/Formulario';
 import moment from 'moment';
 
 @Component({

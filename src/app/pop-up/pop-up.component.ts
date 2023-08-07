@@ -6,8 +6,9 @@ import { CardServiceService } from '../services/card-service.service';
 import { FingerprintServiceService } from '../services/fingerprint-service.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Formulario } from '../Formulario';
+import { Formulario } from '../Interfaces/Formulario';
 import moment from 'moment';
+import { GatewayAccount } from '../Interfaces/Gateway';
 
 
 @Component({
@@ -17,6 +18,10 @@ import moment from 'moment';
 })
 export class PopUpComponent {
 
+  gatewayEncontrado: GatewayAccount | undefined
+  redWiFi:string | undefined;
+
+  displayedColumnsGateway: string[] = ['NombreGateway', 'NombreWifi', 'Signal']
 
   constructor(public dialogRef: MatDialog,
     private router:Router,
@@ -146,4 +151,22 @@ export class PopUpComponent {
     this.router.navigate(['/users', username]);
   }
 
+  encontrarRed(gatewayID: number){
+    this.gatewayEncontrado = this.popupService.gatewaysOfAccount.find( (gw: {gatewayId: number}) => gw.gatewayId === gatewayID)
+    this.redWiFi = this.gatewayEncontrado?.networkName;
+    return this.redWiFi;
+  }
+
+  displayrssi(rssi:number){
+    if (rssi > -75){
+      return 'Fuerte '.concat(rssi.toString());
+    }
+    if (rssi < -85){
+      return 'Debil '.concat(rssi.toString());
+    }
+    else {
+      return 'Mediana '.concat(rssi.toString());
+    }
+    
+  }
 }

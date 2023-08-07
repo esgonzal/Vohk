@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import { AccessTokenData } from '../AccessToken';
-import { LockData } from '../Lock';
+import { LockData } from '../Interfaces/Lock';
 
 
 @Injectable({
@@ -42,6 +42,26 @@ export class LockServiceService {
     }
   }
 
+  async getLockDetails(token:string, lockId:number){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/lock/detail'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockId.toString());
+    body.set('date', fecha.toString());
+    try{
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response);
+    } catch (error){
+      console.error("Error while fetching lock details:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
+
   async changeLockName(token:string, lockId:number, newLockAlias: string){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/rename'
@@ -57,10 +77,31 @@ export class LockServiceService {
     try {
       await lastValueFrom(this.http.post(url, body.toString(), options));
     } catch (error) {
-      console.error("Error while fetching lock list of the account:", error);
+      console.error("Error while changing name of a lock:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
       throw new Error("Lock alias update failed.");
     }
   }
+
+  async getPassageModeConfig(token:string, lockId:number){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/lock/getPassageModeConfig'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockId.toString());
+    body.set('date', fecha.toString());
+    try{
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response);
+    } catch (error){
+      console.error("Error while fetching passage mode configurations:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
+  
 
 }

@@ -190,3 +190,67 @@
         </div>
     </div>
 </div>
+<div id="container" *ngIf="popupService.Esencial">
+    <div id="header">
+        Esencial
+    </div>
+    <div id="content">
+        <div class="titulo_descripcion">
+            Número de la cerradura
+        </div>
+        <div class="info_descripcion">
+            {{popupService.detalles.lockName}}
+        </div>
+        <div class="titulo_descripcion">
+            MAC
+        </div>
+        <div class="info_descripcion">
+            {{popupService.detalles.lockMac}}
+        </div>
+        <div class="titulo_descripcion">
+            LockID
+        </div>
+        <div class="info_descripcion">
+            {{popupService.detalles.lockId}}
+        </div>
+        <div class="titulo_descripcion">
+            Firmware
+        </div>
+        <div class="info_descripcion">
+            {{popupService.detalles.firmwareRevision}}
+        </div>
+    </div>
+    <div id="actions">
+        <button (click)="popupService.Esencial= false">Ok</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.Gateway">
+    <div id="header">
+        Gateways asociados con este dispositivo
+    </div>
+    <div id="content">
+        <table mat-table [dataSource]="popupService.gatewaysOfLock" class="table">
+            <!---->
+            <ng-container matColumnDef="NombreGateway">
+              <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre de Gateway</th>
+              <td mat-cell *matCellDef="let gateway" class="table-cell">{{gateway.gatewayName}}</td>
+            </ng-container>
+            <!---->
+            <ng-container matColumnDef="NombreWifi">
+              <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre WiFi</th>
+              <td mat-cell *matCellDef="let gateway" class="table-cell">{{encontrarRed(gateway.gatewayId)}}</td>
+            </ng-container>
+            <!---->
+            <ng-container matColumnDef="Signal">
+              <th mat-header-cell *matHeaderCellDef class="table-cell">Señal</th>
+              <td mat-cell *matCellDef="let gateway" class="table-cell">{{ displayrssi(gateway.rssi) }}</td>
+            </ng-container>
+            <!---->
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsGateway"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsGateway"></tr>
+          </table>
+    </div>
+    <div id="actions">
+        <button (click)="popupService.Gateway= false">Ok</button>
+    </div>
+</div>

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { AccessTokenData } from '../AccessToken';
 import { LockServiceService } from '../services/lock-service.service';
-import { LockData, LockListResponse } from '../Lock';
+import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty, faGear} from '@fortawesome/free-solid-svg-icons'
 

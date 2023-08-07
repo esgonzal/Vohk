@@ -31,10 +31,16 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
+
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppRoutingModule } from './app-routing.module';
+import { PassageModeComponent } from './passage-mode/passage-mode.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +55,8 @@ import { AppRoutingModule } from './app-routing.module';
     FingerprintComponent,
     EkeyComponent,
     TextTransformPipe,
-    PopUpComponent
+    PopUpComponent,
+    PassageModeComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +76,10 @@ import { AppRoutingModule } from './app-routing.module';
     MatNativeDateModule,
     MatInputModule,
     MatFormFieldModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatMenuModule,
+    MatIconModule,
+    MatSlideToggleModule
   ],
   providers: [DatePipe ],
   bootstrap: [AppComponent]

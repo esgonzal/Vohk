@@ -8,6 +8,7 @@ import { PasscodeComponent } from './passcode/passcode.component';
 import { ICCardComponent } from './iccard/iccard.component';
 import { FingerprintComponent } from './fingerprint/fingerprint.component';
 import { EkeyComponent } from './ekey/ekey.component';
+import { PassageModeComponent } from './passage-mode/passage-mode.component';
 
 
 const routes: Routes = [
@@ -18,7 +19,8 @@ const routes: Routes = [
   {path:'lock/:id/passcode', component:PasscodeComponent},
   {path:'lock/:id/card', component:ICCardComponent},
   {path:'lock/:id/fingerprint', component:FingerprintComponent},
-  {path:'lock/:id/ekey', component:EkeyComponent}
+  {path:'lock/:id/ekey', component:EkeyComponent},
+  {path:'lock/:id/passageMode', component:PassageModeComponent}
 ];
 
 @NgModule({
