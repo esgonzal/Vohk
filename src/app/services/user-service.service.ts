@@ -98,11 +98,6 @@ export class UserServiceService {
     let prefix = 'bhaaa_';
     let username = prefix.concat(nombre)
     let body= new URLSearchParams();
-
-    console.log("nombre en el service: ", username);
-    console.log("clave normal en el service: ", clave);
-    console.log("clave encriptada en el service: ", clave_encriptada);
-
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
     body.set('username', username);

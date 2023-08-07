@@ -6,10 +6,3 @@ export interface PassageMode{
     startDate:string;
     weekDays:number[]
 }
-
-export interface PassageModeFormulario{
-    weekDays:boolean[]
-    isAllDay:number;
-    startDate:string;
-    endDate:string;
-}

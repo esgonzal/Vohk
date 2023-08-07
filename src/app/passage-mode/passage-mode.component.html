@@ -1,7 +1,7 @@
 <mat-slide-toggle [(ngModel)]="isPassageModeToggleOn" (change)="onPassageModeToggleChange($event)"></mat-slide-toggle>
 
 <div *ngIf="isPassageModeToggleOn">
-    <form #formInput="ngForm" (ngSubmit)="cambiarPassageMode()" class="common-form">
+    <form #formInput="ngForm" class="common-form">
         <div>
             <div class="texto">
                 En estos días
@@ -55,6 +55,8 @@
             </div>
         </div>
 
-        <button class="form-button" type="submit">Guardar</button>
+        
     </form>
+    
 </div>
+<button class="form-button" type="submit" (click)="cambiarPassageMode()">Guardar</button>

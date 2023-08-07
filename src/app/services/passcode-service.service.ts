@@ -75,7 +75,6 @@ export class PasscodeServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response);
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while generating a random passcode:", error);
@@ -101,7 +100,6 @@ export class PasscodeServiceService {
       body.set('date', fecha);
       try {
         const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-        console.log(response);
         this.dataSubject.next(response);
       } catch (error) {
         console.error("Error while generating a custom passcode:", error);
@@ -116,7 +114,6 @@ export class PasscodeServiceService {
       body.set('date', fecha);
       try {
         const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-        console.log(response);
         this.dataSubject.next(response);
       } catch (error) {
         console.error("Error while generating a custom passcode:", error);
@@ -140,7 +137,6 @@ export class PasscodeServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response);
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while deleting a passcode:", error);
@@ -167,7 +163,6 @@ export class PasscodeServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log("LOCKS: ",response);
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while editing a passcode:", error);

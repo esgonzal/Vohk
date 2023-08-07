@@ -79,7 +79,7 @@ export class LockComponent implements OnInit{
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
           if (!this.lock) {this.router.navigate(['/not-found']);}
-        } else {console.log("Data not yet available(ngOnInit de lock component).");}
+        } else {console.log("Data not yet available.");}
       })});
     // Subscribe to the user data
     this.userService.data$.subscribe((data) => {this.tokenData = data});
@@ -93,9 +93,9 @@ export class LockComponent implements OnInit{
     catch(error) {console.error("Error while fetching the Lock details:", error);}
     //Traer Configuracion de Modo de Paso de la Lock
     try {
-      await this.lockService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
+      await this.passageModeService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
       this.lockService.data$.subscribe((data) => {
-        if(data){this.passageMode = data;console.log(this.passageMode)}
+        if(data){this.passageMode = data}
       })
     }
     catch (error) {console.error("Error while fetching passage mode configurations:", error)}
@@ -549,6 +549,8 @@ export class LockComponent implements OnInit{
     this.popupService.Gateway = true;
   }
   PassageMode(){
+    this.passageModeService.token = this.tokenData.access_token
+    this.passageModeService.lockID = this.lockId;
     this.passageModeService.passageModeConfig = this.passageMode;
     this.router.navigate(["lock",this.lockId,"passageMode"]);
   }

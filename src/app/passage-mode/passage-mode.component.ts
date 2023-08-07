@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PassageModeService } from '../services/passage-mode.service';
-import { PassageMode, PassageModeFormulario } from '../Interfaces/PassageMode';
+import { PassageMode } from '../Interfaces/PassageMode';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-passage-mode',
@@ -24,8 +25,7 @@ export class PassageModeComponent implements OnInit {
   startHour: string = ''; // Stores the selected startHour
   endHour: string = ''; // Stores the selected endHour
 
-  
-  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef) {}
+  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) {}
 
   ngOnInit(): void {
     this.updateSlideToggle()
@@ -46,12 +46,16 @@ export class PassageModeComponent implements OnInit {
   }
 
   transformarAllHoursToggle(isAllDay: boolean){
-    if (isAllDay){
-      return '1';
-    }
-    else {
-      return '2';
-    }
+    if (!isAllDay){return 1;}
+    else {return 2;}}
+  transformarPassageToggle(PassageMode: boolean){
+    if (PassageMode){return 1;}
+    else {return 2;}}
+  
+  transformarHora(Tiempo: string){
+    let tiempoHora = Tiempo.split(":")[0]
+    let tiempoMinuto = Tiempo.split(":")[1]
+    return (Number(tiempoHora)*60 + Number(tiempoMinuto)).toString()
   }
   
   cambiarPassageMode() {
@@ -62,13 +66,18 @@ export class PassageModeComponent implements OnInit {
         selectedDayNumbers.push(day.value);
       }
     });
-
     console.log("Selected Days:", selectedDayNumbers);
     console.log("Is All Hours Toggle On:", this.transformarAllHoursToggle(this.isAllHoursToggleOn));
-    console.log("Start Hour:", this.startHour);
-    console.log("End Hour:", this.endHour);
+    console.log("Start : ", this.transformarHora(this.startHour));
+    console.log("End : ", this.transformarHora(this.endHour));
+    const Config: PassageMode = { "autoUnlock": 1, 
+                                  "endDate":this.transformarHora(this.endHour),
+                                  "isAllDay":this.transformarAllHoursToggle(this.isAllHoursToggleOn),
+                                  "passageMode":this.transformarPassageToggle(this.isPassageModeToggleOn),
+                                  "startDate":this.transformarHora(this.startHour),
+                                  "weekDays":selectedDayNumbers
+                                }
+    this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)
+    this.router.navigate(["lock",this.passageModeService.lockID]);
   }
-
-
-
 }

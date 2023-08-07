@@ -115,7 +115,6 @@ export class CardServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response);
       this.dataSubject.next(response);
     } catch (error) {
       console.error("Error while changing the validity period of a card:", error);
