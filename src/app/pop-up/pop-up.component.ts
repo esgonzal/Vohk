@@ -41,28 +41,30 @@ export class PopUpComponent implements OnInit{
   
   ngOnInit(): void {
     // Check if autoLockTime is greater than 0 (indicating auto-lock is on)
-    if (this.popupService.detalles.autoLockTime >= 0) {
-      this.autoLockToggle = true;
-      // Check the autoLockTime value to set the correct dropdown selection
-      switch (this.popupService.detalles.autoLockTime) {
-        case 5:
-          this.selectedType = '1';
-          break;
-        case 10:
-          this.selectedType = '2';
-          break;
-        case 15:
-          this.selectedType = '3';
-          break;
-        case 30:
-          this.selectedType = '4';
-          break;
-        case 60:
-          this.selectedType = '5';
-          break;
-        default:
-          this.selectedType = '6'; // Custom value
-          this.customAutoLockTime = this.popupService.detalles.autoLockTime;
+    if(this.popupService.detalles){
+      if (this.popupService.detalles.autoLockTime >= 0) {
+        this.autoLockToggle = true;
+        // Check the autoLockTime value to set the correct dropdown selection
+        switch (this.popupService.detalles.autoLockTime) {
+          case 5:
+            this.selectedType = '1';
+            break;
+          case 10:
+            this.selectedType = '2';
+            break;
+          case 15:
+            this.selectedType = '3';
+            break;
+          case 30:
+            this.selectedType = '4';
+            break;
+          case 60:
+            this.selectedType = '5';
+            break;
+          default:
+            this.selectedType = '6'; // Custom value
+            this.customAutoLockTime = this.popupService.detalles.autoLockTime;
+        }
       }
     }
   }

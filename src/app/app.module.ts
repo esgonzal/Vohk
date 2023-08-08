@@ -41,6 +41,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppRoutingModule } from './app-routing.module';
 import { PassageModeComponent } from './passage-mode/passage-mode.component';
+import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { PassageModeComponent } from './passage-mode/passage-mode.component';
     EkeyComponent,
     TextTransformPipe,
     PopUpComponent,
-    PassageModeComponent
+    PassageModeComponent,
+    TransferLockComponent
   ],
   imports: [
     BrowserModule,

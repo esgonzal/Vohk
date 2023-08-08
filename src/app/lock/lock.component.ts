@@ -86,7 +86,7 @@ export class LockComponent implements OnInit{
     try{
       await this.lockService.getLockDetails(this.tokenData.access_token, this.lockId);
       this.lockService.data$.subscribe((data) => {
-        if(data){this.lockDetails = data}
+        if(data){this.lockDetails = data;console.log(this.lock, this.lockDetails)}
         else {console.log("Data not yet available.")}
       })}
     catch(error) {console.error("Error while fetching the Lock details:", error);}
@@ -401,7 +401,7 @@ export class LockComponent implements OnInit{
       case 21:
         return 'add fingerprint';
       case 22:
-        return 'unlock by fingerprint failed—fingerprint expired';
+        return 'Abrir con huella digital';
       case 23:
         return 'delete a fingerprint';
       case 24:
@@ -542,10 +542,21 @@ export class LockComponent implements OnInit{
     this.popupService.detalles = this.lockDetails;
     this.popupService.Esencial = true;
   }
+  TransferirLock(){
+    this.lockService.token = this.tokenData.access_token;
+    this.lockService.lockID = this.lockId;
+    console.log("token recibido en lockService: ", this.lockService.token)
+    console.log("lockID recibido en lockService: ", this.lockService.lockID)
+    this.router.navigate(["lock",this.lockId,"transferLock"]);
+  }
   Gateway(){
     this.popupService.gatewaysOfLock = this.gatewaysOfLock
     this.popupService.gatewaysOfAccount = this.gatewaysOfAccount;
     this.popupService.Gateway = true;
+  }
+  HoraDispositivo(){
+    this.popupService.detalles = this.lockDetails;
+    this.popupService.mostrarHora = true;
   }
   PassageMode(){
     this.passageModeService.token = this.tokenData.access_token
@@ -558,10 +569,6 @@ export class LockComponent implements OnInit{
     this.popupService.token = this.tokenData.access_token;
     this.popupService.lockID = this.lockId;
     this.popupService.cerradoAutomatico = true;
-  }
-  HoraDispositivo(){
-    this.popupService.detalles = this.lockDetails;
-    this.popupService.mostrarHora = true;
   }
   //FUNCIONES EKEY
   congelar(ekeyID:number, user:string){

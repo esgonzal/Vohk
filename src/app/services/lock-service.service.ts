@@ -13,6 +13,8 @@ export class LockServiceService {
 
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
+  token:string;
+  lockID:number;
   
   constructor(private http:HttpClient) { }
 
