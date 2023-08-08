@@ -284,6 +284,22 @@
     </div>
     <div id="actions">
         <button (click)="popupService.cerradoAutomatico = false">Cancelar</button>
-        <button >Ok</button>
+        <button (click)="cambiarAutoLock()" >Ok</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.mostrarHora">
+    <div id="header">
+        Hora del dispositvo
+    </div>
+    <div id="content">
+        <div class="titulo_descripcion">
+            Tiempo Actual
+        </div>
+        <div class="info_descripcion">
+            {{formatearHora()}}
+        </div>
+    </div>
+    <div id="actions">
+        <button (click)="popupService.mostrarHora = false">Ok</button>
     </div>
 </div>

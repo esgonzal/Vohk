@@ -45,7 +45,7 @@
                   <button mat-menu-item (click)="Gateway()" >
                     <span>Gateway</span>
                   </button>
-                  <button mat-menu-item >
+                  <button mat-menu-item (click)="HoraDispositivo()">
                     <span>Hora del Dispositivo</span>
                   </button>
                   <button mat-menu-item (click)="PassageMode()">
@@ -389,4 +389,4 @@
 <app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || 
                   this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || 
                   this.popupService.confirmDescongelar || this.popupService.Esencial || this.popupService.Gateway || 
-                  this.popupService.cerradoAutomatico" style="z-index: 10;"></app-pop-up>
+                  this.popupService.cerradoAutomatico || this.popupService.mostrarHora" style="z-index: 10;"></app-pop-up>

@@ -555,8 +555,13 @@ export class LockComponent implements OnInit{
   }
   AutoLock(){
     this.popupService.detalles = this.lockDetails;
-    console.log("Auto Lock Time set to: ",this.popupService.detalles.autoLockTime, " seconds")
+    this.popupService.token = this.tokenData.access_token;
+    this.popupService.lockID = this.lockId;
     this.popupService.cerradoAutomatico = true;
+  }
+  HoraDispositivo(){
+    this.popupService.detalles = this.lockDetails;
+    this.popupService.mostrarHora = true;
   }
   //FUNCIONES EKEY
   congelar(ekeyID:number, user:string){

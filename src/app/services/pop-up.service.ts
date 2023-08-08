@@ -19,6 +19,7 @@ export class PopUpService {
   editarPasscode = false;
   Esencial = false;
   Gateway = false;
+  mostrarHora = false;
   cerradoAutomatico = false;
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]

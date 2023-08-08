@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Formulario } from '../Interfaces/Formulario';
 import moment from 'moment';
 import { GatewayAccount } from '../Interfaces/Gateway';
+import { LockServiceService } from '../services/lock-service.service';
 
 
 @Component({
@@ -22,7 +23,6 @@ export class PopUpComponent implements OnInit{
   redWiFi:string | undefined;
   displayedColumnsGateway: string[] = ['NombreGateway', 'NombreWifi', 'Signal']
   ////////////////////////////////
-
   //Variables para seccion Cerrado Automatico
   autoLockToggle = false;
   customAutoLockTime: number = 0;
@@ -31,8 +31,9 @@ export class PopUpComponent implements OnInit{
 
   constructor(public dialogRef: MatDialog,
     private router:Router,
+    private lockService: LockServiceService,
     public popupService: PopUpService,
-    public ekeyService: EkeyServiceService,
+    private ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
     private fingerprintService: FingerprintServiceService,
@@ -41,7 +42,6 @@ export class PopUpComponent implements OnInit{
   ngOnInit(): void {
     // Check if autoLockTime is greater than 0 (indicating auto-lock is on)
     if (this.popupService.detalles.autoLockTime >= 0) {
-      console.log("tipo de dato: ", typeof(this.popupService.detalles.autoLockTime))
       this.autoLockToggle = true;
       // Check the autoLockTime value to set the correct dropdown selection
       switch (this.popupService.detalles.autoLockTime) {
@@ -66,28 +66,12 @@ export class PopUpComponent implements OnInit{
       }
     }
   }
-
-  onSelected(value: string): void {
-    this.selectedType = value;
-    if (this.selectedType !== '6') {
-      this.customAutoLockTime = 0;
-    }}
-
-  autoLockToggleChange(event: any){
-    this.autoLockToggle = event.checked;
-    // Set the default value of the dropdown based on autoLockToggle state
-    this.selectedType = this.autoLockToggle ? '1' : '6';
-    if (!this.autoLockToggle) {
-      this.customAutoLockTime = 0;
-    }
-    this.cdr.detectChanges();
-  }
-
+//popup Register
   navigateToLogin(){
     this.popupService.confirmRegister= false;
     this.router.navigate(['/login']);
   }
-    
+//popup eKey, passcode, card y fingerprint
   async delete(){
     if (this.popupService.confirmDelete){
       // Perform deletion based on the element type
@@ -113,35 +97,35 @@ export class PopUpComponent implements OnInit{
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
+//popup eKey
   async autorizar(){
     await this.ekeyService.AuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
     this.popupService.confirmAutorizar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
+//popup eKey
   async desautorizar(){
     await this.ekeyService.cancelAuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
     this.popupService.confirmDesautorizar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
+//popup eKey
   async congelar(){
     await this.ekeyService.freezeEkey(this.popupService.token, this.popupService.elementID);
     this.popupService.confirmCongelar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  
+//popup eKey
   async descongelar(){
     await this.ekeyService.unfreezeEkey(this.popupService.token, this.popupService.elementID);
     this.popupService.confirmDescongelar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
+//popup eKey, card y fingerprint
   async cambiarNombre(datos: Formulario){
     if(this.popupService.cambiarNombre){
       switch(this.popupService.elementType){
@@ -163,7 +147,7 @@ export class PopUpComponent implements OnInit{
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
+//popup eKey, card y fingerprint
   async cambiarPeriodo(datos: Formulario){
     const startDate = moment(datos.startDate).format("YYYY-MM-DD");
     const endDate = moment(datos.endDate).format("YYYY-MM-DD");
@@ -189,7 +173,7 @@ export class PopUpComponent implements OnInit{
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
+//popup passcode
   async editarPasscode(datos: Formulario){
     const startDate = moment(datos.startDate).format("YYYY-MM-DD");
     const endDate = moment(datos.endDate).format("YYYY-MM-DD");
@@ -202,13 +186,13 @@ export class PopUpComponent implements OnInit{
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-
-  encontrarRed(gatewayID: number){
-    this.gatewayEncontrado = this.popupService.gatewaysOfAccount.find( (gw: {gatewayId: number}) => gw.gatewayId === gatewayID)
+//popup gateway
+  async encontrarRed(gatewayID: number){
+    this.gatewayEncontrado = await this.popupService.gatewaysOfAccount.find( (gw: {gatewayId: number}) => gw.gatewayId === gatewayID)
     this.redWiFi = this.gatewayEncontrado?.networkName;
     return this.redWiFi;
   }
-
+//popup gateway
   displayrssi(rssi:number){
     if (rssi > -75){
       return 'Fuerte '.concat(rssi.toString());
@@ -220,5 +204,46 @@ export class PopUpComponent implements OnInit{
       return 'Mediana '.concat(rssi.toString());
     }
     
+  }
+//popup autoLock
+  onSelected(value: string): void {
+    this.selectedType = value;
+    if (this.selectedType !== '6') {this.customAutoLockTime = 0;}}
+//popup autoLock
+  autoLockToggleChange(event: any){
+    this.autoLockToggle = event.checked;
+    this.selectedType = this.autoLockToggle ? '1' : '6';
+    if (!this.autoLockToggle) {this.customAutoLockTime = 0;}
+    this.cdr.detectChanges()}
+//popup autoLock
+  transformarAsegundos(value:string){
+    switch(value){
+      case "1":
+        return 5;
+      case "2":
+        return 10;
+      case "3":
+        return 15;
+      case "4":
+        return 30;
+       case "5":
+        return 60;
+      default:
+        return this.customAutoLockTime;
+    }}
+//popup autoLock
+  async cambiarAutoLock(){
+    let segundos:number = -1;
+    if(this.autoLockToggle){
+      segundos = this.transformarAsegundos(this.selectedType)
+    }
+    await this.lockService.setAutoLock(this.popupService.token, this.popupService.lockID, segundos);
+    this.popupService.cerradoAutomatico = false;
+    const username = localStorage.getItem('user')
+    this.router.navigate(['/users', username]);
+  }
+//popup Hora Dispositivo
+  formatearHora(){
+    return moment.utc().add(this.popupService.detalles.timezoneRawOffset, "milliseconds").format("YYYY-MM-DD HH:mm:ss")
   }
 }

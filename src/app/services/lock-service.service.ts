@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, last, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import { AccessTokenData } from '../Interfaces/AccessToken';
 import { LockData } from '../Interfaces/Lock';
@@ -83,7 +83,47 @@ export class LockServiceService {
     }
   }
 
+  async setAutoLock(token:string, lockId:number, seconds: number){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/lock/setAutoLockTime'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockId.toString());
+    body.set('seconds', seconds.toString());
+    body.set('type', '2')
+    body.set('date', fecha.toString());
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      console.log(response)
+    } catch (error) {
+      console.error("Error while setting auto lock time of a lock:", error);
+      throw new Error("setting new auto lock time failed.");
+    }
+  }
   
-  
+  async transferLock(token:string, receiverUsername:string, lockIdList:string){
+    let fecha = this.timestamp()
+    let url = 'https://euapi.ttlock.com/v3/lock/transfer'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'});
+    let options = { headers: header};
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('receiverUsername', receiverUsername);
+    body.set('lockIdList', lockIdList);
+    body.set('date', fecha.toString());
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      console.log(response)
+    } catch (error) {
+      console.error("Error while transfering a lock:", error);
+      throw new Error("transfering the lock failed.");
+    }
+  }
 
 }
