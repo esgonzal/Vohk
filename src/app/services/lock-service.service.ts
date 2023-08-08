@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import moment from 'moment';
-import { AccessTokenData } from '../AccessToken';
+import { AccessTokenData } from '../Interfaces/AccessToken';
 import { LockData } from '../Interfaces/Lock';
 
 

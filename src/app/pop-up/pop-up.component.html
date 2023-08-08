@@ -254,3 +254,36 @@
         <button (click)="popupService.Gateway= false">Ok</button>
     </div>
 </div>
+<div id="container" *ngIf="popupService.cerradoAutomatico">
+    <div id="header">
+        Cierre Automático
+    </div>
+    <div id="content">
+        <div class="titulo_descripcion">
+            Cierre Automático
+        </div>
+        <div class="info_descripcion">
+            <mat-slide-toggle [(ngModel)]="autoLockToggle" (change)="autoLockToggleChange($event)"></mat-slide-toggle>
+        </div>
+        <div class="titulo_descripcion" *ngIf="autoLockToggle">
+            Tiempo
+        </div>
+        <div class="info_descripcion"  *ngIf="autoLockToggle">
+            <select #types name="autoLockTime" (change)="onSelected(types.value)" [(ngModel)]="selectedType" style="width: 202px; height: 35px;">
+                <option value="1">5 segundos</option>
+                <option value="2">10 segundos</option>
+                <option value="3">15 segundos</option>
+                <option value="4">30 segundos</option>
+                <option value="5">60 segundos</option>
+                <option value="6">Personalizado</option>
+            </select>
+        </div>
+        <div *ngIf="selectedType === '6'">
+            <input type="number" class="form-input" name="name" [(ngModel)]="customAutoLockTime" required="" ngModel />
+        </div>
+    </div>
+    <div id="actions">
+        <button (click)="popupService.cerradoAutomatico = false">Cancelar</button>
+        <button >Ok</button>
+    </div>
+</div>

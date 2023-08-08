@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
-import { AccessTokenData } from '../AccessToken';
+import { AccessTokenData } from '../Interfaces/AccessToken';
 import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';

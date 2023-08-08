@@ -51,7 +51,7 @@
                   <button mat-menu-item (click)="PassageMode()">
                     <span>Modo de Paso</span>
                   </button>
-                  <button mat-menu-item >
+                  <button mat-menu-item (click)="AutoLock()">
                     <span>Cierre Automático</span>
                   </button>
                 </mat-menu>
@@ -388,4 +388,5 @@
 </div>
 <app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || 
                   this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || 
-                  this.popupService.confirmDescongelar || this.popupService.Esencial || this.popupService.Gateway" style="z-index: 10;"></app-pop-up>
+                  this.popupService.confirmDescongelar || this.popupService.Esencial || this.popupService.Gateway || 
+                  this.popupService.cerradoAutomatico" style="z-index: 10;"></app-pop-up>

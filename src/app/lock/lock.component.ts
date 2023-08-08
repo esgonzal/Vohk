@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty, faGear} from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
-import { AccessTokenData } from '../AccessToken';
+import { AccessTokenData } from '../Interfaces/AccessToken';
 import { LockData, LockDetails } from '../Interfaces/Lock';
 import { Ekey, Passcode, Card, Fingerprint, Record } from '../Interfaces/Elements';
 import { UserServiceService } from '../services/user-service.service';
@@ -17,7 +17,6 @@ import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
 import { GatewayService } from '../services/gateway.service';
 import { PassageMode } from '../Interfaces/PassageMode';
 import { PassageModeService } from '../services/passage-mode.service';
-
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -553,6 +552,11 @@ export class LockComponent implements OnInit{
     this.passageModeService.lockID = this.lockId;
     this.passageModeService.passageModeConfig = this.passageMode;
     this.router.navigate(["lock",this.lockId,"passageMode"]);
+  }
+  AutoLock(){
+    this.popupService.detalles = this.lockDetails;
+    console.log("Auto Lock Time set to: ",this.popupService.detalles.autoLockTime, " seconds")
+    this.popupService.cerradoAutomatico = true;
   }
   //FUNCIONES EKEY
   congelar(ekeyID:number, user:string){

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PopUpService } from '../services/pop-up.service';
 import { PasscodeServiceService } from '../services/passcode-service.service';
 import { EkeyServiceService } from '../services/ekey-service.service';
@@ -16,12 +16,18 @@ import { GatewayAccount } from '../Interfaces/Gateway';
   templateUrl: './pop-up.component.html',
   styleUrls: ['./pop-up.component.css']
 })
-export class PopUpComponent {
-
+export class PopUpComponent implements OnInit{
+  //Variables para seccion Gateway
   gatewayEncontrado: GatewayAccount | undefined
   redWiFi:string | undefined;
-
   displayedColumnsGateway: string[] = ['NombreGateway', 'NombreWifi', 'Signal']
+  ////////////////////////////////
+
+  //Variables para seccion Cerrado Automatico
+  autoLockToggle = false;
+  customAutoLockTime: number = 0;
+  selectedType = '';
+  ////////////////////////////////
 
   constructor(public dialogRef: MatDialog,
     private router:Router,
@@ -29,7 +35,53 @@ export class PopUpComponent {
     public ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
-    private fingerprintService: FingerprintServiceService){}
+    private fingerprintService: FingerprintServiceService,
+    private cdr: ChangeDetectorRef){}
+  
+  ngOnInit(): void {
+    // Check if autoLockTime is greater than 0 (indicating auto-lock is on)
+    if (this.popupService.detalles.autoLockTime >= 0) {
+      console.log("tipo de dato: ", typeof(this.popupService.detalles.autoLockTime))
+      this.autoLockToggle = true;
+      // Check the autoLockTime value to set the correct dropdown selection
+      switch (this.popupService.detalles.autoLockTime) {
+        case 5:
+          this.selectedType = '1';
+          break;
+        case 10:
+          this.selectedType = '2';
+          break;
+        case 15:
+          this.selectedType = '3';
+          break;
+        case 30:
+          this.selectedType = '4';
+          break;
+        case 60:
+          this.selectedType = '5';
+          break;
+        default:
+          this.selectedType = '6'; // Custom value
+          this.customAutoLockTime = this.popupService.detalles.autoLockTime;
+      }
+    }
+  }
+
+  onSelected(value: string): void {
+    this.selectedType = value;
+    if (this.selectedType !== '6') {
+      this.customAutoLockTime = 0;
+    }}
+
+  autoLockToggleChange(event: any){
+    this.autoLockToggle = event.checked;
+    // Set the default value of the dropdown based on autoLockToggle state
+    this.selectedType = this.autoLockToggle ? '1' : '6';
+    if (!this.autoLockToggle) {
+      this.customAutoLockTime = 0;
+    }
+    this.cdr.detectChanges();
+  }
 
   navigateToLogin(){
     this.popupService.confirmRegister= false;
