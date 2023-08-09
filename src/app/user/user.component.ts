@@ -15,11 +15,12 @@ import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faB
 })
 export class UserComponent implements OnInit {
 
-  username: string;
-  password: string;
+  username = localStorage.getItem('user');
+  password = localStorage.getItem('password');
   newPassword: string;
   newPasswordDisplay = false;
-  tokenData: AccessTokenData;
+  token = localStorage.getItem('token') ?? ''; 
+  //tokenData: AccessTokenData;
   locksList: LockListResponse;
   ekeyList: LockListResponse;
   lock:LockData;
@@ -33,13 +34,8 @@ export class UserComponent implements OnInit {
   constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
     
   async ngOnInit(){
-    this.username = this.userService.getnombre_usuario();
-    this.password = this.userService.getclave_usuario();
-    this.userService.data$.subscribe((data) => {
-      this.tokenData = data;
-    });
     //await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
-    await this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
+    await this.EncontrarLocks_EkeysdelUsuario(this.token);    
   }
 
   async EncontrarLocks_EkeysdelUsuario(token: string){//locks y tambien ekeys
@@ -72,5 +68,11 @@ export class UserComponent implements OnInit {
     }
   }*/
 
-  onLockButtonClick(lockID: number){this.router.navigate(['/lock/',lockID])}
+  onLockButtonClick(lockID: number, lockAlias:string, electricQuantity:number, userType:string, keyRight:number){
+    localStorage.setItem('Alias', lockAlias)
+    localStorage.setItem('Bateria', electricQuantity.toString())
+    localStorage.setItem('userType', userType)
+    localStorage.setItem('keyRight', keyRight.toString())
+    this.router.navigate(['/lock/',lockID])
+  }
 }

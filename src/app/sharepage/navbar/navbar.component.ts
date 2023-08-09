@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe((val:any) => {
       if(val.url){
-        if((localStorage.getItem('user')) && (val.url.includes('users') || val.url.includes('lock'))){
+        if((localStorage.getItem('user')) && (val.url.includes('users') || val.url.includes('lock') || val.url.includes('home'))){
           this.menuType = "LoggedIn"
           this.username = localStorage.getItem('user');
         }
@@ -29,4 +29,27 @@ export class NavbarComponent implements OnInit {
     })
   }
 
+  mostrarCerraduras(){
+    this.username = localStorage.getItem('user');
+    this.router.navigate(['users', this.username]);
+  }
+
+  toPerfil(){
+    this.username = localStorage.getItem('user');
+    this.router.navigate(['users',this.username,'perfil']);
+  }
+
+  cerrarSesion(){
+    localStorage.removeItem('user');
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('password');
+    localStorage.removeItem('token');
+    localStorage.removeItem('keyRight');
+    localStorage.removeItem('Bateria');
+    localStorage.removeItem('Alias');
+    localStorage.removeItem('userType');
+    this.menuType = 'LoggedOut';
+    this.router.navigate(['home']);
+  }
 }
+

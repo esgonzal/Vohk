@@ -13,6 +13,7 @@ import { User } from '../Interfaces/User';
 export class LoginComponent {
 
   loginError:string = "";
+  access_token:string;
 
   constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) {}
 
@@ -26,6 +27,7 @@ export class LoginComponent {
       await this.userService.getAccessToken(data.username, data.password);
       this.userService.data$.subscribe((res) => {
         if (res.access_token) {
+          this.access_token = res.access_token
           this.router.navigate(['/users/', data.username]); // Navigate to the user page with the username
         } else {
           this.loginError = "Nombre de usuario y/o contraseña inválidos";
@@ -37,6 +39,8 @@ export class LoginComponent {
     const prefixname = 'bhaaa_'.concat(data.username);
     localStorage.setItem('user', data.username)
     localStorage.setItem('fullName', prefixname);
+    localStorage.setItem('password', data.password);
+    localStorage.setItem('token', this.access_token);
     this.userService.fullNombre_usuario = prefixname;
   }
 }

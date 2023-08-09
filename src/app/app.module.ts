@@ -42,6 +42,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppRoutingModule } from './app-routing.module';
 import { PassageModeComponent } from './passage-mode/passage-mode.component';
 import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
+import { HomeComponent } from './home/home.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
     TextTransformPipe,
     PopUpComponent,
     PassageModeComponent,
-    TransferLockComponent
+    TransferLockComponent,
+    HomeComponent,
+    PerfilComponent
   ],
   imports: [
     BrowserModule,

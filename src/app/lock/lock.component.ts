@@ -40,6 +40,11 @@ export class LockComponent implements OnInit{
   tokenData: AccessTokenData;
   lock:LockData;
   lockDetails: LockDetails;
+  token = localStorage.getItem('token') ?? ''; 
+  Alias = localStorage.getItem('Alias') ?? ''; 
+  Bateria = localStorage.getItem('Bateria') ?? ''; 
+  userType = localStorage.getItem('userType') ?? ''; 
+  keyRight = localStorage.getItem('keyRight') ?? ''; 
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -75,17 +80,18 @@ export class LockComponent implements OnInit{
     this.route.paramMap.subscribe(params => {
       this.lockId = Number(params.get('id'));
       // Use lockId to get the specific lock data
+      /*
       this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
           if (!this.lock) {this.router.navigate(['']);}
         } else {console.log("Data not yet available.");}
-      })});
+      })*/});
     // Subscribe to the user data
-    this.userService.data$.subscribe((data) => {this.tokenData = data});
+    //this.userService.data$.subscribe((data) => {this.tokenData = data});
     //Traer LockDetails
     try{
-      await this.lockService.getLockDetails(this.tokenData.access_token, this.lockId);
+      await this.lockService.getLockDetails(this.token, this.lockId);
       this.lockService.data$.subscribe((data) => {
         if(data){this.lockDetails = data}
         else {console.log("Data not yet available.")}
@@ -93,7 +99,7 @@ export class LockComponent implements OnInit{
     catch(error) {console.error("Error while fetching the Lock details:", error);}
     //Traer ekeys
     try{
-      await this.ekeyService.getEkeysofLock(this.tokenData.access_token, this.lockId);
+      await this.ekeyService.getEkeysofLock(this.token, this.lockId);
       this.ekeyService.data$.subscribe((data) => {
         if(data?.list) {this.ekeys = data.list}
         else {console.log("Data not yet available.")}
@@ -101,7 +107,7 @@ export class LockComponent implements OnInit{
     catch(error) {console.error("Error while fetching the eKeys:", error);}
     //Traer passcodes
     try {
-      await this.passcodeService.getPasscodesofLock(this.tokenData.access_token, this.lockId);
+      await this.passcodeService.getPasscodesofLock(this.token, this.lockId);
       this.passcodeService.data$.subscribe((data) => {
         if (data?.list) {this.passcodes = data.list} 
         else {console.log("Data not yet available.")}
@@ -109,7 +115,7 @@ export class LockComponent implements OnInit{
     catch (error) {console.error("Error while fetching the passcodes:", error)}
     //Traer cards
     try {
-      await this.cardService.getCardsofLock(this.tokenData.access_token, this.lockId);
+      await this.cardService.getCardsofLock(this.token, this.lockId);
       this.cardService.data$.subscribe((data) => {
         if (data?.list) {this.cards = data.list} 
         else {console.log("Data not yet available.")}
@@ -117,7 +123,7 @@ export class LockComponent implements OnInit{
     catch (error) {console.error("Error while fetching the cards:", error)}
     //Traer fingerprints
     try {
-      await this.fingerprintService.getFingerprintsofLock(this.tokenData.access_token, this.lockId);
+      await this.fingerprintService.getFingerprintsofLock(this.token, this.lockId);
       this.fingerprintService.data$.subscribe((data) => {
         if (data?.list) {this.fingerprints = data.list} 
         else {console.log("Data not yet available.")}
@@ -125,7 +131,7 @@ export class LockComponent implements OnInit{
     catch (error) {console.error("Error while fetching the fingerprints:", error)}
     //Traer records
     try{
-      await this.recordService.getRecords(this.tokenData.access_token, this.lockId)
+      await this.recordService.getRecords(this.token, this.lockId)
       this.recordService.data$.subscribe((data) => {
         if (data?.list) {this.records = data.list}
         else {console.log("Data not yest available")}
@@ -170,6 +176,9 @@ export class LockComponent implements OnInit{
     //console.log("Records: ", this.records)
   }
   //FUNCIONES PARA FORMATO DE TABLA
+  Number(palabra:string){
+    return Number(palabra);
+  }
   periodoValidez(start:number, end:number){
     if(end === 0){return 'Permanente'} 
     else {
@@ -558,10 +567,8 @@ export class LockComponent implements OnInit{
     this.popupService.Esencial = true;
   }
   TransferirLock(){
-    this.lockService.token = this.tokenData.access_token;
+    this.lockService.token = this.token;
     this.lockService.lockID = this.lockId;
-    console.log("token recibido en lockService: ", this.lockService.token)
-    console.log("lockID recibido en lockService: ", this.lockService.lockID)
     this.router.navigate(["lock",this.lockId,"transferLock"]);
   }
   async Gateway(){
@@ -572,7 +579,7 @@ export class LockComponent implements OnInit{
     let gatewaysOfAccountFetched = false;
     //Traer Gateways
     try{
-      await this.gatewayService.getGatewayListOfLock(this.tokenData.access_token, this.lockId);
+      await this.gatewayService.getGatewayListOfLock(this.token, this.lockId);
       this.gatewayService.data$.subscribe((data) => {
         if(data.list){
           this.popupService.gatewaysOfLock = data.list
@@ -586,7 +593,7 @@ export class LockComponent implements OnInit{
       })}
     catch(error) {console.error("Error while fetching the gateways of the lock:", error);}
     try{
-      await this.gatewayService.getGatewaysAccount(this.tokenData.access_token);
+      await this.gatewayService.getGatewaysAccount(this.token);
       this.gatewayService.data2$.subscribe((data) => {
         if(data.list){
           this.popupService.gatewaysOfAccount = data.list
@@ -607,47 +614,47 @@ export class LockComponent implements OnInit{
     this.popupService.mostrarHora = true;
   }
   async PassageMode(){
-    this.passageModeService.token = this.tokenData.access_token
+    this.passageModeService.token = this.token
     this.passageModeService.lockID = this.lockId;
     /*
     this.passageModeService.passageModeConfig = this.passageMode;
     this.router.navigate(["lock",this.lockId,"passageMode"]);
     */
     try {
-      await this.passageModeService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
-      this.lockService.data$.subscribe((data) => {
+      await this.passageModeService.getPassageModeConfig(this.token, this.lockId);
+      this.passageModeService.data$.subscribe((data) => {
         if(data){
           this.passageModeService.passageModeConfig = data
-          this.router.navigate(["lock", this.lockId, "passageMode"]);
-
+          console.log(data)
         }
       })
     }
     catch (error) {console.error("Error while fetching passage mode configurations:", error)}
+    this.router.navigate(["lock", this.lockId, "passageMode"]);
   }
   AutoLock(){
     this.popupService.detalles = this.lockDetails;
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.cerradoAutomatico = true;
   }
   //FUNCIONES EKEY
   congelar(ekeyID:number, user:string){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
     this.popupService.confirmCongelar = true;
   }
   descongelar(ekeyID:number, user:string){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
     this.popupService.confirmDescongelar = true;
   }
   borrarEkey(ekeyID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
@@ -655,34 +662,34 @@ export class LockComponent implements OnInit{
 
   }
   cambiarNombreEkey(ekeyID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
     this.popupService.cambiarNombre = true;
   }
   cambiarPeriodoEkey(ekeyID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
     this.popupService.cambiarPeriodo = true;
   }
   crearEkey(){
-    this.passcodeService.lockAlias = this.lock.lockAlias;
-    this.ekeyService.token = this.tokenData.access_token;
+    this.passcodeService.lockAlias = this.Alias;
+    this.ekeyService.token = this.token;
     this.ekeyService.lockID = this.lockId
     this.router.navigate(["lock",this.lockId,"ekey"]);
   }
   Autorizar(ekeyID:number, user:string){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
     this.popupService.confirmAutorizar = true;
   }
   Desautorizar(ekeyID:number, user:string){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
@@ -690,13 +697,13 @@ export class LockComponent implements OnInit{
   }
   //FUNCIONES PASSCODE
   crearPasscode() {
-    this.passcodeService.lockAlias = this.lock.lockAlias;
-    this.passcodeService.token = this.tokenData.access_token;
+    this.passcodeService.lockAlias = this.Alias;
+    this.passcodeService.token = this.token;
     this.passcodeService.lockID = this.lockId;
     this.router.navigate(["lock",this.lockId,"passcode"]);
   }
   cambiarPasscode(passcode: Passcode) {
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'passcode';
     this.popupService.elementID = passcode.keyboardPwdId;
@@ -705,7 +712,7 @@ export class LockComponent implements OnInit{
     console.log(this.popupService.passcode.keyboardPwdType);
   }
   borrarPasscode(passcodeID: number) {
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'passcode';
     this.popupService.elementID = passcodeID;
@@ -713,21 +720,21 @@ export class LockComponent implements OnInit{
   }
   //FUNCIONES CARD
   borrarCard(cardID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'card';
     this.popupService.elementID = cardID;
     this.popupService.confirmDelete = true;
   }
   cambiarNombreCard(cardID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'card';
     this.popupService.elementID = cardID;
     this.popupService.cambiarNombre = true;
   }
   cambiarPeriodoCard(cardID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'card';
     this.popupService.elementID = cardID;
@@ -735,21 +742,21 @@ export class LockComponent implements OnInit{
   }
   //FUNCIONES FINGERPRINT
   borrarFingerprint(fingerID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'fingerprint';
     this.popupService.elementID = fingerID;
     this.popupService.confirmDelete = true;
   }
   cambiarNombreFingerprint(fingerID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'fingerprint';
     this.popupService.elementID = fingerID;
     this.popupService.cambiarNombre = true;
   }
   cambiarPeriodoFingerprint(fingerID:number){
-    this.popupService.token = this.tokenData.access_token;
+    this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'fingerprint';
     this.popupService.elementID = fingerID;

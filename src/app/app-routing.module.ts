@@ -10,12 +10,16 @@ import { FingerprintComponent } from './fingerprint/fingerprint.component';
 import { EkeyComponent } from './ekey/ekey.component';
 import { PassageModeComponent } from './passage-mode/passage-mode.component';
 import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
+import { HomeComponent } from './home/home.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 
 const routes: Routes = [
+  {path:'home', component:HomeComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
   {path:'users/:id', component:UserComponent},
+  {path:'users/:id/perfil', component:PerfilComponent},
   {path:'lock/:id', component:LockComponent},
   {path:'lock/:id/passcode', component:PasscodeComponent},
   {path:'lock/:id/card', component:ICCardComponent},
