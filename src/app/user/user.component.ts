@@ -38,7 +38,7 @@ export class UserComponent implements OnInit {
     this.userService.data$.subscribe((data) => {
       this.tokenData = data;
     });
-    await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
+    //await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
     await this.EncontrarLocks_EkeysdelUsuario(this.tokenData.access_token);    
   }
 
@@ -49,7 +49,7 @@ export class UserComponent implements OnInit {
         if (data.list) {
           this.ekeyList = data;
         } else {
-          console.log("Data not yet available.");
+          console.log("Error en EncontrarLocks_EkeysdelUsuario (user.component.ts)");
         }
       });
     } catch(error) {
@@ -57,7 +57,7 @@ export class UserComponent implements OnInit {
     }
   }
 
-  async EncontrarLocksdelUsuario(token: string){//locks
+  /*async EncontrarLocksdelUsuario(token: string){//locks
     try{
       await this.lockService.getLockListAccount(token);
       this.lockService.data$.subscribe((data) => {
@@ -70,7 +70,7 @@ export class UserComponent implements OnInit {
     } catch(error) {
       console.error("Error while fetching lockList:", error);
     }
-  }
+  }*/
 
   onLockButtonClick(lockID: number){this.router.navigate(['/lock/',lockID])}
 }

@@ -195,29 +195,37 @@
         Esencial
     </div>
     <div id="content">
-        <div class="titulo_descripcion">
-            Número de la cerradura
+        <div class="linea">
+            <div>
+                Número de la cerradura
+            </div>
+            <div>
+                {{popupService.detalles.lockName}}
+            </div>
         </div>
-        <div class="info_descripcion">
-            {{popupService.detalles.lockName}}
+        <div class="linea">
+            <div>
+                MAC
+            </div>
+            <div>
+                {{popupService.detalles.lockMac}}
+            </div>
         </div>
-        <div class="titulo_descripcion">
-            MAC
+        <div class="linea">
+            <div>
+                LockID
+            </div>
+            <div>
+                {{popupService.detalles.lockId}}
+            </div>
         </div>
-        <div class="info_descripcion">
-            {{popupService.detalles.lockMac}}
-        </div>
-        <div class="titulo_descripcion">
-            LockID
-        </div>
-        <div class="info_descripcion">
-            {{popupService.detalles.lockId}}
-        </div>
-        <div class="titulo_descripcion">
-            Firmware
-        </div>
-        <div class="info_descripcion">
-            {{popupService.detalles.firmwareRevision}}
+        <div class="linea">
+            <div>
+                Firmware
+            </div>
+            <div>
+                {{popupService.detalles.firmwareRevision}}
+            </div>
         </div>
     </div>
     <div id="actions">
@@ -228,27 +236,30 @@
     <div id="header">
         Gateways asociados con este dispositivo
     </div>
-    <div id="content">
+    <div id="content" *ngIf="popupService.gatewaysOfLock">
+        
+        
         <table mat-table [dataSource]="popupService.gatewaysOfLock" class="table">
-            <!---->
+          
             <ng-container matColumnDef="NombreGateway">
               <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre de Gateway</th>
               <td mat-cell *matCellDef="let gateway" class="table-cell">{{gateway.gatewayName}}</td>
             </ng-container>
-            <!---->
+           
             <ng-container matColumnDef="NombreWifi">
               <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre WiFi</th>
               <td mat-cell *matCellDef="let gateway" class="table-cell">{{encontrarRed(gateway.gatewayId)}}</td>
             </ng-container>
-            <!---->
+            
             <ng-container matColumnDef="Signal">
               <th mat-header-cell *matHeaderCellDef class="table-cell">Señal</th>
               <td mat-cell *matCellDef="let gateway" class="table-cell">{{ displayrssi(gateway.rssi) }}</td>
             </ng-container>
-            <!---->
+            
             <tr mat-header-row *matHeaderRowDef="displayedColumnsGateway"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumnsGateway"></tr>
           </table>
+          
     </div>
     <div id="actions">
         <button (click)="popupService.Gateway= false">Ok</button>
@@ -259,27 +270,36 @@
         Cierre Automático
     </div>
     <div id="content">
-        <div class="titulo_descripcion">
-            Cierre Automático
+        <div class="linea">
+            <div>
+                Cierre Automático
+            </div>
+            <div>
+                <mat-slide-toggle [(ngModel)]="autoLockToggle" (change)="autoLockToggleChange($event)"></mat-slide-toggle>
+            </div>
         </div>
-        <div class="info_descripcion">
-            <mat-slide-toggle [(ngModel)]="autoLockToggle" (change)="autoLockToggleChange($event)"></mat-slide-toggle>
+        <div  class="linea"  *ngIf="autoLockToggle">
+            <div>
+                Tiempo
+            </div>
+            <div>
+                <select #types name="autoLockTime" (change)="onSelected(types.value)" [(ngModel)]="selectedType" style="width: 202px; height: 35px;">
+                    <option value="1">5 segundos</option>
+                    <option value="2">10 segundos</option>
+                    <option value="3">15 segundos</option>
+                    <option value="4">30 segundos</option>
+                    <option value="5">60 segundos</option>
+                    <option value="6">Personalizado</option>
+                </select>
+            </div>
         </div>
-        <div class="titulo_descripcion" *ngIf="autoLockToggle">
-            Tiempo
-        </div>
-        <div class="info_descripcion"  *ngIf="autoLockToggle">
-            <select #types name="autoLockTime" (change)="onSelected(types.value)" [(ngModel)]="selectedType" style="width: 202px; height: 35px;">
-                <option value="1">5 segundos</option>
-                <option value="2">10 segundos</option>
-                <option value="3">15 segundos</option>
-                <option value="4">30 segundos</option>
-                <option value="5">60 segundos</option>
-                <option value="6">Personalizado</option>
-            </select>
-        </div>
-        <div *ngIf="selectedType === '6'">
-            <input type="number" class="form-input" name="name" [(ngModel)]="customAutoLockTime" required="" ngModel />
+        <div  class="linea"  *ngIf="autoLockToggle">
+            <div>
+
+            </div>
+            <div *ngIf="selectedType === '6'">
+                <input type="number" class="form-input" name="name" [(ngModel)]="customAutoLockTime" required="" ngModel />
+            </div>
         </div>
     </div>
     <div id="actions">
@@ -292,11 +312,13 @@
         Hora del dispositvo
     </div>
     <div id="content">
-        <div class="titulo_descripcion">
-            Tiempo Actual
-        </div>
-        <div class="info_descripcion">
-            {{formatearHora()}}
+        <div class="linea">
+            <div>
+                Tiempo Actual
+            </div>
+            <div>
+                {{formatearHora()}}
+            </div>
         </div>
     </div>
     <div id="actions">

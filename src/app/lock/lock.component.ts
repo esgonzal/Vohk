@@ -77,7 +77,7 @@ export class LockComponent implements OnInit{
       this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
           this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
-          if (!this.lock) {this.router.navigate(['/not-found']);}
+          if (!this.lock) {this.router.navigate(['']);}
         } else {console.log("Data not yet available.");}
       })});
     // Subscribe to the user data
@@ -86,7 +86,7 @@ export class LockComponent implements OnInit{
     try{
       await this.lockService.getLockDetails(this.tokenData.access_token, this.lockId);
       this.lockService.data$.subscribe((data) => {
-        if(data){this.lockDetails = data;console.log(this.lock, this.lockDetails)}
+        if(data){this.lockDetails = data}
         else {console.log("Data not yet available.")}
       })}
     catch(error) {console.error("Error while fetching the Lock details:", error);}
@@ -105,14 +105,14 @@ export class LockComponent implements OnInit{
         if(data.list){this.gatewaysOfLock = data.list}
         else {console.log("Data not yet available.")}
       })}
-    catch(error) {console.error("Error while fetching the gateways:", error);}
+    catch(error) {console.error("Error while fetching the gateways of the lock:", error);}
     try{
       await this.gatewayService.getGatewaysAccount(this.tokenData.access_token);
       this.gatewayService.data2$.subscribe((data) => {
         if(data.list){this.gatewaysOfAccount = data.list}
         else {console.log("Data not yet available.")}
       })}
-    catch(error) {console.error("Error while fetching the gateways:", error);}
+    catch(error) {console.error("Error while fetching the gatewaysof the account:", error);}
     //Traer ekeys
     try{
       await this.ekeyService.getEkeysofLock(this.tokenData.access_token, this.lockId);
@@ -153,6 +153,15 @@ export class LockComponent implements OnInit{
         else {console.log("Data not yest available")}
       })}
     catch (error) {console.error("Error while fetching the records:", error)}
+    //console.log("El lock: ", this.lock)
+    //console.log("Los detalles del lock: ", this.lockDetails)
+    //console.log("Configuracion modo de paso: ", this.passageMode)
+    //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
+    //console.log("eKeys: ", this.ekeys)
+    //console.log("Passcodes: ", this.passcodes)
+    //console.log("Cards: ", this.cards)
+    //console.log("Fingerprints: ", this.fingerprints)
+    //console.log("Records: ", this.records)
   }
   //FUNCIONES PARA FORMATO DE TABLA
   periodoValidez(start:number, end:number){
@@ -627,7 +636,6 @@ export class LockComponent implements OnInit{
     this.popupService.elementType = user;
     this.popupService.confirmDesautorizar = true;
   }
-
   //FUNCIONES PASSCODE
   crearPasscode() {
     this.passcodeService.lockAlias = this.lock.lockAlias;

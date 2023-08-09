@@ -189,8 +189,8 @@ export class PopUpComponent implements OnInit{
     this.router.navigate(['/users', username]);
   }
 //popup gateway
-  async encontrarRed(gatewayID: number){
-    this.gatewayEncontrado = await this.popupService.gatewaysOfAccount.find( (gw: {gatewayId: number}) => gw.gatewayId === gatewayID)
+  encontrarRed(gatewayID: number){
+    this.gatewayEncontrado = this.popupService.gatewaysOfAccount.find( (gw: {gatewayId: number}) => gw.gatewayId === gatewayID)
     this.redWiFi = this.gatewayEncontrado?.networkName;
     return this.redWiFi;
   }

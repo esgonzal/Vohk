@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./passage-mode.component.css']
 })
 export class PassageModeComponent implements OnInit {
+  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) {}
+
   isPassageModeToggleOn: boolean=false;
   weekDays = [
     { name: 'Lunes', value: 1 },
@@ -20,12 +22,10 @@ export class PassageModeComponent implements OnInit {
     { name: 'Domingo', value: 7 }
   ];
 
-  selectedDays: boolean[] = [false, false, false, false, false, false, false]; // Array to store selected days of the week
-  isAllHoursToggleOn: boolean = false; // Slide toggle for startHour and endHour
-  startHour: string = ''; // Stores the selected startHour
-  endHour: string = ''; // Stores the selected endHour
-
-  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) {}
+  selectedDays: boolean[] = [false, false, false, false, false, false, false];
+  isAllHoursToggleOn: boolean = true; 
+  startHour: string = ''; 
+  endHour: string = ''; 
 
   ngOnInit(): void {
     this.updateSlideToggle()
@@ -59,7 +59,6 @@ export class PassageModeComponent implements OnInit {
   }
   
   cambiarPassageMode() {
-    // Convert selectedDays array to the desired format [1, 2, 3, 4, 5, 6, 7]
     const selectedDayNumbers: number[] = [];
     this.weekDays.forEach((day, index) => {
       if (this.selectedDays[index]) {
