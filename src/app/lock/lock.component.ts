@@ -13,10 +13,11 @@ import { CardServiceService } from '../services/card-service.service';
 import { FingerprintServiceService } from '../services/fingerprint-service.service';
 import { RecordServiceService } from '../services/record-service.service';
 import { PopUpService } from '../services/pop-up.service';
-import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
 import { GatewayService } from '../services/gateway.service';
-import { PassageMode } from '../Interfaces/PassageMode';
 import { PassageModeService } from '../services/passage-mode.service';
+//import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
+//import { PassageMode } from '../Interfaces/PassageMode';
+
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -45,9 +46,9 @@ export class LockComponent implements OnInit{
   fingerprints: Fingerprint[] = []
   cards: Card[] = []
   records: Record[] = []
-  gatewaysOfLock: GatewayLock[] = []
-  gatewaysOfAccount: GatewayAccount[] = []
-  passageMode: PassageMode;
+  //gatewaysOfLock: GatewayLock[] = []
+  //gatewaysOfAccount: GatewayAccount[] = []
+  //passageMode: PassageMode;
   ////////////////////////////////////////////////////////////
   displayedColumnsEkey: string[] = ['keyName', 'username', 'senderUsername', 'date', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsPasscode: string[] = ['keyboardPwdName', 'keyboardPwd', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
@@ -90,29 +91,6 @@ export class LockComponent implements OnInit{
         else {console.log("Data not yet available.")}
       })}
     catch(error) {console.error("Error while fetching the Lock details:", error);}
-    //Traer Configuracion de Modo de Paso de la Lock
-    try {
-      await this.passageModeService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
-      this.lockService.data$.subscribe((data) => {
-        if(data){this.passageMode = data}
-      })
-    }
-    catch (error) {console.error("Error while fetching passage mode configurations:", error)}
-    //Traer Gateways
-    try{
-      await this.gatewayService.getGatewayListOfLock(this.tokenData.access_token, this.lockId);
-      this.gatewayService.data$.subscribe((data) => {
-        if(data.list){this.gatewaysOfLock = data.list}
-        else {console.log("Data not yet available.")}
-      })}
-    catch(error) {console.error("Error while fetching the gateways of the lock:", error);}
-    try{
-      await this.gatewayService.getGatewaysAccount(this.tokenData.access_token);
-      this.gatewayService.data2$.subscribe((data) => {
-        if(data.list){this.gatewaysOfAccount = data.list}
-        else {console.log("Data not yet available.")}
-      })}
-    catch(error) {console.error("Error while fetching the gatewaysof the account:", error);}
     //Traer ekeys
     try{
       await this.ekeyService.getEkeysofLock(this.tokenData.access_token, this.lockId);
@@ -153,6 +131,34 @@ export class LockComponent implements OnInit{
         else {console.log("Data not yest available")}
       })}
     catch (error) {console.error("Error while fetching the records:", error)}
+    //Traer Configuracion de Modo de Paso de la Lock
+    /*
+    try {
+      await this.passageModeService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
+      this.lockService.data$.subscribe((data) => {
+        if(data){this.passageMode = data}
+      })
+    }
+    catch (error) {console.error("Error while fetching passage mode configurations:", error)}
+    */
+
+    //Traer Gateways
+    /*
+    try{
+      await this.gatewayService.getGatewayListOfLock(this.tokenData.access_token, this.lockId);
+      this.gatewayService.data$.subscribe((data) => {
+        if(data.list){this.gatewaysOfLock = data.list}
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the gateways of the lock:", error);}
+    try{
+      await this.gatewayService.getGatewaysAccount(this.tokenData.access_token);
+      this.gatewayService.data2$.subscribe((data) => {
+        if(data.list){this.gatewaysOfAccount = data.list}
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the gatewaysof the account:", error);}
+    */
     //console.log("El lock: ", this.lock)
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("Configuracion modo de paso: ", this.passageMode)
@@ -558,20 +564,66 @@ export class LockComponent implements OnInit{
     console.log("lockID recibido en lockService: ", this.lockService.lockID)
     this.router.navigate(["lock",this.lockId,"transferLock"]);
   }
-  Gateway(){
-    this.popupService.gatewaysOfLock = this.gatewaysOfLock
+  async Gateway(){
+    /*this.popupService.gatewaysOfLock = this.gatewaysOfLock
     this.popupService.gatewaysOfAccount = this.gatewaysOfAccount;
+    this.popupService.Gateway = true;*/
+    let gatewaysOfLockFetched = false;
+    let gatewaysOfAccountFetched = false;
+    //Traer Gateways
+    try{
+      await this.gatewayService.getGatewayListOfLock(this.tokenData.access_token, this.lockId);
+      this.gatewayService.data$.subscribe((data) => {
+        if(data.list){
+          this.popupService.gatewaysOfLock = data.list
+          gatewaysOfLockFetched = true;
+
+          if (gatewaysOfLockFetched && gatewaysOfAccountFetched) {
+            this.popupService.Gateway = true;
+          }
+        }
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the gateways of the lock:", error);}
+    try{
+      await this.gatewayService.getGatewaysAccount(this.tokenData.access_token);
+      this.gatewayService.data2$.subscribe((data) => {
+        if(data.list){
+          this.popupService.gatewaysOfAccount = data.list
+          gatewaysOfAccountFetched = true;
+
+          if (gatewaysOfLockFetched && gatewaysOfAccountFetched) {
+            this.popupService.Gateway = true;
+          }
+        }
+        else {console.log("Data not yet available.")}
+      })}
+    catch(error) {console.error("Error while fetching the gatewaysof the account:", error);}
     this.popupService.Gateway = true;
+    
   }
   HoraDispositivo(){
     this.popupService.detalles = this.lockDetails;
     this.popupService.mostrarHora = true;
   }
-  PassageMode(){
+  async PassageMode(){
     this.passageModeService.token = this.tokenData.access_token
     this.passageModeService.lockID = this.lockId;
+    /*
     this.passageModeService.passageModeConfig = this.passageMode;
     this.router.navigate(["lock",this.lockId,"passageMode"]);
+    */
+    try {
+      await this.passageModeService.getPassageModeConfig(this.tokenData.access_token, this.lockId);
+      this.lockService.data$.subscribe((data) => {
+        if(data){
+          this.passageModeService.passageModeConfig = data
+          this.router.navigate(["lock", this.lockId, "passageMode"]);
+
+        }
+      })
+    }
+    catch (error) {console.error("Error while fetching passage mode configurations:", error)}
   }
   AutoLock(){
     this.popupService.detalles = this.lockDetails;

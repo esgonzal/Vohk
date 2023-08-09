@@ -62,6 +62,7 @@ export class PassageModeService {
     try{
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error){
       console.error("Error while setting passage mode configurations:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

@@ -82,13 +82,13 @@ export class EkeyServiceService {
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
     let options = { headers: header};
-    let prefix = 'bhaaa_';
-    let username = prefix.concat(recieverName)
+    //let prefix = 'bhaaa_';
+    //let username = prefix.concat(recieverName)
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
-    body.set('receiverUsername', username);
+    body.set('receiverUsername', recieverName);
     body.set('keyName', keyName);
     body.set('startDate', startDate);
     body.set('endDate', endDate);
@@ -96,6 +96,7 @@ export class EkeyServiceService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject
+      console.log(response)
     } catch (error) {
       console.error("Error while sending a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

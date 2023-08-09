@@ -65,10 +65,6 @@ export class PassageModeComponent implements OnInit {
         selectedDayNumbers.push(day.value);
       }
     });
-    console.log("Selected Days:", selectedDayNumbers);
-    console.log("Is All Hours Toggle On:", this.transformarAllHoursToggle(this.isAllHoursToggleOn));
-    console.log("Start : ", this.transformarHora(this.startHour));
-    console.log("End : ", this.transformarHora(this.endHour));
     const Config: PassageMode = { "autoUnlock": 1, 
                                   "endDate":this.transformarHora(this.endHour),
                                   "isAllDay":this.transformarAllHoursToggle(this.isAllHoursToggleOn),
