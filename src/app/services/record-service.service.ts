@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { LockServiceService } from './lock-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +12,10 @@ export class RecordServiceService {
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
 
-  constructor(private http:HttpClient,
-              ) { }
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai.toString();
-  }
+  constructor(private http:HttpClient, private lockService:LockServiceService) { }
 
   async getRecords(token: string, lockID: number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lockRecord/list'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});

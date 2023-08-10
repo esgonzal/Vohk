@@ -6,8 +6,6 @@ import { RegisterComponent } from './pages/register.component';
 import { UserComponent } from './user/user.component';
 import { LockComponent } from './lock/lock.component';
 import { PasscodeComponent } from './passcode/passcode.component';
-import { ICCardComponent } from './iccard/iccard.component';
-import { FingerprintComponent } from './fingerprint/fingerprint.component';
 import { EkeyComponent } from './ekey/ekey.component';
 import { PopUpComponent } from './pop-up/pop-up.component';
 
@@ -54,8 +52,6 @@ import { PerfilComponent } from './perfil/perfil.component';
     UserComponent,
     LockComponent,
     PasscodeComponent,
-    ICCardComponent,
-    FingerprintComponent,
     EkeyComponent,
     TextTransformPipe,
     PopUpComponent,

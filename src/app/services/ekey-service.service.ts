@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { LockServiceService } from './lock-service.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,26 +16,10 @@ export class EkeyServiceService {
   token: string;
   lockID: number;
 
-  constructor(private http:HttpClient) { }
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai.toString();
-  }
-
-  public convertirDate(date:string){
-    //date= '2023-07-19-09:00'
-    //No es necesario ajustar la hora con shanghai, solo pon tu hora local
-    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
-    if(Number.isNaN(fechaInShanghai)){
-      return date
-      
-    }
-    return fechaInShanghai.toString();
-  }
+  constructor(private lockService:LockServiceService, private http:HttpClient) { }
 
   async getEkeysofAccount(token:string){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/list'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -47,15 +32,15 @@ export class EkeyServiceService {
     body.set('date', fecha.toString());
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject2.next(response); // Emit the response to dataSubject
+      this.dataSubject2.next(response);
     } catch (error) {
       console.error("Error while getting the list of Ekeys of an account:", error);
-      this.dataSubject2.next(null); // Emit null to dataSubject on error
+      this.dataSubject2.next(null); 
     }
   }
 
   async getEkeysofLock(token:string, lockID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/listKey'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -77,13 +62,11 @@ export class EkeyServiceService {
   }
 
   async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string, keyType?:number, startDay?:string, endDay?:string, weekDays?:string){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/send'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
     let options = { headers: header};
-    //let prefix = 'bhaaa_';
-    //let username = prefix.concat(recieverName)
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -116,7 +99,7 @@ export class EkeyServiceService {
   }
 
   async deleteEkey(token:string, keyID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/delete'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -136,7 +119,7 @@ export class EkeyServiceService {
   }
 
   async freezeEkey(token:string, keyID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/freeze'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -156,7 +139,7 @@ export class EkeyServiceService {
   }
 
   async unfreezeEkey(token:string, keyID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/unfreeze'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -176,7 +159,7 @@ export class EkeyServiceService {
   }
 
   async modifyEkey(token:string, ekeyID:number, newName:string = "", remoteEnable:string = "1" ){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/update'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -198,7 +181,7 @@ export class EkeyServiceService {
   }
 
   async changePeriod(token:string, ekeyID:number, newStartDate:string, newEndDate:string){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/changePeriod'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -207,12 +190,13 @@ export class EkeyServiceService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('keyId', ekeyID.toString());
-    body.set('startDate', this.convertirDate(newStartDate));
-    body.set('endDate', this.convertirDate(newEndDate));
+    body.set('startDate', newStartDate);
+    body.set('endDate', newEndDate);
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while changing the validity period of the fingerprint:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -220,7 +204,7 @@ export class EkeyServiceService {
   }
 
   async AuthorizeEkey(token:string, lockID:number, keyID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/authorize'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -241,7 +225,7 @@ export class EkeyServiceService {
   }
 
   async cancelAuthorizeEkey(token:string, lockID:number, keyID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/unauthorize'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -260,7 +244,4 @@ export class EkeyServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  
-
 }

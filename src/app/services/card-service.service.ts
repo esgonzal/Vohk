@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { LockServiceService } from './lock-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,26 +15,10 @@ export class CardServiceService {
   lockID: number;
   cardID: number;
 
-  constructor(private http:HttpClient) { }
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai.toString();
-  }
-
-  public convertirDate(date:string){
-    //date= '2023-07-19-09'
-    //No es necesario ajustar la hora con shanghai, solo pon tu hora local
-    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
-    if(Number.isNaN(fechaInShanghai)){
-      return date
-      
-    }
-    return fechaInShanghai.toString();
-  }
+  constructor(private lockService:LockServiceService, private http:HttpClient) { }
 
   async getCardsofLock(token:string, lockID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/list'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -55,7 +40,7 @@ export class CardServiceService {
   }
 
   async changeName(token:string, lockID:number, cardID:number, newName:string){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/rename'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -69,7 +54,8 @@ export class CardServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while changing the card name:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -77,7 +63,7 @@ export class CardServiceService {
   }
 
   async deleteCard(token:string, lockID:number, cardID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/delete'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -91,7 +77,8 @@ export class CardServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
+      console.log(response);
     } catch (error) {
       console.error("Error while deleting the card:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -99,7 +86,7 @@ export class CardServiceService {
   }
 
   async changePeriod(token:string, lockID:number, cardID:number, newStartDate:string, newEndDate:string){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/changePeriod'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -109,13 +96,14 @@ export class CardServiceService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
     body.set('cardId', cardID.toString());
-    body.set('startDate', this.convertirDate(newStartDate));
-    body.set('endDate', this.convertirDate(newEndDate));
+    body.set('startDate', newStartDate);
+    body.set('endDate', newEndDate);
     body.set('changeType', '2');
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while changing the validity period of a card:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

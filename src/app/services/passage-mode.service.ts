@@ -3,6 +3,7 @@ import { PassageMode } from '../Interfaces/PassageMode';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { LockServiceService } from './lock-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +16,10 @@ export class PassageModeService {
   lockID:number;
   passageModeConfig:PassageMode;
 
-  constructor(private http:HttpClient) { }
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai;
-  }
+  constructor(private http:HttpClient, private lockService:LockServiceService) { }
 
   async getPassageModeConfig(token:string, lockId:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/getPassageModeConfig'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -32,7 +28,7 @@ export class PassageModeService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', lockId.toString());
-    body.set('date', fecha.toString());
+    body.set('date', fecha);
     try{
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
@@ -43,7 +39,7 @@ export class PassageModeService {
   }
 
   async setPassageMode(token:string, lockId:number, Config: PassageMode){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/configPassageMode'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -58,7 +54,7 @@ export class PassageModeService {
     body.set('isAllDay', Config.isAllDay.toString());
     body.set('weekDays', JSON.stringify(Config.weekDays));    
     body.set('type', '2');
-    body.set('date', fecha.toString());
+    body.set('date', fecha);
     try{
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);

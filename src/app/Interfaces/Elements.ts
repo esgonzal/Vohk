@@ -41,6 +41,7 @@ export interface Passcode {
     senderUsername?: string; // Optional property
     receiverUsername?: string; // Optional property
     status: number;
+    hasBeenUsed:boolean;
 }
 
 export interface Card {
@@ -83,4 +84,5 @@ export interface Record {
     username:string;
     lockDate:string;
     serverDate:string;
+    keyboardPwd:string;
 }

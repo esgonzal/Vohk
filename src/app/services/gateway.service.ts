@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { LockServiceService } from './lock-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +17,10 @@ export class GatewayService {
   token: string;
   lockID: number;
 
-  constructor(private http:HttpClient) { }
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai.toString();
-  }
+  constructor(private http:HttpClient, private lockService:LockServiceService) { }
 
   async getGatewayListOfLock(token:string, lockID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/gateway/listByLock'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -33,7 +29,7 @@ export class GatewayService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', lockID.toString())
-    body.set('date', fecha.toString());
+    body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
@@ -44,7 +40,7 @@ export class GatewayService {
   }
 
   async getLockListOfGateway(token:string, gatewayID:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/gateway/listLock'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -53,7 +49,7 @@ export class GatewayService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', gatewayID.toString())
-    body.set('date', fecha.toString());
+    body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject2.next(response);
@@ -63,9 +59,8 @@ export class GatewayService {
     }
   }
   
-
   async getGatewaysAccount(token:string){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/gateway/list'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -75,7 +70,7 @@ export class GatewayService {
     body.set('accessToken', token);
     body.set('pageNo', '1');
     body.set('pageSize', '20');
-    body.set('date', fecha.toString());
+    body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject2.next(response);

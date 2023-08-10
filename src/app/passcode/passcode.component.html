@@ -31,7 +31,7 @@
             <input type="text" class="form-input" name="passcodePwd" placeholder="***"
                 required="required" ngModel />
         </div>
-        <div class="fila" *ngIf="selectedType === '3' || selectedType === 'Custom_Period' ">
+        <div class="fila" *ngIf="selectedType === '3'">
             Fecha de inicio de la Passcode
             <mat-form-field appearance="fill">
                 <mat-label>Fecha</mat-label>
@@ -47,7 +47,7 @@
             </mat-form-field>
             <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
         </div>
-        <div class="fila"  *ngIf="selectedType === '3' || selectedType === 'Custom_Period' ">
+        <div class="fila"  *ngIf="selectedType === '3'">
             Fecha de finalización de la Passcode
             <mat-form-field appearance="fill">
                 <mat-label>Fecha</mat-label>
@@ -62,6 +62,38 @@
                 <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
             </mat-form-field>
             <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+        </div>
+        <div class="fila" *ngIf="selectedType === 'Custom_Period' ">
+            Fecha de inicio de la Passcode
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+
+            Hora de inicio de la Passcode
+            <mat-form-field appearance="fill">
+                <mat-label>Hora</mat-label>
+                <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+            </mat-form-field>
+            <ngx-material-timepicker #startTimePicker></ngx-material-timepicker>
+        </div>
+        <div class="fila"  *ngIf="selectedType === 'Custom_Period' ">
+            Fecha de finalización de la Passcode
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+
+            Hora de finalización de la Passcode
+            <mat-form-field appearance="fill">
+                <mat-label>Hora</mat-label>
+                <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+            </mat-form-field>
+            <ngx-material-timepicker #endTimePicker></ngx-material-timepicker>
         </div>
         <!--SOLO PREGUNTAR HORA-->
         <div class="fila"  *ngIf="selectedType !== '' && selectedType !== '1' && selectedType !== '2' && selectedType !== '3' && selectedType !== '4' && selectedType !== 'Custom_Permanent' && selectedType !== 'Custom_Period'">

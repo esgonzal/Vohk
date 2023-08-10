@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { Passcode } from '../Interfaces/Elements';
+import { LockServiceService } from './lock-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,29 +16,10 @@ export class PasscodeServiceService {
   token:string;
   lockID:number;
 
-  constructor(private http:HttpClient) { }
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai.toString();
-  }
-
-  public convertirDate(date:string){
-    //date= '2023-07-19-09'
-    //No es necesario ajustar la hora con shanghai, solo pon tu hora local
-    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
-    if(Number.isNaN(fechaInShanghai)){
-      let hora = moment(date, "HH:mm").valueOf();
-      if(Number.isNaN(hora)){
-        return date;
-      }
-      return hora.toString();
-    }
-    return fechaInShanghai.toString();
-  }
+  constructor(private lockService: LockServiceService, private http:HttpClient) { }
 
   async getPasscodesofLock(token: string, lockID: number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/listKeyboardPwd'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -58,8 +40,8 @@ export class PasscodeServiceService {
     }
   }
 
-  async generatePasscode(token: string, lockID:number, type: string, name:string = "", startDate:string = this.timestamp(), endDate:string = ""){
-    let fecha = this.timestamp()
+  async generatePasscode(token: string, lockID:number, type: string, startDate:string, name?:string, endDate?:string){
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/get'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -69,21 +51,22 @@ export class PasscodeServiceService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
     body.set('keyboardPwdType', type);
-    body.set('keyboardPwdName', name);
-    body.set('startDate', this.convertirDate(startDate));
-    body.set('endDate', this.convertirDate(endDate));
     body.set('date', fecha);
+    body.set('startDate', startDate);
+    if (name !== undefined) {body.set('keyboardPwdName', name)}
+    if (endDate !== undefined) {body.set('endDate', endDate)}
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while generating a random passcode:", error);
       this.dataSubject.next(null);
     }
   }
 
-  async generateCustomPasscode(token: string, lockID:number, keyboardPwd:string, keyboardPwdName:string = "", keyboardPwdType: string, startDate:string= this.timestamp(), endDate:string){
-    let fecha = this.timestamp()
+  async generateCustomPasscode(token:string, lockID:number, keyboardPwd:string, keyboardPwdType:string, keyboardPwdName?:string, startDate?:string, endDate?:string){
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/add'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -93,37 +76,24 @@ export class PasscodeServiceService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
     body.set('keyboardPwd', keyboardPwd);;
-    body.set('keyboardPwdName', keyboardPwdName);
-    if(keyboardPwdType=="2"){//PERMANENT
-      body.set('keyboardPwdType', keyboardPwdType)
-      body.set('addType', "2");
-      body.set('date', fecha);
-      try {
-        const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-        this.dataSubject.next(response);
-      } catch (error) {
-        console.error("Error while generating a custom passcode:", error);
-        this.dataSubject.next(null);
-      }
-    }
-    else if (keyboardPwdType=="3"){//PERIOD
-      body.set('keyboardPwdType', keyboardPwdType)
-      body.set('startDate', this.convertirDate(startDate));
-      body.set('endDate', this.convertirDate(endDate)); 
-      body.set('addType', "2");
-      body.set('date', fecha);
-      try {
-        const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-        this.dataSubject.next(response);
-      } catch (error) {
-        console.error("Error while generating a custom passcode:", error);
-        this.dataSubject.next(null);
-      }
+    body.set('addType', "2");
+    body.set('keyboardPwdType', keyboardPwdType)
+    body.set('date', fecha);
+    if(keyboardPwdName !==undefined) {body.set('keyboardPwdName', keyboardPwdName);}
+    if (startDate !==undefined) {body.set('startDate', startDate)}
+    if (endDate !==undefined) {body.set('endDate', endDate)}
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response);
+      console.log(response)
+    } catch (error) {
+      console.error("Error while generating a custom passcode:", error);
+      this.dataSubject.next(null);
     }
   }
 
   async deletePasscode(token: string, lockID:number, keyboardPwdId:number){
-    let fecha = this.timestamp()
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/delete'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -138,14 +108,15 @@ export class PasscodeServiceService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while deleting a passcode:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
 
-  async changePasscode(passcode: Passcode, token: string, lockID:number, keyboardPwdId:number, newName:string = passcode.keyboardPwdName, newPwd:string = passcode.keyboardPwd, newStartDate:string = passcode.startDate, newEndDate:string = passcode.endDate){
-    let fecha = this.timestamp()
+  async changePasscode(token: string, lockID:number, keyboardPwdId:number, newName?:string, newPwd?:string, newStartDate?:string, newEndDate?:string){
+    let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/change'
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -155,15 +126,16 @@ export class PasscodeServiceService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
     body.set('keyboardPwdId', keyboardPwdId.toString());
-    body.set('keyboardPwdName', newName);
-    body.set('newKeyboardPwd', newPwd);
-    body.set('startDate', this.convertirDate(newStartDate));
-    body.set('endDate', this.convertirDate(newEndDate));
     body.set('changeType', '2');
     body.set('date', fecha);
+    if (newName !== undefined){body.set('keyboardPwdName', newName);}
+    if (newPwd !== undefined){body.set('newKeyboardPwd', newPwd);}
+    if (newStartDate !== undefined){body.set('startDate', newStartDate);}
+    if (newEndDate !== undefined){body.set('endDate', newEndDate);}
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while editing a passcode:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

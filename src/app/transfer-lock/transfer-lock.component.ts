@@ -9,14 +9,14 @@ import { Router } from '@angular/router';
 })
 export class TransferLockComponent {
 
-  constructor(private lockService:LockServiceService, private router:Router){}
+  constructor(private lockService: LockServiceService, private router: Router) { }
 
-  recieverUsername:string;
-  
-  async transferir(){
-    let lockID:number = this.lockService.lockID;
-    let lockIDList:string = "[".concat( lockID.toString() ).concat("]");
-    await this.lockService.transferLock(this.lockService.token,this.recieverUsername, lockIDList)
-    this.router.navigate(["lock",this.lockService.lockID]);
+  recieverUsername: string;
+
+  async transferir() {
+    let lockID: number = this.lockService.lockID;
+    let lockIDList: string = "[".concat(lockID.toString()).concat("]");
+    await this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)
+    this.router.navigate(["lock", this.lockService.lockID]);
   }
 }

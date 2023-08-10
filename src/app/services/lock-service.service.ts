@@ -20,7 +20,19 @@ export class LockServiceService {
 
   public timestamp(){
     let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai;
+    return timeInShanghai.toString();
+  }
+
+  public convertirDate(date:string){
+    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
+    if(Number.isNaN(fechaInShanghai)){
+      let hora = moment(date, "HH:mm").valueOf();
+      if(Number.isNaN(hora)){
+        return date;
+      }
+      return hora.toString();
+    }
+    return fechaInShanghai.toString();
   }
 
   async getLockListAccount(token: string){
@@ -77,7 +89,8 @@ export class LockServiceService {
     body.set('lockAlias', newLockAlias);
     body.set('date', fecha.toString());
     try {
-      await lastValueFrom(this.http.post(url, body.toString(), options));
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      console.log(response)
     } catch (error) {
       console.error("Error while changing name of a lock:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
