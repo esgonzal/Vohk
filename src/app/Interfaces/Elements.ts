@@ -13,6 +13,10 @@ export interface Ekey {
     senderUsername: string;
     remarks: string;
     date: string;
+    keyType:number;
+    startDay:string;
+    endDay:string;
+    weekDays:string;
     //Recibidos de ekeyService.getEkeysofAccount
     //lockData: string;
     //usertype: string;

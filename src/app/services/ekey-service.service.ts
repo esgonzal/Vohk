@@ -23,7 +23,7 @@ export class EkeyServiceService {
   }
 
   public convertirDate(date:string){
-    //date= '2023-07-19-09'
+    //date= '2023-07-19-09:00'
     //No es necesario ajustar la hora con shanghai, solo pon tu hora local
     let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
     if(Number.isNaN(fechaInShanghai)){
@@ -76,7 +76,7 @@ export class EkeyServiceService {
     }
   }
 
-  async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string){
+  async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string, keyType?:number, startDay?:string, endDay?:string, weekDays?:string){
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/send'
     let header = new HttpHeaders({
@@ -93,6 +93,18 @@ export class EkeyServiceService {
     body.set('startDate', startDate);
     body.set('endDate', endDate);
     body.set('date', fecha);
+    if (keyType !== undefined) {
+      body.set('keyType', keyType.toString());
+    }
+    if (startDay !== undefined) {
+      body.set('startDay', startDay);
+    }
+    if (endDay !== undefined) {
+      body.set('endDay', endDay);
+    }
+    if (weekDays !== undefined) {
+      body.set('weekDays', weekDays);
+    }
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject

@@ -18,7 +18,18 @@
                 <option value="4">Solicitante</option>
             </select>
         </div>
-        <div class="fila" *ngIf="selectedType==='2'">
+        <div class="fila" *ngIf="selectedType==='4'">
+            En estos días
+            <div class="checkbox-group">
+                <div *ngFor="let day of weekDays">
+                    <label>
+                        <input type="checkbox" name="selectedDays" value="day.value" [checked]="day.checked" (change)="onCheckboxChange($event, day)"/>
+                        {{ day.name }}
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="fila" *ngIf="selectedType==='2' || selectedType==='4'">
             Fecha de inicio de la Ekey
             <mat-form-field appearance="fill">
                 <mat-label>Fecha</mat-label>
@@ -32,9 +43,9 @@
                 <mat-label>Hora</mat-label>
                 <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
             </mat-form-field>
-            <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+            <ngx-material-timepicker #startTimePicker ></ngx-material-timepicker>
         </div>
-        <div class="fila" *ngIf="selectedType==='2'">
+        <div class="fila" *ngIf="selectedType==='2' || selectedType==='4'">
             Fecha de finalización de la Ekey
             <mat-form-field appearance="fill">
                 <mat-label>Fecha</mat-label>
@@ -48,8 +59,9 @@
                 <mat-label>Hora</mat-label>
                 <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
             </mat-form-field>
-            <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+            <ngx-material-timepicker #endTimePicker ></ngx-material-timepicker>
         </div>
+        
         <button class="form-button" type="submit">Enviar</button>
     </form>
 </div>

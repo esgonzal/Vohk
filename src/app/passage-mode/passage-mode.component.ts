@@ -26,9 +26,9 @@ export class PassageModeComponent implements OnInit {
   endHour: string = '';
 
   ngOnInit(): void {
-    this.updateSlideToggle()
+    this.updateValues()
   }
-  updateSlideToggle() {
+  updateValues() {
     this.isPassageModeToggleOn = this.passageModeService.passageModeConfig?.passageMode === 1;
     this.isAllHoursToggleOn = this.passageModeService.passageModeConfig?.isAllDay === 1;
     this.weekDays.forEach(day => {
@@ -55,9 +55,6 @@ export class PassageModeComponent implements OnInit {
     let formattedMins = mins < 10 ? `0${mins}` : `${mins}`;
     return `${formattedHours}:${formattedMins}`;
   }
-  
-
-
   transformarAllHoursToggle(isAllDay: boolean) {
     if (isAllDay) { return 1; }
     else { return 2; }
@@ -66,13 +63,11 @@ export class PassageModeComponent implements OnInit {
     if (PassageMode) { return 1; }
     else { return 2; }
   }
-
   transformarHora(Tiempo: string) {
     let tiempoHora = Tiempo.split(":")[0]
     let tiempoMinuto = Tiempo.split(":")[1]
     return (Number(tiempoHora) * 60 + Number(tiempoMinuto)).toString()
   }
-
   async cambiarPassageMode() {
     const selectedDayNumbers: number[] = [];
     this.weekDays.forEach(day => {
@@ -80,7 +75,6 @@ export class PassageModeComponent implements OnInit {
         selectedDayNumbers.push(day.value);
       }
     });
-
     const Config: PassageMode = {
       "autoUnlock": 1,
       "endDate": this.transformarHora(this.endHour),

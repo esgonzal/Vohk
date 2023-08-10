@@ -169,7 +169,7 @@ export class LockComponent implements OnInit{
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
-    //console.log("eKeys: ", this.ekeys)
+    console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
@@ -186,6 +186,26 @@ export class LockComponent implements OnInit{
       var final = moment(end).format("YYYY/MM/DD HH:mm")
       var retorno = inicio.toString().concat(' - ').concat(final.toString());
       return retorno}}
+  periodoValidezEkey(ekey: Ekey){
+    if(this.Number(ekey.endDate)===1){//UNA VEZ
+      let retorno = moment(ekey.startDate).format('YYYY/MM/DD HH:mm').concat(" Una vez");
+      return retorno;
+    }
+    if(ekey.keyType===4){//SOLICITANTE
+      const dayNames = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+      let HoraInicio = moment(ekey.startDate).format('HH:mm');
+      let HoraFinal = moment(ekey.endDate).format('HH:mm');
+      let DiaInicio = moment(ekey.startDay).format('YYYY/MM/DD');
+      let DiaFinal = moment(ekey.endDay).format('YYYY/MM/DD');
+      
+      let selectedDays = JSON.parse(ekey.weekDays);
+      let formattedSelectedDays = selectedDays.map((day:number) => dayNames[day]).join(', ');
+
+      let formattedResult = `${DiaInicio} - ${DiaFinal}, ${formattedSelectedDays}, ${HoraInicio} ~ ${HoraFinal}`;
+      return formattedResult
+    }
+    else{return this.periodoValidez(Number(ekey.startDate), Number(ekey.endDate))}
+  }
   periodoValidezPasscode(passcode: Passcode){
     var respuesta
     if(passcode.keyboardPwdType===1){
