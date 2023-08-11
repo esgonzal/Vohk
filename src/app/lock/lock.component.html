@@ -76,9 +76,11 @@
           <div class="tablist">
             <mat-tab-group backgroundColor="primary" color="warn">
               <mat-tab label="ekeys">
-                <!--     BOTON DE NUEVA EKEY     -->
-                <button (click)="crearEkey()">Nueva</button>
-                <!--------------------------------->
+                <div class="button-container">
+                  <!--     BOTON DE NUEVA EKEY     -->
+                  <button (click)="crearEkey()">Nueva</button>
+                  <!--------------------------------->
+                </div>
                 <table mat-table [dataSource]="ekeys" class="table">
                   <!---->
                   <ng-container matColumnDef="keyName">
@@ -108,9 +110,7 @@
                   <!---->
                   <ng-container matColumnDef="Estado">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell"
-                      [style.color]="consultarEstado(ekey.endDate) === 'Valido' ? 'green' : 'red'">
-                      {{consultarEstadoEkey(ekey)}}</td>
+                    <td mat-cell *matCellDef="let ekey" class="table-cell" [innerHTML]="consultarEstadoEkey(ekey)"></td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Operacion">
@@ -121,42 +121,42 @@
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY O 
                         - {user} ES DUEÑO DE LA EKEY
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) || (ekey.username===getFullName()) )" mat-button (click)="borrarEkey(ekey.keyId)">Eliminar</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) || (ekey.username===getFullName()) )" mat-button class="mat-warn"  (click)="borrarEkey(ekey.keyId)">Eliminar</button>
                       
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR NOMBRE
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY O 
                         - {user} ES DUEÑO DE LA EKEY
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) || (ekey.username===getFullName()) )" mat-button (click)="cambiarNombreEkey(ekey.keyId)" >Editar Nombre</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) || (ekey.username===getFullName()) )" mat-button class="mat-primary" (click)="cambiarNombreEkey(ekey.keyId)" >Editar Nombre</button>
 
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PERIODO
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY O 
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) )" mat-button (click)="cambiarPeriodoEkey(ekey.keyId)" >Editar Periodo</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) )" mat-button class="mat-primary" (click)="cambiarPeriodoEkey(ekey.keyId)" >Editar Periodo</button>
 
                       <!--CONDICIONES PARA QUE {user} PUEDA AUTORIZAR:
                         - {user} ES ADMIN PRINCIPAL Y LA EKEY ESTA DESAUTORIZADA
                       -->
-                      <button *ngIf="userType==='110301' && keyRight==='0'" mat-button (click)="Autorizar(ekey.keyId, ekey.username)">Autorizar</button>
+                      <button *ngIf="userType==='110301' && keyRight==='0'" mat-button class="mat-primary" (click)="Autorizar(ekey.keyId, ekey.username)">Autorizar</button>
 
                       <!--CONDICIONE QUE {user} PUEDA DESAUTORIZAR:
                         - {user} ES ADMIN PRINCIPAL Y LA LLAVE ESTA AUTORIZADA
                       -->
-                      <button *ngIf="userType==='110301' && keyRight==='1'" mat-button (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
+                      <button *ngIf="userType==='110301' && keyRight==='1'" mat-button class="mat-primary" (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
 
                       <!--CONDICIONES QUE {user} PUEDA CONGELAR:
                         - {user} ES ADMIN PRINCIPAL Y LA LLAVE ESTA DESCONGELADA O 
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY Y LA LLAVE ESTA DESCONGELADA
                       -->
-                      <button *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName())) && ekey.keyStatus==='110401'" mat-button  (click)="congelar(ekey.keyId, ekey.username)" >Congelar</button>
+                      <button *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName())) && ekey.keyStatus==='110401'" mat-button class="mat-primary"  (click)="congelar(ekey.keyId, ekey.username)" >Congelar</button>
 
                       <!--CONDICIONES PARA DESCONGELAR:
                         - {user} ES ADMIN PRINCIPAL Y LA LLAVE ESTA CONGELADA O 
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY Y LA LLAVE ESTA CONGELADA
                       -->
-                      <button *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName())) && ekey.keyStatus==='110405'" mat-button  (click)="descongelar(ekey.keyId, ekey.username)" >Descongelar</button>
+                      <button *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName())) && ekey.keyStatus==='110405'" mat-button class="mat-primary"  (click)="descongelar(ekey.keyId, ekey.username)" >Descongelar</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -165,9 +165,11 @@
                 </table>
               </mat-tab>
               <mat-tab label="Passcodes">
-                <!--   BOTON DE NUEVA PASSCODE   -->
-                <button (click)="crearPasscode()">Nueva</button>
-                <!--------------------------------->
+                <div class="button-container">
+                  <!--   BOTON DE NUEVA PASSCODE   -->
+                  <button (click)="crearPasscode()">Nueva</button>
+                  <!--------------------------------->
+                </div>
                 <table mat-table [dataSource]="passcodes" class="table">
                   <!---->
                   <ng-container matColumnDef="keyboardPwdName">
@@ -211,14 +213,14 @@
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA PASSCODE O 
                         - {user} ES DUEÑO DE LA PASSCODE
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button class="mat-warn" (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
                       
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PASSCODE
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA PASSCODE O 
                         - {user} ES DUEÑO DE LA PASSCODE
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button (click)="cambiarPasscode(passcode)">Editar</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button class="mat-primary" (click)="cambiarPasscode(passcode)">Editar</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -227,8 +229,8 @@
                 </table>
               </mat-tab>
               <mat-tab label="IC Cards">
-                <!--     BOTON DE NUEVA CARD     -->
-                <!--                             -->
+                <div class="space-divider">
+                </div>
                 <table mat-table [dataSource]="cards" class="table">
                   <!---->
                   <ng-container matColumnDef="cardName">
@@ -260,9 +262,7 @@
                   <!---->
                   <ng-container matColumnDef="Estado">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell"
-                      [style.color]="consultarEstado(card.endDate) === 'Valido' ? 'green' : 'red'">
-                      {{consultarEstado(card.endDate)}}</td>
+                    <td mat-cell *matCellDef="let card" class="table-cell" [innerHTML]="consultarEstado(card.endDate)"></td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Operacion">
@@ -272,19 +272,19 @@
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES EL RESPONSABLE DE LA CARD
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button (click)="borrarCard(card.cardId)">Eliminar</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button class="mat-warn" (click)="borrarCard(card.cardId)">Eliminar</button>
                       
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR EL NOMBRE CARD:
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES EL RESPONSABLE DE LA CARD
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button (click)="cambiarNombreCard(card.cardId)">Editar Nombre</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarNombreCard(card.cardId)">Editar Nombre</button>
                       
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR EL PERIODO CARD:
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES EL RESPONSABLE DE LA CARD
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button (click)="cambiarPeriodoCard(card.cardId)">Editar Periodo</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarPeriodoCard(card.cardId)">Editar Periodo</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -293,6 +293,8 @@
                 </table>
               </mat-tab>
               <mat-tab label="Fingerprints">
+                <div class="space-divider">
+                </div>
                 <table mat-table [dataSource]="fingerprints" class="table">
                   <!---->
                   <ng-container matColumnDef="fingerprintName">
@@ -319,9 +321,7 @@
                   <!---->
                   <ng-container matColumnDef="Estado">
                     <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell"
-                      [style.color]="consultarEstado(fingerprint.endDate) === 'Valido' ? 'green' : 'red'">
-                      {{consultarEstado(fingerprint.endDate)}}</td>
+                    <td mat-cell *matCellDef="let fingerprint" class="table-cell" [innerHTML]="consultarEstado(fingerprint.endDate)"></td>
                   </ng-container>
                   <!---->
                   <ng-container matColumnDef="Operacion">
@@ -331,17 +331,17 @@
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES EL RESPONSABLE DE LA FINGERPRINT
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button class="mat-warn" (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR NOMBRE FINGERPRINT:
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES EL RESPONSABLE DE LA FINGERPRINT
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)" >Editar Nombre</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)" >Editar Nombre</button>
                       <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PERIODO FINGERPRINT:
                         - {user} ES ADMIN PRINCIPAL O 
                         - {user} ES EL RESPONSABLE DE LA FINGERPRINT
                       -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
+                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
                     </td>
                   </ng-container>
                   <!---->
@@ -350,6 +350,8 @@
                 </table>
               </mat-tab>
               <mat-tab label="Registro">
+                <div class="space-divider">
+                </div>
                 <table mat-table [dataSource]="records" class="table">
                   <!---->
                   <ng-container matColumnDef="Operador">

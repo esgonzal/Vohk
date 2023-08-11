@@ -1,69 +1,59 @@
-app-pop-up{
+app-pop-up {
   z-index: 9999;
 }
 
-.info_cerradura{
+.info_cerradura {
   display: flex;
   align-items: baseline;
 }
 
-.info_cerradura div{
+.info_cerradura div {
   margin-left: 15px;
 }
 
-.nombre_cerradura{
+.nombre_cerradura {
   font-size: xx-large;
-  font-weight:bold;
+  font-weight: bold;
 }
 
-.bateria_cerradura{
+.bateria_cerradura {
   display: flex;
 }
 
-.rol_usuario{
+.rol_usuario {
   margin-left: 30px;
   color: rgb(160, 156, 156);
   font-size: medium;
 }
 
-.tablist{
-  margin:20px;
+.tablist {
+  margin: 20px;
 }
 
-/* Styles for tab labels */
-.mat-tab-label {
-  min-width: 25px !important;
-  padding: 10px;
-  background-color: transparent;
-  color: white;
-  opacity: 1 !important;
-  font-weight: 700;
-}
-.mat-tab-label{
-  background:aqua;
-  color: blue;
-  width: 60px;
-  height: 50px;
-  font-size: 20px;
-}
-
-.mat-mdc-tab-group.mat-background-primary, .mat-mdc-tab-nav-bar.mat-background-primary {
-  --mat-tab-header-with-background-background-color: #F9C114;
+.mat-mdc-tab-group.mat-background-primary,
+.mat-mdc-tab-nav-bar.mat-background-primary {
+  --mat-tab-header-with-background-background-color: #f9c114;
   --mat-tab-header-with-background-foreground-color: black;
 }
 
+.mat-mdc-tab-group.mat-warn, .mat-mdc-tab-nav-bar.mat-warn {
+  --mdc-tab-indicator-active-indicator-color: #0b0ebe; /* Custom text color for unselected tab */
+  --mat-tab-header-active-label-text-color: #0b0ebe;
+  --mat-tab-header-active-focus-label-text-color: #0b0ebe;
+  --mat-tab-header-active-focus-indicator-color: #0b0ebe;
+}
 
-.table{
+.table {
   table-layout: fixed;
   width: 80%;
   border-collapse: collapse;
-} 
-.table-cell{
+}
+
+.table-cell {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
-
 
 .col {
   display: flex;
@@ -94,4 +84,16 @@ app-pop-up{
   height: 35px;
   border: 1px, solid black;
   cursor: pointer;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px; /* Add some space below the button */
+}
+
+.space-divider {
+  margin-top: 10px;
+  margin-bottom: 40px;
 }

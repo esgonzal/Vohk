@@ -14,6 +14,7 @@ import { RecordServiceService } from '../services/record-service.service';
 import { PopUpService } from '../services/pop-up.service';
 import { GatewayService } from '../services/gateway.service';
 import { PassageModeService } from '../services/passage-mode.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -63,7 +64,8 @@ export class LockComponent implements OnInit {
     private fingerprintService: FingerprintServiceService,
     private recordService: RecordServiceService,
     private gatewayService: GatewayService,
-    private passageModeService: PassageModeService
+    private passageModeService: PassageModeService,
+    private sanitizer: DomSanitizer
   ) { }
 
   async ngOnInit() {
@@ -137,8 +139,8 @@ export class LockComponent implements OnInit {
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
-    //console.log("eKeys: ", this.ekeys)
-    console.log("Passcodes: ", this.passcodes)
+    console.log("eKeys: ", this.ekeys)
+    //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
@@ -337,28 +339,34 @@ export class LockComponent implements OnInit {
     }
   }
   consultarEstado(end: number) {
-    if (end === 0) { return 'Valido' }
+    if (end === 0) { return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); }
     else {
       var ahora = moment().format("YYYY/MM/DD HH:mm")
       var final = moment(end).format("YYYY/MM/DD HH:mm")
-      if (moment(final).isBefore(ahora)) { return 'Invalido' }
-      else { return 'Valido' }
+      if (moment(final).isBefore(ahora)) { 
+        return this.sanitizer.bypassSecurityTrustHtml('<span style="color: red;">Invalido</span>'); 
+      }
+      else { return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); }
     }
   }
   consultarEstadoEkey(ekey: Ekey) {
     if (ekey.keyStatus === "110402") {//PENDING
-      return 'Pendiente'
+      return this.sanitizer.bypassSecurityTrustHtml('<span style="color: gray;">Pendiente</span>'); 
     }
     if (ekey.keyStatus === "110405") {//FREEZED
-      return 'Congelada'
+      return this.sanitizer.bypassSecurityTrustHtml('<span style="color: blue;">Congelada</span>'); 
     }
     else {//NORMAL
       if (!ekey.endDay) {//MIENTRAS NO SEA SOLICITANTE 
         if (this.Number(ekey.endDate) === 0) {//PERMANENTE
-          return 'Valido'
+          return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); 
         }
         if (this.Number(ekey.endDate) === 1) {//UNA VEZ
-          return 'NOSE AUN'
+          if ( moment(ekey.startDate).add(1, "hour").isAfter(moment()) ){ 
+            return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); 
+          } else {
+            return this.sanitizer.bypassSecurityTrustHtml('<span style="color: red;">Invalido</span>');
+          }
         }
         else {//PERIODICA
           return this.consultarEstado(this.Number(ekey.endDate))

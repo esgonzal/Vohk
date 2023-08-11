@@ -8,6 +8,11 @@ import { LockComponent } from './lock/lock.component';
 import { PasscodeComponent } from './passcode/passcode.component';
 import { EkeyComponent } from './ekey/ekey.component';
 import { PopUpComponent } from './pop-up/pop-up.component';
+import { PassageModeComponent } from './passage-mode/passage-mode.component';
+import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
+import { HomeComponent } from './home/home.component';
+import { PerfilComponent } from './perfil/perfil.component';
+
 
 import { DatePipe } from '@angular/common';
 import { TextTransformPipe } from './ekey/text.pipe';
@@ -38,10 +43,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppRoutingModule } from './app-routing.module';
-import { PassageModeComponent } from './passage-mode/passage-mode.component';
-import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
-import { HomeComponent } from './home/home.component';
-import { PerfilComponent } from './perfil/perfil.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -58,7 +62,7 @@ import { PerfilComponent } from './perfil/perfil.component';
     PassageModeComponent,
     TransferLockComponent,
     HomeComponent,
-    PerfilComponent
+    PerfilComponent,
   ],
   imports: [
     BrowserModule,
