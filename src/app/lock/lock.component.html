@@ -44,7 +44,7 @@
                   <button mat-menu-item *ngIf="userType==='110301'">
                     <span>Notificación de Apertura</span>
                   </button>
-                  <button mat-menu-item (click)="Gateway()">
+                  <button mat-menu-item *ngIf="userType==='110301'" (click)="Gateway()">
                     <span>Gateway</span>
                   </button>
                   <button mat-menu-item (click)="HoraDispositivo()">

@@ -1,18 +1,3 @@
-<!--<div class="Perfil">
-    <div class="Titulo">TU PERFIL</div>
-    <div *ngIf="tokenData">
-    <div>ID del usuario: {{tokenData.uid}}</div>
-    <div>Access Token del usuario: {{tokenData.access_token}}</div>
-    <div>Nombre del usuario: {{username}}</div>
-    <div>Contraseña del Usuario: {{password}} </div>
-    <button type="submit" (click)="ToggleDisplay()">Cambiar Contraseña</button>
-    <div *ngIf="newPasswordDisplay">
-        <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="Nueva Contraseña" required="required" />
-        <button type="submit" (click)="cambiarPass(username,newPassword)">Cambiar</button>
-    </div>
-    <button type="submit" (click)="Eliminar()">Borrar Usuario</button>
-    </div>
-</div>-->
 <div class="listado_objetos">
         <div *ngIf="ekeyList">
             <mat-grid-list cols="4" rowHeight="100px">

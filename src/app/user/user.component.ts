@@ -15,13 +15,13 @@ import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faB
 })
 export class UserComponent implements OnInit {
 
-  username = localStorage.getItem('user');
-  password = localStorage.getItem('password');
+  username: string;
+  password: string;
   newPassword: string;
   newPasswordDisplay = false;
-  token = localStorage.getItem('token') ?? ''; 
+  token: string;
   //tokenData: AccessTokenData;
-  locksList: LockListResponse;
+  //locksList: LockListResponse;
   ekeyList: LockListResponse;
   lock:LockData;
   faBatteryFull= faBatteryFull
@@ -34,7 +34,9 @@ export class UserComponent implements OnInit {
   constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
     
   async ngOnInit(){
-    //await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
+    this.username = localStorage.getItem('user') ?? ''; 
+    this.password = localStorage.getItem('password') ?? ''; 
+    this.token = localStorage.getItem('token') ?? ''; 
     if(this.token){
       await this.EncontrarLocks_EkeysdelUsuario(this.token);
     }    
@@ -55,21 +57,6 @@ export class UserComponent implements OnInit {
       console.error("Error while fetching eKeyList:", error);
     }
   }
-
-  /*async EncontrarLocksdelUsuario(token: string){//locks
-    try{
-      await this.lockService.getLockListAccount(token);
-      this.lockService.data$.subscribe((data) => {
-        if (data.list) {
-          this.locksList = data;
-        } else {
-          console.log("Data not yet available.");
-        }
-      });
-    } catch(error) {
-      console.error("Error while fetching lockList:", error);
-    }
-  }*/
 
   onLockButtonClick(lock:LockData){
     localStorage.setItem('Alias', lock.lockAlias)
