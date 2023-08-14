@@ -30,14 +30,14 @@ export interface LockData {
   wirelessKeypadFeatureValue: string;
   //Estos datos se reciben de getEkeysofAccount
   deletePwd: string;
-  endDate:number;
+  endDate:string;
   keyId:number;
   keyName:string;
   keyRight: number;
   keyStatus:string;
   remarks:string;
   remoteEnable:number;
-  startDate:number;
+  startDate:string;
   userType:string;
 }
 

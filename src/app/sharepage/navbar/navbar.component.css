@@ -1,21 +1,21 @@
 .container-fluid {
-    background-color: black;
-    height: 80px;
+  background-color: black;
+  height: 80px;
 }
 
-.navbar-brand{
-    margin-left: 240px;
-    font-size: 40px;
-    color: white;
+.navbar-brand {
+  margin-left: 240px;
+  font-size: 40px;
+  color: white;
 }
 
-.nav-item{
-margin: 10px;
-background-color: #F9C114;
-border-radius: 10px;
-cursor: pointer;
+.nav-item {
+  margin: 10px;
+  background-color: #f9c114;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-.navbar-nav{
-    margin-right: 240px;
+.navbar-nav {
+  margin-right: 240px;
 }

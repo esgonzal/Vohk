@@ -18,11 +18,15 @@ export class LoginComponent {
   constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) {}
 
   async login(data:User){
-    if(data.username == '' || data.password == ''){
-      this.loginError = 'Debe ingresar un nombre de usuario y/o contraseña '
+    if(data.username == '' && data.password == ''){
+      this.loginError = 'Debe ingresar un nombre de usuario y contraseña '
     }
-    this.userService.setnombre_usuario(data.username);
-    this.userService.setclave_usuario(data.password);
+    else if(data.username == ''){
+      this.loginError = 'Debe ingresar un nombre de usuario '
+    }
+    else if(data.password == ''){
+      this.loginError = 'Debe ingresar una contraseña '
+    }
     try {
       await this.userService.getAccessToken(data.username, data.password);
       this.userService.data$.subscribe((res) => {
@@ -36,12 +40,10 @@ export class LoginComponent {
     } catch (error) {
       console.error("Error while fetching access token:", error);
     }
-    const prefixname = 'bhaaa_'.concat(data.username);
     localStorage.setItem('user', data.username)
-    localStorage.setItem('fullName', prefixname);
     localStorage.setItem('password', data.password);
     localStorage.setItem('token', this.access_token);
-    this.userService.fullNombre_usuario = prefixname;
+    this.userService.fullNombre_usuario = data.username;
   }
 }
 

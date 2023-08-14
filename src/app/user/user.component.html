@@ -16,7 +16,7 @@
 <div class="listado_objetos">
         <div *ngIf="ekeyList">
             <mat-grid-list cols="4" rowHeight="100px">
-                <mat-grid-tile *ngFor="let lock of ekeyList.list" (click)="onLockButtonClick(lock.lockId, lock.lockAlias, lock.electricQuantity, lock.userType, lock.keyRight)">
+                <mat-grid-tile *ngFor="let lock of ekeyList.list" (click)="onLockButtonClick(lock)">
                   <div  *ngIf="lock.userType==='110301' || (lock.userType==='110302' && lock.keyRight===1)">
                     <mat-card class="lock">
                       <mat-card-header>

@@ -4,9 +4,9 @@
   </div>
   <div class="resto">
     <div>
-      <div class="cerradura">
-        <div>
-          <div>
+      <div>
+        <div class="cerradura">
+          <div class="izquierdo">
             <div class="info_cerradura">
               <div class="nombre_cerradura">
                 {{Alias}}
@@ -14,13 +14,15 @@
               <div class="bateria_cerradura">
                 <div class="icono_bateria">
                   <div *ngIf="Number(Bateria) > 90 || Number(Bateria) == 90" [ngStyle]="{color: 'green'}">
-                    <fa-icon [icon]="faBatteryFull"></fa-icon></div>
+                    <fa-icon [icon]="faBatteryFull"></fa-icon>
+                  </div>
                   <div *ngIf="Number(Bateria) < 90 && Number(Bateria) > 60 || Number(Bateria) == 60"
                     [ngStyle]="{color: 'green'}"> <fa-icon [icon]="faBatteryThreeQuarters"></fa-icon></div>
                   <div *ngIf="Number(Bateria) < 60 && Number(Bateria) > 40 || Number(Bateria) == 40"
                     [ngStyle]="{color: 'green'}"><fa-icon [icon]="faBatteryHalf"></fa-icon></div>
                   <div *ngIf="Number(Bateria) < 40 && Number(Bateria) > 0" [ngStyle]="{color: 'red'}">
-                    <fa-icon [icon]="faBatteryQuarter"></fa-icon></div>
+                    <fa-icon [icon]="faBatteryQuarter"></fa-icon>
+                  </div>
                   <div *ngIf="Number(Bateria) == 0" [ngStyle]="{color: 'red'}"><fa-icon
                       [icon]="faBatteryEmpty"></fa-icon></div>
                 </div>
@@ -33,7 +35,7 @@
                   <fa-icon [icon]="faGear"></fa-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="Esencial()" >
+                  <button mat-menu-item (click)="Esencial()">
                     <span>Esencial</span>
                   </button>
                   <button mat-menu-item *ngIf="userType==='110301'" (click)="TransferirLock()">
@@ -42,7 +44,7 @@
                   <button mat-menu-item *ngIf="userType==='110301'">
                     <span>Notificación de Apertura</span>
                   </button>
-                  <button mat-menu-item (click)="Gateway()" >
+                  <button mat-menu-item (click)="Gateway()">
                     <span>Gateway</span>
                   </button>
                   <button mat-menu-item (click)="HoraDispositivo()">
@@ -62,324 +64,325 @@
                 Administrador Principal
               </div>
               <div *ngIf="userType==='110302' && keyRight==='1'">
-               Administrador Secundario // {{periodoValidez(lock.startDate,lock.endDate)}}
+                Administrador Secundario // {{periodoValidez(Number(startDateDeUser),Number(endDateDeUser))}}
               </div>
               <div *ngIf="userType==='110302' && keyRight==='0'">
                 <!--Usuario // {{periodoValidez(lock.startDate,lock.endDate)}}-->
               </div>
             </div>
           </div>
+          <div class="derecho">
+            <div class="lock-unlock">
+              <div>
+                <button (click)="Unlock()">
+                  Abrir
+                </button>
+              </div>
+              <div>
+                <button (click)="Lock()">
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="funciones_cerradura" >
+      <div class="funciones_cerradura">
         <div>
           <div class="tablist">
             <mat-tab-group backgroundColor="primary" color="warn">
-              <mat-tab label="ekeys">
-                <div class="button-container">
-                  <!--     BOTON DE NUEVA EKEY     -->
-                  <button (click)="crearEkey()">Nueva</button>
-                  <!--------------------------------->
+              <mat-tab label="eKeys">
+                <div class="contenido">
+                  <div class="button-container">
+                    <!--     BOTON DE NUEVA EKEY     -->
+                    <button (click)="crearEkey()" class="nueva-button">Nueva</button>
+                    <!--------------------------------->
+                  </div>
+                  <div>
+                    <table mat-table [dataSource]="ekeys" class="table">
+                      <!---->
+                      <ng-container matColumnDef="keyName">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.keyName}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="username">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Cuenta de destinatario</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.username}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="senderUsername">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.senderUsername}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.date | date: 'yyyy-MM-dd
+                          HH:mm'}} </td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Asignacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell">{{periodoValidezEkey(ekey)}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Estado">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell" [innerHTML]="consultarEstadoEkey(ekey)">
+                        </td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Operacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
+                        <td mat-cell *matCellDef="let ekey" class="table-cell">
+
+                          <button
+                            *ngIf="( (userType==='110301') || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) || (ekey.username===fullName) )"
+                            mat-button class="mat-warn" (click)="borrarEkey(ekey.keyId)">Eliminar</button>
+
+                          <button
+                            *ngIf="( (userType==='110301') || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) || (ekey.username===fullName) )"
+                            mat-button class="mat-primary" (click)="cambiarNombreEkey(ekey.keyId)">Editar
+                            Nombre</button>
+
+                          <button
+                            *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) )"
+                            mat-button class="mat-primary" (click)="cambiarPeriodoEkey(ekey.keyId)">Editar
+                            Periodo</button>
+
+                          <button *ngIf="userType==='110301' && keyRight==='0'" mat-button class="mat-primary"
+                            (click)="Autorizar(ekey.keyId, ekey.username)">Autorizar</button>
+
+                          <button *ngIf="userType==='110301' && keyRight==='1'" mat-button class="mat-primary"
+                            (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
+
+                          <button
+                            *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName)) && ekey.keyStatus==='110401'"
+                            mat-button class="mat-primary"
+                            (click)="congelar(ekey.keyId, ekey.username)">Congelar</button>
+                          <button
+                            *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName)) && ekey.keyStatus==='110405'"
+                            mat-button class="mat-primary"
+                            (click)="descongelar(ekey.keyId, ekey.username)">Descongelar</button>
+                        </td>
+                      </ng-container>
+                      <!---->
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsEkey"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsEkey"></tr>
+                    </table>
+                  </div>
                 </div>
-                <table mat-table [dataSource]="ekeys" class="table">
-                  <!---->
-                  <ng-container matColumnDef="keyName">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.keyName}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="username">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Cuenta de destinatario</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.username}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="senderUsername">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.senderUsername}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{ekey.date | date: 'yyyy-MM-dd HH:mm'}} </td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Asignacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">{{periodoValidezEkey(ekey)}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Estado">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell" [innerHTML]="consultarEstadoEkey(ekey)"></td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Operacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let ekey" class="table-cell">
-                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR EKEY:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY O 
-                        - {user} ES DUEÑO DE LA EKEY
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) || (ekey.username===getFullName()) )" mat-button class="mat-warn"  (click)="borrarEkey(ekey.keyId)">Eliminar</button>
-                      
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR NOMBRE
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY O 
-                        - {user} ES DUEÑO DE LA EKEY
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) || (ekey.username===getFullName()) )" mat-button class="mat-primary" (click)="cambiarNombreEkey(ekey.keyId)" >Editar Nombre</button>
-
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PERIODO
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY O 
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName()) )" mat-button class="mat-primary" (click)="cambiarPeriodoEkey(ekey.keyId)" >Editar Periodo</button>
-
-                      <!--CONDICIONES PARA QUE {user} PUEDA AUTORIZAR:
-                        - {user} ES ADMIN PRINCIPAL Y LA EKEY ESTA DESAUTORIZADA
-                      -->
-                      <button *ngIf="userType==='110301' && keyRight==='0'" mat-button class="mat-primary" (click)="Autorizar(ekey.keyId, ekey.username)">Autorizar</button>
-
-                      <!--CONDICIONE QUE {user} PUEDA DESAUTORIZAR:
-                        - {user} ES ADMIN PRINCIPAL Y LA LLAVE ESTA AUTORIZADA
-                      -->
-                      <button *ngIf="userType==='110301' && keyRight==='1'" mat-button class="mat-primary" (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
-
-                      <!--CONDICIONES QUE {user} PUEDA CONGELAR:
-                        - {user} ES ADMIN PRINCIPAL Y LA LLAVE ESTA DESCONGELADA O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY Y LA LLAVE ESTA DESCONGELADA
-                      -->
-                      <button *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName())) && ekey.keyStatus==='110401'" mat-button class="mat-primary"  (click)="congelar(ekey.keyId, ekey.username)" >Congelar</button>
-
-                      <!--CONDICIONES PARA DESCONGELAR:
-                        - {user} ES ADMIN PRINCIPAL Y LA LLAVE ESTA CONGELADA O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA EKEY Y LA LLAVE ESTA CONGELADA
-                      -->
-                      <button *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===getFullName())) && ekey.keyStatus==='110405'" mat-button class="mat-primary"  (click)="descongelar(ekey.keyId, ekey.username)" >Descongelar</button>
-                    </td>
-                  </ng-container>
-                  <!---->
-                  <tr mat-header-row *matHeaderRowDef="displayedColumnsEkey"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumnsEkey"></tr>
-                </table>
               </mat-tab>
               <mat-tab label="Passcodes">
-                <div class="button-container">
-                  <!--   BOTON DE NUEVA PASSCODE   -->
-                  <button (click)="crearPasscode()">Nueva</button>
-                  <!--------------------------------->
+                <div class="contenido">
+                  <div class="button-container">
+                    <!--   BOTON DE NUEVA PASSCODE   -->
+                    <button (click)="crearPasscode()" class="nueva-button">Nueva</button>
+                    <!--------------------------------->
+                  </div>
+                  <div>
+                    <table mat-table [dataSource]="passcodes" class="table">
+                      <!---->
+                      <ng-container matColumnDef="keyboardPwdName">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.keyboardPwdName}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="keyboardPwd">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Contraseña</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.keyboardPwd}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="senderUsername">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.nickName}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="createDate">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.sendDate | date:
+                          'yyyy-MM-dd
+                          HH:mm'}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Asignacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell">
+                          {{periodoValidezPasscode(passcode)}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Estado">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell"
+                          [style.color]="consultarEstadoPasscode(passcode) === 'Valido' ? 'green' : 'red'">
+                          {{consultarEstadoPasscode(passcode)}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Operacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
+                        <td mat-cell *matCellDef="let passcode" class="table-cell">
+                          <button mat-button class="mat-warn"
+                            (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
+                          <button mat-button class="mat-primary" (click)="cambiarPasscode(passcode)">Editar</button>
+                        </td>
+                      </ng-container>
+                      <!---->
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsPasscode"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsPasscode"></tr>
+                    </table>
+                  </div>
                 </div>
-                <table mat-table [dataSource]="passcodes" class="table">
-                  <!---->
-                  <ng-container matColumnDef="keyboardPwdName">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.keyboardPwdName}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="keyboardPwd">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Contraseña</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.keyboardPwd}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="senderUsername">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.nickName}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="createDate">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell">{{passcode.sendDate | date: 'yyyy-MM-dd
-                      HH:mm'}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Asignacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell">{{periodoValidezPasscode(passcode)}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Estado">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell"
-                      [style.color]="consultarEstadoPasscode(passcode) === 'Valido' ? 'green' : 'red'">
-                      {{consultarEstadoPasscode(passcode)}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Operacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let passcode" class="table-cell">
-                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR PASSCODE:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA PASSCODE O 
-                        - {user} ES DUEÑO DE LA PASSCODE
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button class="mat-warn" (click)="borrarPasscode(passcode.keyboardPwdId)">Eliminar</button>
-                      
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PASSCODE
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES ADMIN SECUNDARIO Y ES EL RESPONSABLE DE LA PASSCODE O 
-                        - {user} ES DUEÑO DE LA PASSCODE
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && passcode.senderUsername===getFullName()) || (passcode.recieverUsername===getFullName()) )" mat-button class="mat-primary" (click)="cambiarPasscode(passcode)">Editar</button>
-                    </td>
-                  </ng-container>
-                  <!---->
-                  <tr mat-header-row *matHeaderRowDef="displayedColumnsPasscode"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumnsPasscode"></tr>
-                </table>
               </mat-tab>
               <mat-tab label="IC Cards">
-                <div class="space-divider">
+                <div class="contenido">
+                  <div class="space-divider">
+                  </div>
+                  <div>
+                    <table mat-table [dataSource]="cards" class="table">
+                      <!---->
+                      <ng-container matColumnDef="cardName">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell">{{card.cardName}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="cardNumber">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Numero</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell">{{card.cardNumber}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="senderUsername">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell">{{card.nickName}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="createDate">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell">{{card.createDate | date: 'yyyy-MM-dd
+                          HH:mm'
+                          }}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Asignacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell">{{periodoValidez(card.startDate,
+                          card.endDate)}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Estado">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell"
+                          [innerHTML]="consultarEstado(card.endDate)"></td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Operacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
+                        <td mat-cell *matCellDef="let card" class="table-cell">
+                          <button mat-button class="mat-warn" (click)="borrarCard(card.cardId)">Eliminar</button>
+                          <button mat-button class="mat-primary" (click)="cambiarNombreCard(card.cardId)">Editar
+                            Nombre</button>
+                          <button mat-button class="mat-primary" (click)="cambiarPeriodoCard(card.cardId)">Editar
+                            Periodo</button>
+                        </td>
+                      </ng-container>
+                      <!---->
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsCard"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsCard"></tr>
+                    </table>
+                  </div>
                 </div>
-                <table mat-table [dataSource]="cards" class="table">
-                  <!---->
-                  <ng-container matColumnDef="cardName">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">{{card.cardName}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="cardNumber">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Numero</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">{{card.cardNumber}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="senderUsername">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">{{card.nickName}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="createDate">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">{{card.createDate | date: 'yyyy-MM-dd HH:mm'
-                      }}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Asignacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">{{periodoValidez(card.startDate,
-                      card.endDate)}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Estado">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell" [innerHTML]="consultarEstado(card.endDate)"></td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Operacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let card" class="table-cell">
-                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR CARD:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES EL RESPONSABLE DE LA CARD
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button class="mat-warn" (click)="borrarCard(card.cardId)">Eliminar</button>
-                      
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR EL NOMBRE CARD:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES EL RESPONSABLE DE LA CARD
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarNombreCard(card.cardId)">Editar Nombre</button>
-                      
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR EL PERIODO CARD:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES EL RESPONSABLE DE LA CARD
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && card.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarPeriodoCard(card.cardId)">Editar Periodo</button>
-                    </td>
-                  </ng-container>
-                  <!---->
-                  <tr mat-header-row *matHeaderRowDef="displayedColumnsCard"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumnsCard"></tr>
-                </table>
               </mat-tab>
               <mat-tab label="Fingerprints">
-                <div class="space-divider">
+                <div class="contenido">
+                  <div class="space-divider">
+                  </div>
+                  <div>
+                    <table mat-table [dataSource]="fingerprints" class="table">
+                      <!---->
+                      <ng-container matColumnDef="fingerprintName">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
+                        <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.fingerprintName}}
+                        </td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="senderUsername">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
+                        <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.nickName }}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="createDate">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
+                        <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.createDate | date:
+                          'yyyy-MM-dd HH:mm'}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Asignacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
+                        <td mat-cell *matCellDef="let fingerprint" class="table-cell">
+                          {{periodoValidezFingerprint(fingerprint)}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Estado">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
+                        <td mat-cell *matCellDef="let fingerprint" class="table-cell"
+                          [innerHTML]="consultarEstado(fingerprint.endDate)"></td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Operacion">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
+                        <td mat-cell *matCellDef="let fingerprint" class="table-cell">
+                          <button mat-button class="mat-warn"
+                            (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
+                          <button mat-button class="mat-primary"
+                            (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)">Editar Nombre</button>
+                          <button mat-button class="mat-primary"
+                            (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
+                        </td>
+                      </ng-container>
+                      <!---->
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsFingerprint"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsFingerprint"></tr>
+                    </table>
+                  </div>
                 </div>
-                <table mat-table [dataSource]="fingerprints" class="table">
-                  <!---->
-                  <ng-container matColumnDef="fingerprintName">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.fingerprintName}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="senderUsername">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Responsable</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.nickName  }}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="createDate">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Tiempo de asignación</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">{{fingerprint.createDate | date:
-                      'yyyy-MM-dd HH:mm'}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Asignacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Período de Validez</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">
-                      {{periodoValidezFingerprint(fingerprint)}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Estado">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell" [innerHTML]="consultarEstado(fingerprint.endDate)"></td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Operacion">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
-                    <td mat-cell *matCellDef="let fingerprint" class="table-cell">
-                      <!--CONDICIONES PARA QUE {user} PUEDA BORRAR FINGERPRINT:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES EL RESPONSABLE DE LA FINGERPRINT
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button class="mat-warn" (click)="borrarFingerprint(fingerprint.fingerprintId)">Eliminar</button>
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR NOMBRE FINGERPRINT:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES EL RESPONSABLE DE LA FINGERPRINT
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarNombreFingerprint(fingerprint.fingerprintId)" >Editar Nombre</button>
-                      <!--CONDICIONES PARA QUE {user} PUEDA EDITAR PERIODO FINGERPRINT:
-                        - {user} ES ADMIN PRINCIPAL O 
-                        - {user} ES EL RESPONSABLE DE LA FINGERPRINT
-                      -->
-                      <button *ngIf="( userType==='110301' || (userType==='110302' && fingerprint.senderUsername===getFullName()))" mat-button class="mat-primary" (click)="cambiarPeriodoFingerprint(fingerprint.fingerprintId)">Editar Periodo</button>
-                    </td>
-                  </ng-container>
-                  <!---->
-                  <tr mat-header-row *matHeaderRowDef="displayedColumnsFingerprint"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumnsFingerprint"></tr>
-                </table>
               </mat-tab>
               <mat-tab label="Registro">
-                <div class="space-divider">
+                <div class="contenido">
+                  <div class="space-divider">
+                  </div>
+                  <div>
+                    <table mat-table [dataSource]="records" class="table">
+                      <!---->
+                      <ng-container matColumnDef="Operador">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Operador</th>
+                        <td mat-cell *matCellDef="let record" class="table-cell">{{record.username}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Metodo_Apertura">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Método de Apertura</th>
+                        <td mat-cell *matCellDef="let record" class="table-cell">
+                          {{consultarMetodo(record.recordTypeFromLock,
+                          record.username)}},{{record.recordTypeFromLock}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Horario_Apertura">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Horario de apertura</th>
+                        <td mat-cell *matCellDef="let record" class="table-cell">{{record.lockDate | date: 'yyyy-MM-dd
+                          HH:mm'}}</td>
+                      </ng-container>
+                      <!---->
+                      <ng-container matColumnDef="Estado">
+                        <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
+                        <td mat-cell *matCellDef="let record" class="table-cell"
+                          [style.color]="consultarSuccess(record.success) === 'Exito' ? 'green' : 'red'">
+                          {{consultarSuccess(record.success)}}</td>
+                      </ng-container>
+                      <!---->
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsRecord"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsRecord"></tr>
+                    </table>
+                  </div>
                 </div>
-                <table mat-table [dataSource]="records" class="table">
-                  <!---->
-                  <ng-container matColumnDef="Operador">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Operador</th>
-                    <td mat-cell *matCellDef="let record" class="table-cell">{{record.username}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Metodo_Apertura">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Método de Apertura</th>
-                    <td mat-cell *matCellDef="let record" class="table-cell">
-                      {{consultarMetodo(record.recordTypeFromLock, record.username)}},{{record.recordTypeFromLock}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Horario_Apertura">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Horario de apertura</th>
-                    <td mat-cell *matCellDef="let record" class="table-cell">{{record.lockDate | date: 'yyyy-MM-dd
-                      HH:mm'}}</td>
-                  </ng-container>
-                  <!---->
-                  <ng-container matColumnDef="Estado">
-                    <th mat-header-cell *matHeaderCellDef class="table-cell">Estado</th>
-                    <td mat-cell *matCellDef="let record" class="table-cell" [style.color]="consultarSuccess(record.success) === 'Exito' ? 'green' : 'red'">
-                      {{consultarSuccess(record.success)}}</td>
-                  </ng-container>
-                  <!---->
-                  <tr mat-header-row *matHeaderRowDef="displayedColumnsRecord"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumnsRecord"></tr>
-                </table>
               </mat-tab>
             </mat-tab-group>
           </div>
@@ -391,4 +394,5 @@
 <app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || 
                   this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || 
                   this.popupService.confirmDescongelar || this.popupService.Esencial || this.popupService.Gateway || 
-                  this.popupService.cerradoAutomatico || this.popupService.mostrarHora" style="z-index: 10;"></app-pop-up>
+                  this.popupService.cerradoAutomatico || this.popupService.mostrarHora"
+  style="z-index: 10;"></app-pop-up>

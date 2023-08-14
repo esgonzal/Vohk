@@ -61,17 +61,7 @@
             </mat-form-field>
             <ngx-material-timepicker #endTimePicker ></ngx-material-timepicker>
         </div>
-        
+        <p class="error">{{error}}</p>
         <button class="form-button" type="submit">Enviar</button>
     </form>
 </div>
-
-<!--
-                <p *ngIf="ekey.keyStatus=='110401'">Status de la Ekey: Normal</p>
-                <p *ngIf="ekey.keyStatus=='110402'">Status de la Ekey: Pending</p>
-                <p *ngIf="ekey.keyStatus=='110405'">Status de la Ekey: Freezed</p>
-                <p *ngIf="ekey.keyStatus=='110408'">Status de la Ekey: Deleted</p>
-                <p *ngIf="ekey.keyStatus=='110410'">Status de la Ekey: Reseted</p>
-                <p *ngIf="ekey.keyRight==1">El usuario {{ekey.username}} esta autorizado para administrar esta Ekey</p>
-                <p *ngIf="ekey.keyRight==0">El usuario {{ekey.username}} no está autorizado para administrar esta Ekey</p>          
--->

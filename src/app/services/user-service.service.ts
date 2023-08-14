@@ -18,11 +18,6 @@ export class UserServiceService {
 
   constructor(private http: HttpClient) { }
 
-  getnombre_usuario():string{return this.nombre_usuario;}
-  setnombre_usuario(nombre:string): void{this.nombre_usuario = nombre;}
-  getclave_usuario(): string{return this.clave_usuario;}
-  setclave_usuario(clave:string): void{this.clave_usuario = clave;}
-
   public getMD5(clave:string){return Md5.hashStr(clave);}
 
   public timestamp(){
@@ -54,16 +49,15 @@ export class UserServiceService {
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
     let options = { headers: header};
-    let prefix = 'bhaaa_';
-    let username = prefix.concat(nombre)
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
-    body.set('username', username);
+    body.set('username', nombre);
     body.set('password', clave_encriptada);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject
+      console.log(response);
     } catch (error) {
       console.error("Error while fetching access token:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

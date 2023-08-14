@@ -17,13 +17,13 @@ import { PassageModeService } from '../services/passage-mode.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  encapsulation: ViewEncapsulation.None,
   selector: 'app-lock',
   templateUrl: './lock.component.html',
-  styleUrls: ['./lock.component.css']
+  styleUrls: ['./lock.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class LockComponent implements OnInit {
-  encapsulation: ViewEncapsulation.None;
+  //encapsulation: ViewEncapsulation.None;
   ////////////////////////////////////////////////////////////
   faBatteryFull = faBatteryFull
   faBatteryThreeQuarters = faBatteryThreeQuarters
@@ -40,6 +40,9 @@ export class LockComponent implements OnInit {
   Bateria = localStorage.getItem('Bateria') ?? '';
   userType = localStorage.getItem('userType') ?? '';
   keyRight = localStorage.getItem('keyRight') ?? '';
+  startDateDeUser = localStorage.getItem('startDate') ?? '';
+  endDateDeUser = localStorage.getItem('endDate') ?? '';
+  fullName = localStorage.getItem('user') ?? '';
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -140,7 +143,7 @@ export class LockComponent implements OnInit {
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
     console.log("eKeys: ", this.ekeys)
-    //console.log("Passcodes: ", this.passcodes)
+    console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
@@ -399,7 +402,7 @@ export class LockComponent implements OnInit {
       let inicio = moment(passcode.startDate)
       let final = moment(passcode.endDate)
       if (ahora.isBefore(inicio) || ahora.isAfter(final) || final.isBefore(inicio)) {
-        return 'Invalido'
+        return 'Inactivo'
       } else {
         return 'Valido'
       }
@@ -595,6 +598,12 @@ export class LockComponent implements OnInit {
   getFullName() { 
     return this.userService.fullNombre_usuario 
   }
+  async Unlock(){
+    await this.gatewayService.unlock(this.token, this.lockId);
+  }
+  async Lock(){
+    await this.gatewayService.lock(this.token, this.lockId);
+  }
   //SETTINGS
   Esencial() {
     this.popupService.detalles = this.lockDetails;
@@ -707,7 +716,8 @@ export class LockComponent implements OnInit {
   crearEkey() {
     this.passcodeService.lockAlias = this.Alias;
     this.ekeyService.token = this.token;
-    this.ekeyService.lockID = this.lockId
+    this.ekeyService.lockID = this.lockId;
+    this.ekeyService.endDateDeUser = this.endDateDeUser;
     this.router.navigate(["lock", this.lockId, "ekey"]);
   }
   Autorizar(ekeyID: number, user: string) {
@@ -729,6 +739,7 @@ export class LockComponent implements OnInit {
     this.passcodeService.lockAlias = this.Alias;
     this.passcodeService.token = this.token;
     this.passcodeService.lockID = this.lockId;
+    this.passcodeService.endDateUser = this.endDateDeUser;
     this.router.navigate(["lock", this.lockId, "passcode"]);
   }
   cambiarPasscode(passcode: Passcode) {

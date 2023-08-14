@@ -15,6 +15,7 @@ export class PasscodeServiceService {
   lockAlias:string;
   token:string;
   lockID:number;
+  endDateUser:string;
 
   constructor(private lockService: LockServiceService, private http:HttpClient) { }
 

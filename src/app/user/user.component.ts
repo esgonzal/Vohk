@@ -35,7 +35,9 @@ export class UserComponent implements OnInit {
     
   async ngOnInit(){
     //await this.EncontrarLocksdelUsuario(this.tokenData.access_token);
-    await this.EncontrarLocks_EkeysdelUsuario(this.token);    
+    if(this.token){
+      await this.EncontrarLocks_EkeysdelUsuario(this.token);
+    }    
   }
 
   async EncontrarLocks_EkeysdelUsuario(token: string){//locks y tambien ekeys
@@ -43,6 +45,7 @@ export class UserComponent implements OnInit {
       await this.ekeyService.getEkeysofAccount(token);
       this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
+          console.log(data.list)
           this.ekeyList = data;
         } else {
           console.log("Error en EncontrarLocks_EkeysdelUsuario (user.component.ts)");
@@ -68,11 +71,13 @@ export class UserComponent implements OnInit {
     }
   }*/
 
-  onLockButtonClick(lockID: number, lockAlias:string, electricQuantity:number, userType:string, keyRight:number){
-    localStorage.setItem('Alias', lockAlias)
-    localStorage.setItem('Bateria', electricQuantity.toString())
-    localStorage.setItem('userType', userType)
-    localStorage.setItem('keyRight', keyRight.toString())
-    this.router.navigate(['/lock/',lockID])
+  onLockButtonClick(lock:LockData){
+    localStorage.setItem('Alias', lock.lockAlias)
+    localStorage.setItem('Bateria', lock.electricQuantity.toString())
+    localStorage.setItem('userType', lock.userType)
+    localStorage.setItem('keyRight', lock.keyRight.toString())
+    localStorage.setItem('startDate', lock.startDate)
+    localStorage.setItem('endDate', lock.endDate)
+    this.router.navigate(['/lock/',lock.lockId])
   }
 }

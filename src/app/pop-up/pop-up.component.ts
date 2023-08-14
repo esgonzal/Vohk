@@ -40,11 +40,10 @@ export class PopUpComponent implements OnInit {
     private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    // Check if autoLockTime is greater than 0 (indicating auto-lock is on)
+    // Esto es para mostrar los valores actuales del AutoLockTime si es que estaba activado desde antes
     if (this.popupService.detalles) {
       if (this.popupService.detalles.autoLockTime >= 0) {
         this.autoLockToggle = true;
-        // Check the autoLockTime value to set the correct dropdown selection
         switch (this.popupService.detalles.autoLockTime) {
           case 5:
             this.selectedType = '1';
@@ -62,7 +61,7 @@ export class PopUpComponent implements OnInit {
             this.selectedType = '5';
             break;
           default:
-            this.selectedType = '6'; // Custom value
+            this.selectedType = '6';
             this.customAutoLockTime = this.popupService.detalles.autoLockTime;
         }
       }
@@ -76,7 +75,6 @@ export class PopUpComponent implements OnInit {
   //popup eKey, passcode, card y fingerprint
   async delete() {
     if (this.popupService.confirmDelete) {
-      // Perform deletion based on the element type
       switch (this.popupService.elementType) {
         case 'passcode':
           await this.passcodeService.deletePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
