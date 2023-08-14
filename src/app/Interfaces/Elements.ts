@@ -17,6 +17,7 @@ export interface Ekey {
     startDay:string;
     endDay:string;
     weekDays:string;
+    remoteEnable:number;
     //Recibidos de ekeyService.getEkeysofAccount
     //lockData: string;
     //usertype: string;

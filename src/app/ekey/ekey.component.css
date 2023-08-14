@@ -8,15 +8,31 @@
   flex-direction: column;
   width: 500px;
   margin: auto;
-  gap: 30px;
+  gap: 10px;
 }
 
-.fila {
+.linea {
   display: flex;
-  align-items: normal;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
+.linea label {
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: space-between;
+  width: 600px;
+}
 .form-input {
   height: 35px;
   margin-bottom: 20px;

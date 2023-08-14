@@ -151,10 +151,10 @@
                             mat-button class="mat-primary" (click)="cambiarPeriodoEkey(ekey.keyId)">Editar
                             Periodo</button>
 
-                          <button *ngIf="userType==='110301' && keyRight==='0'" mat-button class="mat-primary"
+                          <button *ngIf="userType==='110301' && ekey.keyRight===0" mat-button class="mat-primary"
                             (click)="Autorizar(ekey.keyId, ekey.username)">Autorizar</button>
 
-                          <button *ngIf="userType==='110301' && keyRight==='1'" mat-button class="mat-primary"
+                          <button *ngIf="userType==='110301' && ekey.keyRight===1" mat-button class="mat-primary"
                             (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
 
                           <button

@@ -1,13 +1,13 @@
-<div>
+<div class="form-area">
     <form #formInput="ngForm" class="common-form">
-        <div>
-            <div class="texto">
+        <div class="linea_alternative">
                 Cuenta de Destinatario
-            </div>
-            <div class="opcion">
+            <span class="input-container">
                 <input type="text" class="form-input" name="recieverUsername" [(ngModel)]="recieverUsername" required="" />
-            </div>
+            </span>
         </div>
-        <button class="form-button" type="submit" (click)="transferir()">Transferir</button>
+        <div class="form-button">
+            <button type="submit" (click)="transferir()">Transferir</button>
+        </div>
     </form>
 </div>

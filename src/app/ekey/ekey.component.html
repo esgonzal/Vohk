@@ -1,65 +1,72 @@
 <div class="form-area">
     <form #formInput="ngForm" (ngSubmit)="validarNuevaEkey(formInput.value)" class="common-form">
-        <div class="fila">
-            Nombre del Recipiente
-            <input type="text" class="form-input" name="recieverName" placeholder="..." ngModel/>
+        <div class="linea">
+            <span class="input-container">
+                Nombre del Recipiente
+                <input type="text" class="form-input" name="recieverName" placeholder="..." ngModel/>
+            </span>
         </div>
-        <div class="fila">
-            Nombre de la Ekey
-            <input type="text" class="form-input" name="name" placeholder="..." ngModel/>
+        <div class="linea">
+            <span class="input-container">
+                Nombre de la Ekey
+                <input type="text" class="form-input" name="name" placeholder="..." ngModel/>
+            </span>
         </div>
-        <div class="fila">
-            Tipo de contraseña
-            <select #types name="ekeyType" (change)="onSelected(types.value)" ngModel style="width: 202px; height: 35px;">
-                <option default value="">No seleccionado</option>
-                <option value="1">Permanente</option>
-                <option value="2">Periódica</option>
-                <option value="3">De un uso</option>
-                <option value="4">Solicitante</option>
-            </select>
+        <div class="linea">
+            <span class="input-container">
+                Tipo de contraseña
+                <select #types name="ekeyType" (change)="onSelected(types.value)" ngModel style="width: 202px; height: 35px;">
+                    <option default value="">No seleccionado</option>
+                    <option value="1">Permanente</option>
+                    <option value="2">Periódica</option>
+                    <option value="3">De un uso</option>
+                    <option value="4">Solicitante</option>
+                </select>
+            </span>
         </div>
-        <div class="fila" *ngIf="selectedType==='4'">
-            En estos días
-            <div class="checkbox-group">
+        <div class="linea" *ngIf="selectedType==='4'">
+            <span class="input-container">
                 <div *ngFor="let day of weekDays">
                     <label>
                         <input type="checkbox" name="selectedDays" value="day.value" [checked]="day.checked" (change)="onCheckboxChange($event, day)"/>
                         {{ day.name }}
                     </label>
                 </div>
-            </div>
+            </span>
         </div>
-        <div class="fila" *ngIf="selectedType==='2' || selectedType==='4'">
-            Fecha de inicio de la Ekey
-            <mat-form-field appearance="fill">
-                <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY" required="required" ngModel>
-                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #startDatePicker></mat-datepicker>
-            </mat-form-field>
-
-            Hora de inicio de la Ekey
-            <mat-form-field appearance="fill">
-                <mat-label>Hora</mat-label>
-                <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
-            </mat-form-field>
-            <ngx-material-timepicker #startTimePicker ></ngx-material-timepicker>
+        <div class="linea" *ngIf="selectedType==='2' || selectedType==='4'">
+            <span class="input-container">
+                Fecha de inicio
+                <mat-form-field appearance="fill">
+                    <mat-label>Fecha</mat-label>
+                    <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                    <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #startDatePicker></mat-datepicker>
+                </mat-form-field>
+                Hora de inicio
+                <mat-form-field appearance="fill">
+                    <mat-label>Hora</mat-label>
+                    <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                </mat-form-field>
+                <ngx-material-timepicker #startTimePicker ></ngx-material-timepicker>
+            </span>
         </div>
-        <div class="fila" *ngIf="selectedType==='2' || selectedType==='4'">
-            Fecha de finalización de la Ekey
-            <mat-form-field appearance="fill">
-                <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY" required="required" ngModel>
-                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #endDatePicker></mat-datepicker>
-            </mat-form-field>
-
-            Hora de finalización de la Ekey
-            <mat-form-field appearance="fill">
-                <mat-label>Hora</mat-label>
-                <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
-            </mat-form-field>
-            <ngx-material-timepicker #endTimePicker ></ngx-material-timepicker>
+        <div class="linea" *ngIf="selectedType==='2' || selectedType==='4'">
+            <span class="input-container">
+                Fecha de finalización
+                <mat-form-field appearance="fill">
+                    <mat-label>Fecha</mat-label>
+                    <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                    <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #endDatePicker></mat-datepicker>
+                </mat-form-field>
+                Hora de finalización
+                <mat-form-field appearance="fill">
+                    <mat-label>Hora</mat-label>
+                    <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                </mat-form-field>
+                <ngx-material-timepicker #endTimePicker ></ngx-material-timepicker>
+            </span>
         </div>
         <p class="error">{{error}}</p>
         <button class="form-button" type="submit">Enviar</button>

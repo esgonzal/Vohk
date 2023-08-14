@@ -125,12 +125,19 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
+  transformarRemoteEnable(Slider:boolean){
+    if(Slider){
+      return '1'
+    } else {
+      return '2'
+    }
+  }
   //popup eKey, card y fingerprint
   async cambiarNombre(datos: Formulario) {
     if (this.popupService.cambiarNombre) {
       switch (this.popupService.elementType) {
         case 'ekey':
-          await this.ekeyService.modifyEkey(this.popupService.token, this.popupService.elementID, datos.name);
+          await this.ekeyService.modifyEkey(this.popupService.token, this.popupService.elementID, datos.name, this.transformarRemoteEnable(datos.ekeyRemoteEnable));
           break;
         case 'card':
           await this.cardService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);

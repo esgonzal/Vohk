@@ -10,4 +10,5 @@ export interface Formulario {
     startHour:string;
     endDate:string;
     endHour:string;
+    ekeyRemoteEnable:boolean;
 }

@@ -24,6 +24,7 @@ export class PassageModeComponent implements OnInit {
   isAllHoursToggleOn: boolean = true;
   startHour: string = '';
   endHour: string = '';
+  error:string ='';
 
   ngOnInit(): void {
     this.updateValues()
@@ -39,11 +40,11 @@ export class PassageModeComponent implements OnInit {
   }
   onPassageModeToggleChange(event: any) {
     this.isPassageModeToggleOn = event.checked;
-    this.cdr.detectChanges();
+    //this.cdr.detectChanges();
   }
   onAllHoursToggleChange(event: any) {
     this.isAllHoursToggleOn = event.checked;
-    this.cdr.detectChanges();
+    //this.cdr.detectChanges();
   }
   onCheckboxChange(event: any, day: any) {
     day.checked = event.target.checked;
@@ -69,25 +70,31 @@ export class PassageModeComponent implements OnInit {
     return (Number(tiempoHora) * 60 + Number(tiempoMinuto)).toString()
   }
   async cambiarPassageMode() {
+    this.error = '';
     const selectedDayNumbers: number[] = [];
     this.weekDays.forEach(day => {
       if (day.checked) {
         selectedDayNumbers.push(day.value);
       }
     });
-    const Config: PassageMode = {
-      "autoUnlock": 1,
-      "endDate": this.transformarHora(this.endHour),
-      "isAllDay": this.transformarAllHoursToggle(this.isAllHoursToggleOn),
-      "passageMode": this.transformarPassageToggle(this.isPassageModeToggleOn),
-      "startDate": this.transformarHora(this.startHour),
-      "weekDays": selectedDayNumbers
+    if(selectedDayNumbers.length === 0 && this.isPassageModeToggleOn){
+      this.error = 'Si quiere activar el Modo de Paso, debe seleccionar al menos un día'
     }
-    try {
-      await this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)
-      this.router.navigate(["lock", this.passageModeService.lockID]);
-    } catch (error) {
-      console.error("Error while setting passage mode:", error);
-    }
+    else {
+      const Config: PassageMode = {
+        "autoUnlock": 1,
+        "endDate": this.transformarHora(this.endHour),
+        "isAllDay": this.transformarAllHoursToggle(this.isAllHoursToggleOn),
+        "passageMode": this.transformarPassageToggle(this.isPassageModeToggleOn),
+        "startDate": this.transformarHora(this.startHour),
+        "weekDays": selectedDayNumbers
+      }
+      try {
+        await this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)
+        this.router.navigate(["lock", this.passageModeService.lockID]);
+      } catch (error) {
+        console.error("Error while setting passage mode:", error);
+      }
+    }  
   }
 }

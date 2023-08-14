@@ -112,7 +112,8 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while deleting a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -132,7 +133,8 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while freezing a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -152,14 +154,15 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response); 
+      console.log(response)
     } catch (error) {
       console.error("Error while unfreezing a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
 
-  async modifyEkey(token:string, ekeyID:number, newName:string = "", remoteEnable:string = "1" ){
+  async modifyEkey(token:string, ekeyID:number, newName?:string, remoteEnable?:string ){
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/update'
     let header = new HttpHeaders({
@@ -169,12 +172,17 @@ export class EkeyServiceService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('keyId', ekeyID.toString());
-    body.set('keyName', newName);
-    body.set('remoteEnable', remoteEnable);
     body.set('date', fecha);
+    if(newName !== undefined){
+      body.set('keyName', newName);
+    }
+    if (remoteEnable !== undefined){
+      body.set('remoteEnable', remoteEnable);
+    }
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while modifying a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -218,7 +226,8 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while authorizing a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -239,7 +248,8 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
+      this.dataSubject.next(response); 
+      console.log(response)
     } catch (error) {
       console.error("Error while authorizing a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

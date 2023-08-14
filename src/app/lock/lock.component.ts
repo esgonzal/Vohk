@@ -143,7 +143,7 @@ export class LockComponent implements OnInit {
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
     console.log("eKeys: ", this.ekeys)
-    console.log("Passcodes: ", this.passcodes)
+    //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
@@ -664,6 +664,7 @@ export class LockComponent implements OnInit {
       this.passageModeService.data$.subscribe((data) => {
         if (data) {
           this.passageModeService.passageModeConfig = data
+          console.log(this.passageModeService.passageModeConfig)
         }
       })
     }
