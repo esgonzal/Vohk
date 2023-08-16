@@ -26,56 +26,57 @@ export class PasscodeComponent {
   }
 
   validaFechaUsuario(diaFinal: string, horaFinal: string, tipo: string): boolean {
-    if (this.passcodeService.endDateUser === "0") {//Si e user es permanente
-      console.log("El usuario es permanente asi que no hay limite en las passcodes que puede hacer")
-      return true
-    }
-    else {//Si el user no es permanente
-      if (tipo !== "1" && tipo !== "2" && tipo !== "4" && tipo !== "Custom_Permanent") {//Si la clave no es permanente
-        if (diaFinal === undefined) {
-          console.log("Deberia ser imposible llegar aqui porque diaFinal no puede ser undefined si la clave no es permanente")
+    if (this.passcodeService.endDateUser !== '0') {
+      if (tipo === "1" || tipo === "2" || tipo === "4" || tipo === "Custom_Permanent") {
+        this.error = "Usted como usuario con autorización temporal no puede crear una clave permanente"
+        //La clave es permanente
+        return false
+      }
+      else {
+        let unixTimestamp = parseInt(this.passcodeService.endDateUser);
+        let endUser = moment.unix(unixTimestamp / 1000);
+        let endDate = moment(diaFinal).add(this.transformarHora(horaFinal), "milliseconds")
+        if (endUser.isBefore(endDate)) {
+          this.error = "La clave termina posterior a su permiso de autorización, comuníquese con el administrador de esta cerradura"
+          //El usuario termina antes que la clave
           return false;
         }
         else {
-          let unixTimestamp = parseInt(this.passcodeService.endDateUser);
-          let endUser = moment.unix(unixTimestamp / 1000);
-          let endDate = moment(diaFinal).add(this.transformarHora(horaFinal), "milliseconds")
-          if (endUser.isBefore(endDate)) {//SI el usuario termina antes que la clave
-            console.log("El usuario termina antes que la clave, por lo que no se puede")
-            return false;
-          }
-          else {//si la clave termina antes que el usuario
-            console.log("La clave termina antes que el usuario por lo que si es posible crearla")
-            return true
-          }
+          //El usuario termina despues que la clave
+          return true
         }
       }
-      else {//Si la clave es permanente
-        console.log("Un usuario temporal no puede crear una clave permanente")
-        return false
-      }
+    }
+    else {
+      //El usuario es permanente
+      return true;
     }
   }
 
   validaFechaInicio(diaInicial: string, horaInicial: string, diaFinal: string, horaFinal: string, tipo: string): boolean {
-    if (tipo !== "1" && tipo !== "2" && tipo !== "4" && tipo !== "Custom_Permanent") {//Si la clave no es permanente){
-      let startDate = moment(diaInicial).add(this.transformarHora(horaInicial), "milliseconds")
-      if (startDate.add(24, 'hours').isBefore(moment())) {//Si la clave inicia antes que el momento presente
-        this.error = "La passcode no puede inciar 24 horas antes que ahora"
+    if (tipo !== "1" && tipo !== "2" && tipo !== "4" && tipo !== "Custom_Permanent") {
+      let start = moment(diaInicial).add(this.transformarHora(horaInicial), "milliseconds")
+      if (start.add(24, 'hours').isBefore(moment())) {
+        this.error = "La passcode no puede iniciar 24 horas antes que ahora"
+        //La clave empieza 24 horas antes que ahora
         return false;
       }
       else {
+        let startDate = moment(diaInicial).add(this.transformarHora(horaInicial), "milliseconds")
         let endDate = moment(diaFinal).add(this.transformarHora(horaFinal), "milliseconds")
-        if (endDate.isBefore(startDate)) {//Si la clave termina antes de que empieza
+        if (endDate.isBefore(startDate)) {
           this.error = "El tiempo de inicio debe ser anterior al tiempo de finalización"
+          //La clave termina antes de la fecha de inicio
           return false;
         }
         else {
+          //La clave termina despues de la fecha de inicio
           return true;
         }
       }
     }
     else {
+      //La clave es permanente
       return true;
     }
   }
@@ -85,30 +86,34 @@ export class PasscodeComponent {
     let endDate = moment(datos.endDate).format("YYYY-MM-DD");
     let fechaInicial = startDate.concat('-').concat(datos.startHour);
     let fechaFinal = endDate.concat('-').concat(datos.endHour);
-    if (datos.passcodePwd) {//CUSTOM PASSCODE
-      if (datos.startDate) {//CUSTOM PERIOD
+    if (datos.passcodePwd) {
+      if (datos.startDate) {
+        //CUSTOM PERIOD PASSCODE
         await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
-        this.router.navigate(["users",this.username,"lock", this.lockId]);
+        this.router.navigate(["users", this.username, "lock", this.lockId]);
       }
-      else {//CUSTOM PERMANENT
+      else {
+        //CUSTOM PERMANENT PASSCODE
         await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0");
-        this.router.navigate(["users",this.username,"lock", this.lockId]);
+        this.router.navigate(["users", this.username, "lock", this.lockId]);
       }
     }
-    else {//NORMAL PASSCODE
-      if (datos.startDate) {//PERIODICA
+    else {
+      if (datos.startDate) {
+        //PERIODIC OR TIMED PASSCODE
         await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.convertirDate(fechaInicial), datos.name, this.lockService.convertirDate(fechaFinal));
-        this.router.navigate(["users",this.username,"lock", this.lockId]);
+        this.router.navigate(["users", this.username, "lock", this.lockId]);
       }
-      else {//RECURRENTE O PERMANENTE
-        if (datos.startHour) {//RECURRENTE
+      else {
+        if (datos.startHour) {
+          //RECURRING PASSCODE
           await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.convertirDate(datos.startHour), datos.name, this.lockService.convertirDate(datos.endHour));
-          this.router.navigate(["users",this.username,"lock", this.lockId]);
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
-        else {//PERMANENTE
-          console.log(moment().valueOf())
+        else {
+          //PERMANENT PASSCODE
           await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, moment().valueOf().toString(), datos.name)
-          this.router.navigate(["users",this.username,"lock", this.lockId]);
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
       }
     }
@@ -120,26 +125,17 @@ export class PasscodeComponent {
       this.error = "Por favor elija un tipo de passcode"
     }
     else {
-      if( ((datos.passcodeType==='3' || datos.passcodeType==='Custom_Period') && (!datos.startDate || !datos.endDate || !datos.startHour || !datos.endHour)) ){
-        this.error = "Por favore rellene los datos de fecha y hora"
+      if (((datos.passcodeType === '3' || datos.passcodeType === 'Custom_Period') && (!datos.startDate || !datos.endDate || !datos.startHour || !datos.endHour)) ||
+        ((datos.passcodeType === '5' || datos.passcodeType === '6' || datos.passcodeType === '7' || datos.passcodeType === '8' || datos.passcodeType === '9' || datos.passcodeType === '10' || datos.passcodeType === '11' || datos.passcodeType === '12' || datos.passcodeType === '13' || datos.passcodeType === '14') && (!datos.startHour || !datos.endHour))) {
+        this.error = "Por favor rellene los datos de fecha y/o hora"
       }
       else {
-        if (!this.validaFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.passcodeType)) {
-          //this.error = "La passcode no puede inciar 24 horas antes que ahora"
-        }
-        else {
-          if (!this.validaFechaUsuario(datos.endDate, datos.endHour, datos.passcodeType)) {
-            //this.error = "La passcode no puede durar más que el creador"
-          }
-          else {
+        if (this.validaFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.passcodeType)) {
+          if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.passcodeType)) {
             this.crearpasscode(datos);
           }
         }
       }
-
-
-
-      
     }
   }
 }

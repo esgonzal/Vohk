@@ -709,7 +709,7 @@ export class LockComponent implements OnInit {
     this.passcodeService.lockAlias = this.Alias;
     this.ekeyService.token = this.token;
     this.ekeyService.lockID = this.lockId;
-    this.ekeyService.endDateDeUser = this.endDateDeUser;
+    this.ekeyService.endDateUser = this.endDateDeUser;
     this.router.navigate(["users",this.username, "lock", this.lockId, "ekey"]);
   }
   Autorizar(ekeyID: number, user: string) {

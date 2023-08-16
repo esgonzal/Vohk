@@ -15,7 +15,7 @@ export class EkeyServiceService {
 
   token: string;
   lockID: number;
-  endDateDeUser: string;
+  endDateUser: string;
 
   constructor(private lockService:LockServiceService, private http:HttpClient) { }
 
