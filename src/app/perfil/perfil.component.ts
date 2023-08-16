@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class PerfilComponent {
 
+
+  username = localStorage.getItem('user') ?? ''
 }

@@ -51,6 +51,8 @@ export class NavbarComponent implements OnInit {
     localStorage.removeItem('startDate');
     localStorage.removeItem('endDate');
     localStorage.removeItem('senderUsername');
+    localStorage.removeItem('lockID');
+    localStorage.removeItem('gateway');
     this.menuType = 'LoggedOut';
     this.router.navigate(['home']);
   }

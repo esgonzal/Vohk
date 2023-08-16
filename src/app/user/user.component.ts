@@ -1,11 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
-import { AccessTokenData } from '../Interfaces/AccessToken';
 import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
-import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty, faGear} from '@fortawesome/free-solid-svg-icons'
+import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty,faGear,faWifi } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-user',
@@ -20,8 +19,6 @@ export class UserComponent implements OnInit {
   newPassword: string;
   newPasswordDisplay = false;
   token: string;
-  //tokenData: AccessTokenData;
-  //locksList: LockListResponse;
   ekeyList: LockListResponse;
   lock:LockData;
   faBatteryFull= faBatteryFull
@@ -30,6 +27,7 @@ export class UserComponent implements OnInit {
   faBatteryQuarter= faBatteryQuarter
   faBatteryEmpty= faBatteryEmpty
   faGear= faGear
+  faWifi= faWifi
 
   constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
     
@@ -59,12 +57,14 @@ export class UserComponent implements OnInit {
   }
 
   onLockButtonClick(lock:LockData){
+    localStorage.setItem('lockID', lock.lockId.toString())
     localStorage.setItem('Alias', lock.lockAlias)
     localStorage.setItem('Bateria', lock.electricQuantity.toString())
     localStorage.setItem('userType', lock.userType)
     localStorage.setItem('keyRight', lock.keyRight.toString())
     localStorage.setItem('startDate', lock.startDate)
     localStorage.setItem('endDate', lock.endDate)
-    this.router.navigate(['/lock/',lock.lockId])
+    localStorage.setItem('gateway', lock.hasGateway.toString())
+    this.router.navigate(['users',this.username,'lock',lock.lockId])
   }
 }

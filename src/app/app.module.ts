@@ -38,14 +38,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-
+import { AppRoutingModule } from './app-routing.module';
+import { RouterModule } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
-import { AppRoutingModule } from './app-routing.module';
-
-
-
 
 @NgModule({
   declarations: [
@@ -66,7 +62,6 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     FormsModule,
     HttpClientModule,
     MatExpansionModule,
@@ -85,7 +80,9 @@ import { AppRoutingModule } from './app-routing.module';
     NgxMaterialTimepickerModule,
     MatMenuModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    AppRoutingModule,
+    RouterModule.forRoot([])
   ],
   providers: [DatePipe ],
   bootstrap: [AppComponent]

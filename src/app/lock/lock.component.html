@@ -1,7 +1,10 @@
 <div class="pagina_completa">
-  <div class="breadbrumb">
-
-  </div>
+  <nav aria-label="breadcrumb-space">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Informacion sobre la Cerradura</li>
+    </ol>
+  </nav>
   <div class="resto">
     <div>
       <div>
@@ -58,6 +61,14 @@
                   </button>
                 </mat-menu>
               </div>
+              <div class="hasGateway" >
+                <div *ngIf="gateway==='1'"> 
+                  <fa-icon style="color: rgb(56, 206, 56);" [icon]="faWifi"></fa-icon>
+                </div>
+                <div *ngIf="gateway==='0'" style="color: red;">
+                  El dispositivo no está conectado a un Gateway
+                </div>
+              </div>
             </div>
             <div class="rol_usuario">
               <div *ngIf="userType==='110301'">
@@ -67,7 +78,7 @@
                 Administrador Secundario // {{periodoValidez(Number(startDateDeUser),Number(endDateDeUser))}}
               </div>
               <div *ngIf="userType==='110302' && keyRight==='0'">
-                <!--Usuario // {{periodoValidez(lock.startDate,lock.endDate)}}-->
+                Usuario // {{periodoValidez(Number(startDateDeUser),Number(endDateDeUser))}}
               </div>
             </div>
           </div>

@@ -11,12 +11,14 @@ export class TransferLockComponent {
 
   constructor(private lockService: LockServiceService, private router: Router) { }
 
+  username = localStorage.getItem('user') ?? ''
+  lockId:number = Number(localStorage.getItem('lockID') ?? '')
   recieverUsername: string;
 
   async transferir() {
     let lockID: number = this.lockService.lockID;
     let lockIDList: string = "[".concat(lockID.toString()).concat("]");
     await this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)
-    this.router.navigate(["lock", this.lockService.lockID]);
+    this.router.navigate(["users",this.username, "lock", this.lockId]);
   }
 }

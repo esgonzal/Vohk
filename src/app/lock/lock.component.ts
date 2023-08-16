@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear } from '@fortawesome/free-solid-svg-icons'
+import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { LockData, LockDetails } from '../Interfaces/Lock';
 import { Ekey, Passcode, Card, Fingerprint, Record } from '../Interfaces/Elements';
@@ -31,11 +31,13 @@ export class LockComponent implements OnInit {
   faBatteryQuarter = faBatteryQuarter
   faBatteryEmpty = faBatteryEmpty
   faGear = faGear
+  faWifi= faWifi
   ////////////////////////////////////////////////////////////
-  lockId: number;
   lock: LockData;
   lockDetails: LockDetails;
   token = localStorage.getItem('token') ?? '';
+  username = localStorage.getItem('user') ?? ''
+  lockId:number = Number(localStorage.getItem('lockID') ?? '')
   Alias = localStorage.getItem('Alias') ?? '';
   Bateria = localStorage.getItem('Bateria') ?? '';
   userType = localStorage.getItem('userType') ?? '';
@@ -43,6 +45,7 @@ export class LockComponent implements OnInit {
   startDateDeUser = localStorage.getItem('startDate') ?? '';
   endDateDeUser = localStorage.getItem('endDate') ?? '';
   fullName = localStorage.getItem('user') ?? '';
+  gateway = localStorage.getItem('gateway') ?? '';
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -69,20 +72,9 @@ export class LockComponent implements OnInit {
     private gatewayService: GatewayService,
     private passageModeService: PassageModeService,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {}
 
   async ngOnInit() {
-    // Get the lockId from route parameters
-    this.route.paramMap.subscribe(params => {
-      this.lockId = Number(params.get('id'));
-      // Use lockId to get the specific lock data
-      /*
-      this.ekeyService.data2$.subscribe((data) => {
-        if (data.list) {
-          this.lock = data.list.find((lock: { lockId: number; }) => lock.lockId === this.lockId);
-          if (!this.lock) {this.router.navigate(['']);}
-        } else {console.log("Data not yet available.");}
-      })*/});
     //Traer LockDetails
     try {
       await this.lockService.getLockDetails(this.token, this.lockId);
@@ -138,11 +130,10 @@ export class LockComponent implements OnInit {
     }
     catch (error) { console.error("Error while fetching the records:", error) }
     this.updatePasscodeUsage()
-    //console.log("El lock: ", this.lock)
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
-    console.log("eKeys: ", this.ekeys)
+    //console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
@@ -612,7 +603,7 @@ export class LockComponent implements OnInit {
   TransferirLock() {
     this.lockService.token = this.token;
     this.lockService.lockID = this.lockId;
-    this.router.navigate(["lock", this.lockId, "transferLock"]);
+    this.router.navigate(["users",this.username, "lock", this.lockId, "transferLock"]);
   }
   async Gateway() {
     let gatewaysOfLockFetched = false;
@@ -669,7 +660,7 @@ export class LockComponent implements OnInit {
       })
     }
     catch (error) { console.error("Error while fetching passage mode configurations:", error) }
-    this.router.navigate(["lock", this.lockId, "passageMode"]);
+    this.router.navigate(["users",this.username, "lock", this.lockId, "passageMode"]);  
   }
   AutoLock() {
     this.popupService.detalles = this.lockDetails;
@@ -719,7 +710,7 @@ export class LockComponent implements OnInit {
     this.ekeyService.token = this.token;
     this.ekeyService.lockID = this.lockId;
     this.ekeyService.endDateDeUser = this.endDateDeUser;
-    this.router.navigate(["lock", this.lockId, "ekey"]);
+    this.router.navigate(["users",this.username, "lock", this.lockId, "ekey"]);
   }
   Autorizar(ekeyID: number, user: string) {
     this.popupService.token = this.token;
@@ -741,7 +732,7 @@ export class LockComponent implements OnInit {
     this.passcodeService.token = this.token;
     this.passcodeService.lockID = this.lockId;
     this.passcodeService.endDateUser = this.endDateDeUser;
-    this.router.navigate(["lock", this.lockId, "passcode"]);
+    this.router.navigate(["users",this.username, "lock", this.lockId, "passcode"]);
   }
   cambiarPasscode(passcode: Passcode) {
     this.popupService.token = this.token;

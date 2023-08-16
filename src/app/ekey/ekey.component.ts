@@ -13,6 +13,8 @@ import { LockServiceService } from '../services/lock-service.service';
 export class EkeyComponent {
 
   constructor(private lockService:LockServiceService, private router: Router, public ekeyService: EkeyServiceService){}
+  username = localStorage.getItem('user') ?? ''
+  lockId:number = Number(localStorage.getItem('lockID') ?? '')
   error = "";
   selectedType = '';
   weekDays = [
@@ -59,38 +61,53 @@ export class EkeyComponent {
     }
   }
 
+  async crearEkey(datos: Formulario){
+    if (datos.ekeyType==='1'){//PERMANENTE
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0");
+      this.router.navigate(["lock", this.ekeyService.lockID]);
+    }
+    else if(datos.ekeyType==='2'){//PERIODICA
+      let newStartDay = moment(datos.startDate).valueOf()
+      let newEndDay = moment(datos.endDate).valueOf()
+      let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
+      let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString());
+      this.router.navigate(["lock", this.ekeyService.lockID]);
+    }
+    else if(datos.ekeyType==='3'){//DE UN USO
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1");
+      this.router.navigate(["lock", this.ekeyService.lockID]);
+    }
+    else if(datos.ekeyType==='4'){//SOLICITANTE
+      let newStartDay = moment(datos.startDate).valueOf()
+      let newEndDay = moment(datos.endDate).valueOf()
+      let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
+      let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
+      const selectedDayNumbers: number[] = [];
+      this.weekDays.forEach(day => {
+        if (day.checked) {selectedDayNumbers.push(day.value)}});
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
+      this.router.navigate(["users",this.username,"lock", this.lockId]);
+    }
+  }
+
   async validarNuevaEkey(datos: Formulario){
-    if (this.validaFechaUsuario(datos.endDate, datos.endHour)){
-      if (datos.ekeyType==='1'){//PERMANENTE
-        await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0");
-        this.router.navigate(["lock", this.ekeyService.lockID]);
-      }
-      else if(datos.ekeyType==='2'){//PERIODICA
-        let newStartDay = moment(datos.startDate).valueOf()
-        let newEndDay = moment(datos.endDate).valueOf()
-        let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
-        let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
-        await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString());
-        this.router.navigate(["lock", this.ekeyService.lockID]);
-      }
-      else if(datos.ekeyType==='3'){//DE UN USO
-        await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1");
-        this.router.navigate(["lock", this.ekeyService.lockID]);
-      }
-      else if(datos.ekeyType==='4'){//SOLICITANTE
-        let newStartDay = moment(datos.startDate).valueOf()
-        let newEndDay = moment(datos.endDate).valueOf()
-        let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
-        let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
-        const selectedDayNumbers: number[] = [];
-        this.weekDays.forEach(day => {
-          if (day.checked) {selectedDayNumbers.push(day.value)}});
-        await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
-        this.router.navigate(["lock", this.ekeyService.lockID]);
-      }
+    this.error = '';
+    if(!datos.recieverName){
+      this.error = "Por favor llene el campo 'Nombre del Recipiente'"
     }
     else {
-      this.error = "La eKey no puede durar más que el creador"
+      if(!datos.ekeyType){
+        this.error = "Por favor elija un tipo de eKey"
+      }
+      else {
+        if (this.validaFechaUsuario(datos.endDate, datos.endHour)){
+          this.crearEkey(datos);
+        }
+        else {
+          this.error = "La eKey no puede durar más que el creador"
+        }
+      }
     }
   }
 }

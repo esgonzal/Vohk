@@ -11,6 +11,14 @@
   gap: 30px;
 }
 
+.breadcrumb {
+  background-color: white;
+  margin: 35px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+}
+
 .linea {
   display: flex;
   flex-direction: column;

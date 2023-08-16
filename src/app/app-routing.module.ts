@@ -16,17 +16,17 @@ const routes: Routes = [
   {path:'home', component:HomeComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
-  {path:'users/:id', component:UserComponent},
-  {path:'users/:id/perfil', component:PerfilComponent},
-  {path:'lock/:id', component:LockComponent},
-  {path:'lock/:id/passcode', component:PasscodeComponent},
-  {path:'lock/:id/ekey', component:EkeyComponent},
-  {path:'lock/:id/passageMode', component:PassageModeComponent},
-  {path:'lock/:id/transferLock', component:TransferLockComponent}
+  {path:'users/:username', component:UserComponent},
+  {path:'users/:username/perfil', component:PerfilComponent},
+  {path:'users/:username/lock/:id', component:LockComponent},
+  {path:'users/:username/lock/:id/passcode', component:PasscodeComponent},
+  {path:'users/:username/lock/:id/ekey', component:EkeyComponent},
+  {path:'users/:username/lock/:id/passageMode', component:PassageModeComponent},
+  {path:'users/:username/lock/:id/transferLock', component:TransferLockComponent}
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

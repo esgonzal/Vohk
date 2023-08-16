@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
 })
 export class PassageModeComponent implements OnInit {
   constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) { }
-
+  username = localStorage.getItem('user') ?? ''
+  lockId:number = Number(localStorage.getItem('lockID') ?? '')
   isPassageModeToggleOn: boolean = false;
   weekDays = [
     { name: 'Lunes', value: 1, checked: false },
@@ -91,7 +92,7 @@ export class PassageModeComponent implements OnInit {
       }
       try {
         await this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)
-        this.router.navigate(["lock", this.passageModeService.lockID]);
+        this.router.navigate(["users",this.username ,"lock", this.lockId]);
       } catch (error) {
         console.error("Error while setting passage mode:", error);
       }
