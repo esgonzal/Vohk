@@ -137,6 +137,7 @@
                         <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                     </span>
                 </div>
+                <p class="error">{{error}}</p>
                 <div id="actions">
                     <button class="cancel" (click)="popupService.cambiarPeriodo = false">Volver</button>
                     <button type="submit">Guardar</button>
@@ -333,5 +334,27 @@
     </div>
     <div id="actions">
         <button (click)="popupService.mostrarHora = false">Ok</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.needGateway">
+    <div id="header">
+        Función no permitida
+    </div>
+    <div id="content">
+        Para utilizar esta función necesita conectar esta cerradura a un dispositivo gateway.
+    </div>
+    <div id="actions">
+        <button (click)="popupService.needGateway = false">Ok</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.invalidLock">
+    <div id="header">
+        Accesso Denegado
+    </div>
+    <div id="content">
+        No tiene permiso para acceder a esta cerradura. Comuníquese con el administrador de la cerradura para solucionar este problema.
+    </div>
+    <div id="actions">
+        <button (click)="popupService.invalidLock = false">Ok</button>
     </div>
 </div>

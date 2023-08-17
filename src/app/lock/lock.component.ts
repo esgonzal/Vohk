@@ -31,13 +31,13 @@ export class LockComponent implements OnInit {
   faBatteryQuarter = faBatteryQuarter
   faBatteryEmpty = faBatteryEmpty
   faGear = faGear
-  faWifi= faWifi
+  faWifi = faWifi
   ////////////////////////////////////////////////////////////
   lock: LockData;
   lockDetails: LockDetails;
   token = localStorage.getItem('token') ?? '';
   username = localStorage.getItem('user') ?? ''
-  lockId:number = Number(localStorage.getItem('lockID') ?? '')
+  lockId: number = Number(localStorage.getItem('lockID') ?? '')
   Alias = localStorage.getItem('Alias') ?? '';
   Bateria = localStorage.getItem('Bateria') ?? '';
   userType = localStorage.getItem('userType') ?? '';
@@ -72,7 +72,7 @@ export class LockComponent implements OnInit {
     private gatewayService: GatewayService,
     private passageModeService: PassageModeService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   async ngOnInit() {
     //Traer LockDetails
@@ -143,10 +143,11 @@ export class LockComponent implements OnInit {
   updatePasscodeUsage() {
     for (const passcode of this.passcodes) {
       const usedRecord = this.records.find(record => record.keyboardPwd === passcode.keyboardPwd && record.success === 1);
-      if (usedRecord) {passcode.hasBeenUsed = true}}
+      if (usedRecord) { passcode.hasBeenUsed = true }
+    }
   }
-  Number(palabra: string) { 
-    return Number(palabra) 
+  Number(palabra: string) {
+    return Number(palabra)
   }
   periodoValidez(start: number, end: number) {
     if (end === 0) { return 'Permanente' }
@@ -337,27 +338,27 @@ export class LockComponent implements OnInit {
     else {
       var ahora = moment().format("YYYY/MM/DD HH:mm")
       var final = moment(end).format("YYYY/MM/DD HH:mm")
-      if (moment(final).isBefore(ahora)) { 
-        return this.sanitizer.bypassSecurityTrustHtml('<span style="color: red;">Invalido</span>'); 
+      if (moment(final).isBefore(ahora)) {
+        return this.sanitizer.bypassSecurityTrustHtml('<span style="color: red;">Caducado</span>');
       }
       else { return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); }
     }
   }
   consultarEstadoEkey(ekey: Ekey) {
     if (ekey.keyStatus === "110402") {//PENDING
-      return this.sanitizer.bypassSecurityTrustHtml('<span style="color: gray;">Pendiente</span>'); 
+      return this.sanitizer.bypassSecurityTrustHtml('<span style="color: gray;">Pendiente</span>');
     }
     if (ekey.keyStatus === "110405") {//FREEZED
-      return this.sanitizer.bypassSecurityTrustHtml('<span style="color: blue;">Congelada</span>'); 
+      return this.sanitizer.bypassSecurityTrustHtml('<span style="color: blue;">Congelada</span>');
     }
     else {//NORMAL
       if (!ekey.endDay) {//MIENTRAS NO SEA SOLICITANTE 
         if (this.Number(ekey.endDate) === 0) {//PERMANENTE
-          return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); 
+          return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>');
         }
         if (this.Number(ekey.endDate) === 1) {//UNA VEZ
-          if ( moment(ekey.startDate).add(1, "hour").isAfter(moment()) ){ 
-            return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); 
+          if (moment(ekey.startDate).add(1, "hour").isAfter(moment())) {
+            return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>');
           } else {
             return this.sanitizer.bypassSecurityTrustHtml('<span style="color: red;">Invalido</span>');
           }
@@ -586,14 +587,24 @@ export class LockComponent implements OnInit {
         return 'Unknown type';
     }
   }
-  getFullName() { 
-    return this.userService.fullNombre_usuario 
+  getFullName() {
+    return this.userService.fullNombre_usuario
   }
-  async Unlock(){
-    await this.gatewayService.unlock(this.token, this.lockId);
+  async Unlock() {
+    if (this.gateway === '1') {
+      await this.gatewayService.unlock(this.token, this.lockId);
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
-  async Lock(){
-    await this.gatewayService.lock(this.token, this.lockId);
+  async Lock() {
+    if (this.gateway === '1') {
+      await this.gatewayService.lock(this.token, this.lockId);
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   //SETTINGS
   Esencial() {
@@ -603,7 +614,7 @@ export class LockComponent implements OnInit {
   TransferirLock() {
     this.lockService.token = this.token;
     this.lockService.lockID = this.lockId;
-    this.router.navigate(["users",this.username, "lock", this.lockId, "transferLock"]);
+    this.router.navigate(["users", this.username, "lock", this.lockId, "transferLock"]);
   }
   async Gateway() {
     let gatewaysOfLockFetched = false;
@@ -647,26 +658,36 @@ export class LockComponent implements OnInit {
     this.popupService.mostrarHora = true;
   }
   async PassageMode() {
-    this.passageModeService.token = this.token
-    this.passageModeService.lockID = this.lockId;
-    //TRAER CONFIGURACION DE MODO DE PASO
-    try {
-      await this.passageModeService.getPassageModeConfig(this.token, this.lockId);
-      this.passageModeService.data$.subscribe((data) => {
-        if (data) {
-          this.passageModeService.passageModeConfig = data
-          console.log(this.passageModeService.passageModeConfig)
-        }
-      })
+    if (this.gateway === '1') {
+      this.passageModeService.token = this.token
+      this.passageModeService.lockID = this.lockId;
+      //TRAER CONFIGURACION DE MODO DE PASO
+      try {
+        await this.passageModeService.getPassageModeConfig(this.token, this.lockId);
+        this.passageModeService.data$.subscribe((data) => {
+          if (data) {
+            this.passageModeService.passageModeConfig = data
+            console.log(this.passageModeService.passageModeConfig)
+          }
+        })
+      }
+      catch (error) { console.error("Error while fetching passage mode configurations:", error) }
+      this.router.navigate(["users", this.username, "lock", this.lockId, "passageMode"]);
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
     }
-    catch (error) { console.error("Error while fetching passage mode configurations:", error) }
-    this.router.navigate(["users",this.username, "lock", this.lockId, "passageMode"]);  
   }
   AutoLock() {
-    this.popupService.detalles = this.lockDetails;
-    this.popupService.token = this.token;
-    this.popupService.lockID = this.lockId;
-    this.popupService.cerradoAutomatico = true;
+    if (this.gateway === '1') {
+      this.popupService.detalles = this.lockDetails;
+      this.popupService.token = this.token;
+      this.popupService.lockID = this.lockId;
+      this.popupService.cerradoAutomatico = true;
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   //FUNCIONES EKEY
   congelar(ekeyID: number, user: string) {
@@ -710,7 +731,7 @@ export class LockComponent implements OnInit {
     this.ekeyService.token = this.token;
     this.ekeyService.lockID = this.lockId;
     this.ekeyService.endDateUser = this.endDateDeUser;
-    this.router.navigate(["users",this.username, "lock", this.lockId, "ekey"]);
+    this.router.navigate(["users", this.username, "lock", this.lockId, "ekey"]);
   }
   Autorizar(ekeyID: number, user: string) {
     this.popupService.token = this.token;
@@ -732,30 +753,45 @@ export class LockComponent implements OnInit {
     this.passcodeService.token = this.token;
     this.passcodeService.lockID = this.lockId;
     this.passcodeService.endDateUser = this.endDateDeUser;
-    this.router.navigate(["users",this.username, "lock", this.lockId, "passcode"]);
+    this.router.navigate(["users", this.username, "lock", this.lockId, "passcode"]);
   }
   cambiarPasscode(passcode: Passcode) {
-    this.popupService.token = this.token;
-    this.popupService.lockID = this.lockId;
-    this.popupService.elementType = 'passcode';
-    this.popupService.elementID = passcode.keyboardPwdId;
-    this.popupService.passcode = passcode;
-    this.popupService.editarPasscode = true;
+    if (this.gateway === '1') {
+      this.popupService.token = this.token;
+      this.popupService.lockID = this.lockId;
+      this.popupService.elementType = 'passcode';
+      this.popupService.elementID = passcode.keyboardPwdId;
+      this.popupService.passcode = passcode;
+      this.popupService.editarPasscode = true;
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   borrarPasscode(passcodeID: number) {
-    this.popupService.token = this.token;
-    this.popupService.lockID = this.lockId;
-    this.popupService.elementType = 'passcode';
-    this.popupService.elementID = passcodeID;
-    this.popupService.confirmDelete = true;
+    if (this.gateway === '1') {
+      this.popupService.token = this.token;
+      this.popupService.lockID = this.lockId;
+      this.popupService.elementType = 'passcode';
+      this.popupService.elementID = passcodeID;
+      this.popupService.confirmDelete = true;
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   //FUNCIONES CARD
   borrarCard(cardID: number) {
-    this.popupService.token = this.token;
-    this.popupService.lockID = this.lockId;
-    this.popupService.elementType = 'card';
-    this.popupService.elementID = cardID;
-    this.popupService.confirmDelete = true;
+    if (this.gateway === '1') {
+      this.popupService.token = this.token;
+      this.popupService.lockID = this.lockId;
+      this.popupService.elementType = 'card';
+      this.popupService.elementID = cardID;
+      this.popupService.confirmDelete = true;
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   cambiarNombreCard(cardID: number) {
     this.popupService.token = this.token;
@@ -765,19 +801,29 @@ export class LockComponent implements OnInit {
     this.popupService.cambiarNombre = true;
   }
   cambiarPeriodoCard(cardID: number) {
-    this.popupService.token = this.token;
-    this.popupService.lockID = this.lockId;
-    this.popupService.elementType = 'card';
-    this.popupService.elementID = cardID;
-    this.popupService.cambiarPeriodo = true;
+    if (this.gateway === '1') {
+      this.popupService.token = this.token;
+      this.popupService.lockID = this.lockId;
+      this.popupService.elementType = 'card';
+      this.popupService.elementID = cardID;
+      this.popupService.cambiarPeriodo = true;
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   //FUNCIONES FINGERPRINT
   borrarFingerprint(fingerID: number) {
-    this.popupService.token = this.token;
-    this.popupService.lockID = this.lockId;
-    this.popupService.elementType = 'fingerprint';
-    this.popupService.elementID = fingerID;
-    this.popupService.confirmDelete = true;
+    if (this.gateway === '1') {
+      this.popupService.token = this.token;
+      this.popupService.lockID = this.lockId;
+      this.popupService.elementType = 'fingerprint';
+      this.popupService.elementID = fingerID;
+      this.popupService.confirmDelete = true;
+    } else {
+      this.popupService.needGateway = true;
+      console.log("Necesita estar conectado a un gateway para usar esta función")
+    }
   }
   cambiarNombreFingerprint(fingerID: number) {
     this.popupService.token = this.token;

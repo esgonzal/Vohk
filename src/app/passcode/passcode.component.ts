@@ -15,6 +15,7 @@ export class PasscodeComponent {
   constructor(private passcodeService: PasscodeServiceService, private lockService: LockServiceService, private router: Router) { }
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
+  gateway = localStorage.getItem('gateway') ?? ''
   error = '';
   selectedType = '';
   onSelected(value: string): void { this.selectedType = value }
@@ -87,15 +88,19 @@ export class PasscodeComponent {
     let fechaInicial = startDate.concat('-').concat(datos.startHour);
     let fechaFinal = endDate.concat('-').concat(datos.endHour);
     if (datos.passcodePwd) {
-      if (datos.startDate) {
-        //CUSTOM PERIOD PASSCODE
-        await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
-        this.router.navigate(["users", this.username, "lock", this.lockId]);
-      }
-      else {
-        //CUSTOM PERMANENT PASSCODE
-        await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0");
-        this.router.navigate(["users", this.username, "lock", this.lockId]);
+      if (this.gateway === '1') {
+        if (datos.startDate) {
+          //CUSTOM PERIOD PASSCODE
+          await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        }
+        else {
+          //CUSTOM PERMANENT PASSCODE
+          await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0");
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        }
+      } else {
+        console.log("Necesita estar conectado a un gateway para usar esta función")
       }
     }
     else {

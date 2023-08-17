@@ -65,7 +65,7 @@
                 <div *ngIf="gateway==='1'"> 
                   <fa-icon style="color: rgb(56, 206, 56);" [icon]="faWifi"></fa-icon>
                 </div>
-                <div *ngIf="gateway==='0'" style="color: red;">
+                <div *ngIf="gateway==='0'" style="color: red; font-weight: bold;">
                   El dispositivo no está conectado a un Gateway
                 </div>
               </div>
@@ -405,5 +405,5 @@
 <app-pop-up *ngIf="this.popupService.confirmDelete || this.popupService.cambiarNombre || this.popupService.cambiarPeriodo || this.popupService.editarPasscode || 
                   this.popupService.confirmAutorizar || this.popupService.confirmDesautorizar || this.popupService.confirmCongelar || 
                   this.popupService.confirmDescongelar || this.popupService.Esencial || this.popupService.Gateway || 
-                  this.popupService.cerradoAutomatico || this.popupService.mostrarHora"
+                  this.popupService.cerradoAutomatico || this.popupService.mostrarHora || this.popupService.needGateway"
   style="z-index: 10;"></app-pop-up>

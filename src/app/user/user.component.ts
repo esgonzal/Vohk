@@ -5,6 +5,8 @@ import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty,faGear,faWifi } from '@fortawesome/free-solid-svg-icons'
+import moment from 'moment';
+import { PopUpService } from '../services/pop-up.service';
 
 @Component({
   selector: 'app-user',
@@ -29,7 +31,7 @@ export class UserComponent implements OnInit {
   faGear= faGear
   faWifi= faWifi
 
-  constructor(private router: Router, public userService: UserServiceService, public lockService: LockServiceService, public ekeyService: EkeyServiceService) {}
+  constructor(private router: Router, private userService: UserServiceService, private lockService: LockServiceService, private ekeyService: EkeyServiceService, public popupService: PopUpService) {}
     
   async ngOnInit(){
     this.username = localStorage.getItem('user') ?? ''; 
@@ -45,7 +47,7 @@ export class UserComponent implements OnInit {
       await this.ekeyService.getEkeysofAccount(token);
       this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
-          console.log(data.list)
+          //console.log(data.list)
           this.ekeyList = data;
         } else {
           console.log("Error en EncontrarLocks_EkeysdelUsuario (user.component.ts)");
@@ -67,4 +69,19 @@ export class UserComponent implements OnInit {
     localStorage.setItem('gateway', lock.hasGateway.toString())
     this.router.navigate(['users',this.username,'lock',lock.lockId])
   }
+
+  onInvalidButtonClick(){
+    this.popupService.invalidLock = true;
+  }
+
+  hasValidAccess(lock:LockData):boolean{
+    if(Number(lock.endDate)===0 || moment(lock.endDate).isAfter(moment())){
+      return true
+    }
+    else {
+      return false;
+    }
+  }
+
+
 }

@@ -57,7 +57,6 @@ export class UserServiceService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject
-      console.log(response);
     } catch (error) {
       console.error("Error while fetching access token:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

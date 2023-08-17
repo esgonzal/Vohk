@@ -19,6 +19,19 @@
   cursor: pointer;
 }
 
+.invalid-lock {
+  background-color: rgb(255,255,255);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 300px;
+}
+
+.invalid-lock:hover {
+  background-color: #c41818; /* Change this color to your preference */
+  cursor: pointer;
+}
+
 .title-wrapper {
   display: flex;
   flex-direction: column;

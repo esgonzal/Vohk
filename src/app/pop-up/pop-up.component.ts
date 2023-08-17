@@ -27,6 +27,7 @@ export class PopUpComponent implements OnInit {
   autoLockToggle = false;
   customAutoLockTime: number = 0;
   selectedType = '';
+  error = '';
   ////////////////////////////////
 
   constructor(public dialogRef: MatDialog,
@@ -125,8 +126,8 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  transformarRemoteEnable(Slider:boolean){
-    if(Slider){
+  transformarRemoteEnable(Slider: boolean) {
+    if (Slider) {
       return '1'
     } else {
       return '2'
@@ -156,29 +157,34 @@ export class PopUpComponent implements OnInit {
   }
   //popup eKey, card y fingerprint
   async cambiarPeriodo(datos: Formulario) {
-    const startDate = moment(datos.startDate).format("YYYY-MM-DD");
-    const endDate = moment(datos.endDate).format("YYYY-MM-DD");
-    const fechaInicial = startDate.concat('-').concat(datos.startHour);
-    const fechaFinal = endDate.concat('-').concat(datos.endHour);
-    if (this.popupService.cambiarPeriodo) {
-      switch (this.popupService.elementType) {
-        case 'ekey':
-          await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
-          break;
-        case 'card':
-          await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
-          break;
-        case 'fingerprint':
-          await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
-          break;
-        default:
-          console.error('Invalid element type for deletion:', this.popupService.elementID);
-          break;
+    this.error = '';
+    if (!datos.startDate || !datos.startHour || !datos.endDate || !datos.endHour) {
+      this.error = "Por favor ingrese los datos requeridos"
+    } else {
+      const startDate = moment(datos.startDate).format("YYYY-MM-DD");
+      const endDate = moment(datos.endDate).format("YYYY-MM-DD");
+      const fechaInicial = startDate.concat('-').concat(datos.startHour);
+      const fechaFinal = endDate.concat('-').concat(datos.endHour);
+      if (this.popupService.cambiarPeriodo) {
+        switch (this.popupService.elementType) {
+          case 'ekey':
+            await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+            break;
+          case 'card':
+            await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+            break;
+          case 'fingerprint':
+            await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+            break;
+          default:
+            console.error('Invalid element type for deletion:', this.popupService.elementID);
+            break;
+        }
       }
+      this.popupService.cambiarPeriodo = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
     }
-    this.popupService.cambiarPeriodo = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
   }
   //popup passcode
   async editarPasscode(datos: Formulario) {

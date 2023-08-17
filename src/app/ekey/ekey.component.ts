@@ -12,7 +12,7 @@ import { LockServiceService } from '../services/lock-service.service';
 })
 export class EkeyComponent {
 
-  constructor(private lockService: LockServiceService, private router: Router, public ekeyService: EkeyServiceService) { }
+  constructor(private lockService: LockServiceService, private router: Router, public ekeyService: EkeyServiceService) {}
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   error = "";
@@ -116,7 +116,7 @@ export class EkeyComponent {
     }
   }
 
-  async validarNuevaEkey(datos: Formulario) {
+  validarNuevaEkey(datos: Formulario) {
     this.error = '';
     if (!datos.recieverName) {
       this.error = "Por favor llene el campo 'Nombre del Recipiente'"
@@ -139,4 +139,21 @@ export class EkeyComponent {
       }
     }
   }
+
+  async crearEkeySimple(datos: Formulario){
+    let startDate = moment().valueOf()
+    let endDate = moment().add(24,"hours").valueOf()
+    await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, startDate.toString(), endDate.toString())
+  }
+
+  validarEkeySimple(datos: Formulario){
+    this.error = '';
+    if (!datos.recieverName) {
+      this.error = "Por favor llene el campo 'Nombre del Recipiente'"
+    }
+    else {
+      this.crearEkeySimple(datos);
+    }
+  }
+
 }
