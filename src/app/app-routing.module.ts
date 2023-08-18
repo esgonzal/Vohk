@@ -11,7 +11,6 @@ import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
 import { HomeComponent } from './home/home.component';
 import { PerfilComponent } from './perfil/perfil.component';
 
-
 const routes: Routes = [
   {path:'home', component:HomeComponent},
   {path:'login', component:LoginComponent},

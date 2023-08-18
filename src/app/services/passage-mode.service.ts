@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PassageMode } from '../Interfaces/PassageMode';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 

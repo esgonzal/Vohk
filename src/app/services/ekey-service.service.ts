@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 @Injectable({
@@ -16,6 +15,7 @@ export class EkeyServiceService {
   token: string;
   lockID: number;
   endDateUser: string;
+  ekeysimple = false;
 
   constructor(private lockService:LockServiceService, private http:HttpClient) { }
 
@@ -62,7 +62,7 @@ export class EkeyServiceService {
     }
   }
 
-  async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string, keyType?:number, startDay?:string, endDay?:string, weekDays?:string){
+  async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string, keyRight:number, keyType?:number, startDay?:string, endDay?:string, weekDays?:string){
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/send'
     let header = new HttpHeaders({
@@ -77,6 +77,7 @@ export class EkeyServiceService {
     body.set('startDate', startDate);
     body.set('endDate', endDate);
     body.set('date', fecha);
+    body.set('keyRight', keyRight.toString());
     if (keyType !== undefined) {
       body.set('keyType', keyType.toString());
     }
@@ -92,11 +93,12 @@ export class EkeyServiceService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject
-      console.log(response)
+      console.log(response);
     } catch (error) {
       console.error("Error while sending a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
+    
   }
 
   async deleteEkey(token:string, keyID:number){

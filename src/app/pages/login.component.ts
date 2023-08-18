@@ -43,7 +43,6 @@ export class LoginComponent {
     localStorage.setItem('user', data.username)
     localStorage.setItem('password', data.password);
     localStorage.setItem('token', this.access_token);
-    this.userService.fullNombre_usuario = data.username;
   }
 }
 

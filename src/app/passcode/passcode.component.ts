@@ -4,6 +4,7 @@ import { PasscodeServiceService } from '../services/passcode-service.service';
 import { Router } from '@angular/router';
 import moment from 'moment';
 import { LockServiceService } from '../services/lock-service.service';
+import { PopUpService } from '../services/pop-up.service';
 
 @Component({
   selector: 'app-passcode',
@@ -12,7 +13,7 @@ import { LockServiceService } from '../services/lock-service.service';
 })
 export class PasscodeComponent {
 
-  constructor(private passcodeService: PasscodeServiceService, private lockService: LockServiceService, private router: Router) { }
+  constructor(public passcodeService: PasscodeServiceService, private lockService: LockServiceService, private router: Router, public popupService: PopUpService) { }
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   gateway = localStorage.getItem('gateway') ?? ''
@@ -83,30 +84,14 @@ export class PasscodeComponent {
   }
 
   async crearpasscode(datos: Formulario) {
-    let startDate = moment(datos.startDate).format("YYYY-MM-DD");
-    let endDate = moment(datos.endDate).format("YYYY-MM-DD");
-    let fechaInicial = startDate.concat('-').concat(datos.startHour);
-    let fechaFinal = endDate.concat('-').concat(datos.endHour);
-    if (datos.passcodePwd) {
-      if (this.gateway === '1') {
-        if (datos.startDate) {
-          //CUSTOM PERIOD PASSCODE
-          await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
-        }
-        else {
-          //CUSTOM PERMANENT PASSCODE
-          await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0");
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
-        }
-      } else {
-        console.log("Necesita estar conectado a un gateway para usar esta función")
-      }
-    }
-    else {
+    if (!datos.passcodePwd) {
       if (datos.startDate) {
-        //PERIODIC OR TIMED PASSCODE
-        await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.convertirDate(fechaInicial), datos.name, this.lockService.convertirDate(fechaFinal));
+        //PERIODIC PASSCODE
+        let newStartDay = moment(datos.startDate).valueOf()
+        let newEndDay = moment(datos.endDate).valueOf()
+        let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
+        let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
+        await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, newStartDate.toString(), datos.name, newEndDate.toString());
         this.router.navigate(["users", this.username, "lock", this.lockId]);
       }
       else {
@@ -122,6 +107,26 @@ export class PasscodeComponent {
         }
       }
     }
+    else {
+      if (this.gateway === '1') {
+        if (datos.startDate) {
+          //CUSTOM PERIOD PASSCODE
+          let newStartDay = moment(datos.startDate).valueOf()
+          let newEndDay = moment(datos.endDate).valueOf()
+          let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
+          let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
+          await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, newStartDate.toString(), newEndDate.toString());
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        }
+        else {
+          //CUSTOM PERMANENT PASSCODE
+          await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0");
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        }
+      } else {
+        this.popupService.needGateway = true;
+      }
+    }
   }
 
   validarNuevaPass(datos: Formulario) {
@@ -135,13 +140,31 @@ export class PasscodeComponent {
         this.error = "Por favor rellene los datos de fecha y/o hora"
       }
       else {
-        if (this.validaFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.passcodeType)) {
-          if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.passcodeType)) {
-            this.crearpasscode(datos);
+        if ((datos.passcodeType === 'Custom_Period' || datos.passcodeType === 'Custom_Permanent') && !datos.passcodePwd) {
+          this.error = "Por favor introduzca una contraseña"
+        }
+        else {
+          if(Number(datos.passcodePwd)<1000 || Number(datos.passcodePwd)>999999999){
+            this.error = "La contraseña debe tener entre 4 y 9 digitos"
+          }
+          else {
+            if (this.validaFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.passcodeType)) {
+              if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.passcodeType)) {
+                this.crearpasscode(datos);
+              }
+            }
           }
         }
       }
     }
+  }
+
+  validarPasscodeSimple(datos: Formulario) {
+    let startDate = moment().valueOf()
+    let endDate = moment().add(1, "hour").valueOf()
+    this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())
+    this.passcodeService.passcodesimple = false;
+    this.router.navigate(["users", this.username, "lock", this.lockId]);
   }
 }
 

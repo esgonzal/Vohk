@@ -15,7 +15,6 @@ import { PerfilComponent } from './perfil/perfil.component';
 
 
 import { DatePipe } from '@angular/common';
-import { TextTransformPipe } from './ekey/text.pipe';
 import { HttpClientModule } from "@angular/common/http";
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -53,7 +52,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     LockComponent,
     PasscodeComponent,
     EkeyComponent,
-    TextTransformPipe,
     PopUpComponent,
     PassageModeComponent,
     TransferLockComponent,

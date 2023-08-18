@@ -31,9 +31,9 @@ export class PopUpComponent implements OnInit {
   ////////////////////////////////
 
   constructor(public dialogRef: MatDialog,
+    public popupService: PopUpService,
     private router: Router,
     private lockService: LockServiceService,
-    public popupService: PopUpService,
     private ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
@@ -70,12 +70,12 @@ export class PopUpComponent implements OnInit {
   }
   //popup Register
   navigateToLogin() {
-    this.popupService.confirmRegister = false;
+    this.popupService.registro = false;
     this.router.navigate(['/login']);
   }
   //popup eKey, passcode, card y fingerprint
   async delete() {
-    if (this.popupService.confirmDelete) {
+    if (this.popupService.delete) {
       switch (this.popupService.elementType) {
         case 'passcode':
           await this.passcodeService.deletePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
@@ -94,35 +94,45 @@ export class PopUpComponent implements OnInit {
           break;
       }
     }
-    this.popupService.confirmDelete = false;
+    this.popupService.delete = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
   //popup eKey
   async autorizar() {
     await this.ekeyService.AuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
-    this.popupService.confirmAutorizar = false;
+    this.popupService.autorizar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
+  }
+  autorizarFalso(){
+    console.log("Se cambio el simpleRight de", this.popupService.elementType,"a 0")
+    localStorage.setItem(this.popupService.elementType, "0")
+    this.popupService.autorizarFalso = false;
   }
   //popup eKey
   async desautorizar() {
     await this.ekeyService.cancelAuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
-    this.popupService.confirmDesautorizar = false;
+    this.popupService.desautorizar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
+  }
+  desautorizarFalso(){
+    console.log("Se cambio el simpleRight de", this.popupService.elementType,"a 1")
+    localStorage.setItem(this.popupService.elementType, "1")
+    this.popupService.desautorizarFalso = false;
   }
   //popup eKey
   async congelar() {
     await this.ekeyService.freezeEkey(this.popupService.token, this.popupService.elementID);
-    this.popupService.confirmCongelar = false;
+    this.popupService.congelar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
   //popup eKey
   async descongelar() {
     await this.ekeyService.unfreezeEkey(this.popupService.token, this.popupService.elementID);
-    this.popupService.confirmDescongelar = false;
+    this.popupService.descongelar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
@@ -135,25 +145,30 @@ export class PopUpComponent implements OnInit {
   }
   //popup eKey, card y fingerprint
   async cambiarNombre(datos: Formulario) {
-    if (this.popupService.cambiarNombre) {
-      switch (this.popupService.elementType) {
-        case 'ekey':
-          await this.ekeyService.modifyEkey(this.popupService.token, this.popupService.elementID, datos.name, this.transformarRemoteEnable(datos.ekeyRemoteEnable));
-          break;
-        case 'card':
-          await this.cardService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
-          break;
-        case 'fingerprint':
-          await this.fingerprintService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
-          break;
-        default:
-          console.error('Invalid element type for deletion:', this.popupService.elementID);
-          break;
+    this.error = '';
+    if(!datos.name){
+      this.error = "Por favor ingrese el dato requerido"
+    } else {
+      if (this.popupService.cambiarNombre) {
+        switch (this.popupService.elementType) {
+          case 'ekey':
+            await this.ekeyService.modifyEkey(this.popupService.token, this.popupService.elementID, datos.name, this.transformarRemoteEnable(datos.ekeyRemoteEnable));
+            break;
+          case 'card':
+            await this.cardService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
+            break;
+          case 'fingerprint':
+            await this.fingerprintService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
+            break;
+          default:
+            console.error('Invalid element type for deletion:', this.popupService.elementID);
+            break;
+        }
       }
+      this.popupService.cambiarNombre = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
     }
-    this.popupService.cambiarNombre = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
   }
   //popup eKey, card y fingerprint
   async cambiarPeriodo(datos: Formulario) {
@@ -216,7 +231,6 @@ export class PopUpComponent implements OnInit {
     else {
       return 'Mediana '.concat(rssi.toString());
     }
-
   }
   //popup autoLock
   onSelected(value: string): void {

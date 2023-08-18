@@ -12,8 +12,7 @@ export class NavbarComponent implements OnInit {
   menuType: string = "LoggedOut";
   username: string | null = "";
 
-  constructor(private router:Router,
-    private userService: UserServiceService) { }
+  constructor(private router:Router) { }
 
   ngOnInit(): void {
     this.router.events.subscribe((val:any) => {

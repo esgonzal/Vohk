@@ -1,11 +1,12 @@
-<div class="pagina_completa">
+<div class="pagina_completa" *ngIf="!this.passcodeService.passcodesimple">
     <nav aria-label="breadcrumb-space">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
-            <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId]">Informacion sobre la Cerradura</a></li>
+            <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId]">Informacion sobre la
+                    Cerradura</a></li>
             <li class="breadcrumb-item active" aria-current="page">Generar passcode</li>
         </ol>
-      </nav>
+    </nav>
     <div class="resto">
         <div class="form-area">
             <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva Passcode</h2>
@@ -13,13 +14,14 @@
                 <div class="linea">
                     <span class="input-container">
                         Nombre de la Passcode
-                        <input type="text" class="form-input" name="name" placeholder="..." ngModel/>
+                        <input type="text" class="form-input" name="name" placeholder="..." ngModel />
                     </span>
                 </div>
                 <div class="linea">
                     <span class="input-container">
                         Tipo de contraseña
-                        <select #types name="passcodeType" (change)="onSelected(types.value)" ngModel style="width: 202px; height: 35px;">
+                        <select #types name="passcodeType" (change)="onSelected(types.value)" ngModel
+                            style="width: 202px; height: 35px;">
                             <option default value="">No seleccionado</option>
                             <option value="1">De un Uso</option>
                             <option value="2">Permanente</option>
@@ -43,7 +45,8 @@
                 <div class="linea" *ngIf="selectedType === 'Custom_Permanent' || selectedType === 'Custom_Period' ">
                     <span class="input-container">
                         Contraseña de la Passcode
-                        <input type="text" class="form-input" name="passcodePwd" placeholder="***" required="required" ngModel />
+                        <input type="number" class="form-input" name="passcodePwd" placeholder="***" required="required"
+                            ngModel/>
                     </span>
                 </div>
                 <div class="linea" *ngIf="selectedType === '3'">
@@ -51,31 +54,35 @@
                         Fecha de inicio
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
-                            <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                            <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY"
+                                required="required" ngModel>
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
                         Hora de inicio
                         <mat-form-field appearance="fill">
                             <mat-label>Hora</mat-label>
-                            <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                            <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm"
+                                required="required" [format]="24" ngModel>
                         </mat-form-field>
                         <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                     </span>
                 </div>
-                <div class="linea"  *ngIf="selectedType === '3'">
+                <div class="linea" *ngIf="selectedType === '3'">
                     <span class="input-container">
                         Fecha de finalización
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
-                            <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                            <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY"
+                                required="required" ngModel>
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>
-                        Hora de finalización 
+                        Hora de finalización
                         <mat-form-field appearance="fill">
                             <mat-label>Hora</mat-label>
-                            <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                            <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm"
+                                required="required" [format]="24" ngModel>
                         </mat-form-field>
                         <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                     </span>
@@ -85,50 +92,57 @@
                         Fecha de inicio
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
-                            <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                            <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY"
+                                required="required" ngModel>
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
                         Hora de inicio
                         <mat-form-field appearance="fill">
                             <mat-label>Hora</mat-label>
-                            <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                            <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm"
+                                required="required" [format]="24" ngModel>
                         </mat-form-field>
                         <ngx-material-timepicker #startTimePicker></ngx-material-timepicker>
                     </span>
                 </div>
-                <div class="linea"  *ngIf="selectedType === 'Custom_Period' ">
-                    <span  class="input-container">
-                        Fecha de finalización 
+                <div class="linea" *ngIf="selectedType === 'Custom_Period' ">
+                    <span class="input-container">
+                        Fecha de finalización
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
-                            <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY" required="required" ngModel>
+                            <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY"
+                                required="required" ngModel>
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>
-                        Hora de finalización 
+                        Hora de finalización
                         <mat-form-field appearance="fill">
                             <mat-label>Hora</mat-label>
-                            <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
+                            <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm"
+                                required="required" [format]="24" ngModel>
                         </mat-form-field>
                         <ngx-material-timepicker #endTimePicker></ngx-material-timepicker>
                     </span>
                 </div>
                 <!--SOLO PREGUNTAR HORA-->
-                <div class="linea"  *ngIf="selectedType !== '' && selectedType !== '1' && selectedType !== '2' && selectedType !== '3' && selectedType !== '4' && selectedType !== 'Custom_Permanent' && selectedType !== 'Custom_Period'">
-                    <span  class="input-container">
+                <div class="linea"
+                    *ngIf="selectedType !== '' && selectedType !== '1' && selectedType !== '2' && selectedType !== '3' && selectedType !== '4' && selectedType !== 'Custom_Permanent' && selectedType !== 'Custom_Period'">
+                    <span class="input-container">
                         Hora de inicio
-                    <mat-form-field appearance="fill">
-                        <mat-label>Hora</mat-label>
-                        <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
-                    </mat-form-field>
-                    <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
-                    Hora de finalización
-                    <mat-form-field appearance="fill">
-                        <mat-label>Hora</mat-label>
-                        <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm" required="required" [format]="24" ngModel>
-                    </mat-form-field>
-                    <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Hora</mat-label>
+                            <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm"
+                                required="required" [format]="24" ngModel>
+                        </mat-form-field>
+                        <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+                        Hora de finalización
+                        <mat-form-field appearance="fill">
+                            <mat-label>Hora</mat-label>
+                            <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm"
+                                required="required" [format]="24" ngModel>
+                        </mat-form-field>
+                        <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                     </span>
                 </div>
                 <p class="error">{{error}}</p>
@@ -137,7 +151,18 @@
         </div>
     </div>
 </div>
-
-
-
-
+<app-pop-up *ngIf="this.popupService.needGateway"></app-pop-up>
+<div class="pagina_completa" *ngIf="this.passcodeService.passcodesimple">
+    <div class="resto">
+        <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva Passcode</h2>
+        <form #formInput="ngForm" (ngSubmit)="validarPasscodeSimple(formInput.value)" class="common-form">
+            <div class="linea">
+                <span class="input-container">
+                    Nombre de la Passcode
+                    <input type="text" class="form-input" name="name" placeholder="..." ngModel />
+                </span>
+            </div>
+            <button class="form-button" type="submit">Generar</button>
+        </form>
+    </div>
+</div>

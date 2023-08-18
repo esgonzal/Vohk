@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
-
 import moment from 'moment-timezone';
 import {Md5} from 'ts-md5';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { LockServiceService } from './lock-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,16 @@ export class UserServiceService {
 
   nombre_usuario:string;
   clave_usuario:string;
-  fullNombre_usuario:string;
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private lockService: LockServiceService) { }
 
   public getMD5(clave:string){return Md5.hashStr(clave);}
-
-  public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
-    return timeInShanghai;
-  }
   
   UserRegister(nombre:string, clave:string){
+    let date = this.lockService.timestamp();
     let clave_encriptada = this.getMD5(clave);
-    let date = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/user/register';
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -64,11 +58,11 @@ export class UserServiceService {
   }
 
   DeleteUser(nombre: string){
+    let date = this.lockService.timestamp();
     let url =  'https://euapi.ttlock.com/v3/user/delete';
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
     let options = { headers: header};
-    let date = this.timestamp()
     let prefix = 'bhaaa_';
     let username = prefix.concat(nombre)
     let body = new URLSearchParams();
@@ -82,8 +76,8 @@ export class UserServiceService {
   }
 
   ResetPassword(nombre: string, clave: string){
+    let date = this.lockService.timestamp()
     let clave_encriptada = this.getMD5(clave);
-    let date = this.timestamp()
     const url = 'https://euapi.ttlock.com/v3/user/resetPassword';
     let header = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'});
@@ -101,6 +95,4 @@ export class UserServiceService {
       console.log(response);
     });
   }
-
-
 }

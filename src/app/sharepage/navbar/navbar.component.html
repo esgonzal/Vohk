@@ -3,8 +3,9 @@
         <a class="navbar-brand" routerLink="home">
             <img src="../../../assets/images/logo.png" alt="Vöhk Logo" width="auto" height="50" style="display: flex;">
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div *ngIf="menuType==='LoggedOut'" class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto">
@@ -23,15 +24,15 @@
                         {{username}}
                     </a>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="mostrarCerraduras()" >
+                        <button mat-menu-item (click)="mostrarCerraduras()">
                             <span>Mis Dispositivos</span>
-                          </button>
-                          <button mat-menu-item (click)="toPerfil()">
+                        </button>
+                        <button mat-menu-item (click)="toPerfil()">
                             <span>Informacion Personal</span>
-                          </button>
-                          <button mat-menu-item (click)="cerrarSesion()">
+                        </button>
+                        <button mat-menu-item (click)="cerrarSesion()">
                             <span>Cerrar Sesion</span>
-                          </button>
+                        </button>
                     </mat-menu>
                 </li>
             </ul>

@@ -4,7 +4,7 @@ import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
-import { faBatteryFull,faBatteryThreeQuarters,faBatteryHalf,faBatteryQuarter,faBatteryEmpty,faGear,faWifi } from '@fortawesome/free-solid-svg-icons'
+import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { PopUpService } from '../services/pop-up.service';
 
@@ -22,43 +22,43 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   token: string;
   ekeyList: LockListResponse;
-  lock:LockData;
-  faBatteryFull= faBatteryFull
-  faBatteryThreeQuarters= faBatteryThreeQuarters
-  faBatteryHalf= faBatteryHalf
-  faBatteryQuarter= faBatteryQuarter
-  faBatteryEmpty= faBatteryEmpty
-  faGear= faGear
-  faWifi= faWifi
+  lock: LockData;
+  faBatteryFull = faBatteryFull
+  faBatteryThreeQuarters = faBatteryThreeQuarters
+  faBatteryHalf = faBatteryHalf
+  faBatteryQuarter = faBatteryQuarter
+  faBatteryEmpty = faBatteryEmpty
+  faGear = faGear
+  faWifi = faWifi
 
-  constructor(private router: Router, private userService: UserServiceService, private lockService: LockServiceService, private ekeyService: EkeyServiceService, public popupService: PopUpService) {}
-    
-  async ngOnInit(){
-    this.username = localStorage.getItem('user') ?? ''; 
-    this.password = localStorage.getItem('password') ?? ''; 
-    this.token = localStorage.getItem('token') ?? ''; 
-    if(this.token){
+  constructor(private router: Router, private userService: UserServiceService, private lockService: LockServiceService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
+
+  async ngOnInit() {
+    this.username = localStorage.getItem('user') ?? '';
+    this.password = localStorage.getItem('password') ?? '';
+    this.token = localStorage.getItem('token') ?? '';
+    if (this.token) {
       await this.EncontrarLocks_EkeysdelUsuario(this.token);
-    }    
+    }
   }
 
-  async EncontrarLocks_EkeysdelUsuario(token: string){//locks y tambien ekeys
-    try{
+  async EncontrarLocks_EkeysdelUsuario(token: string) {//locks y tambien ekeys
+    try {
       await this.ekeyService.getEkeysofAccount(token);
       this.ekeyService.data2$.subscribe((data) => {
         if (data.list) {
-          //console.log(data.list)
+          console.log(data.list)
           this.ekeyList = data;
         } else {
           console.log("Error en EncontrarLocks_EkeysdelUsuario (user.component.ts)");
         }
       });
-    } catch(error) {
+    } catch (error) {
       console.error("Error while fetching eKeyList:", error);
     }
   }
 
-  onLockButtonClick(lock:LockData){
+  onLockButtonClick(lock: LockData) {
     localStorage.setItem('lockID', lock.lockId.toString())
     localStorage.setItem('Alias', lock.lockAlias)
     localStorage.setItem('Bateria', lock.electricQuantity.toString())
@@ -67,15 +67,16 @@ export class UserComponent implements OnInit {
     localStorage.setItem('startDate', lock.startDate)
     localStorage.setItem('endDate', lock.endDate)
     localStorage.setItem('gateway', lock.hasGateway.toString())
-    this.router.navigate(['users',this.username,'lock',lock.lockId])
+
+    this.router.navigate(['users', this.username, 'lock', lock.lockId])
   }
 
-  onInvalidButtonClick(){
+  onInvalidButtonClick() {
     this.popupService.invalidLock = true;
   }
 
-  hasValidAccess(lock:LockData):boolean{
-    if(Number(lock.endDate)===0 || moment(lock.endDate).isAfter(moment())){
+  hasValidAccess(lock: LockData): boolean {
+    if (Number(lock.endDate) === 0 || moment(lock.endDate).isAfter(moment())) {
       return true
     }
     else {

@@ -1,4 +1,4 @@
-<div id="container" *ngIf="popupService.confirmRegister">
+<div id="container" *ngIf="popupService.registro">
     <div id="header">
         Gracias por registrarse en nuestra plataforma
     </div>
@@ -9,7 +9,7 @@
         <button (click)="navigateToLogin()">Iniciar Sesión</button>
     </div>
 </div>
-<div id="container" *ngIf="popupService.confirmDelete">
+<div id="container" *ngIf="popupService.delete">
     <div id="header">
         Por favor confirme sus acciones
     </div>
@@ -17,11 +17,11 @@
         ¿Está seguro que desea eliminar esta {{popupService.elementType}}?
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.confirmDelete = false">No</button>
+        <button class="cancel" (click)="popupService.delete = false">No</button>
         <button (click)="delete()">Si</button>
     </div>
 </div>
-<div id="container" *ngIf="popupService.confirmAutorizar">
+<div id="container" *ngIf="popupService.autorizar">
     <div id="header">
         Por favor confirme sus acciones
     </div>
@@ -29,11 +29,23 @@
         ¿Está seguro que desea autorizar a {{popupService.elementType}}?
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.confirmAutorizar = false">No</button>
+        <button class="cancel" (click)="popupService.autorizar = false">No</button>
         <button (click)="autorizar()">Si</button>
     </div>
 </div>
-<div id="container" *ngIf="popupService.confirmDesautorizar">
+<div id="container" *ngIf="popupService.autorizarFalso">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea autorizar a {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.autorizarFalso = false">No</button>
+        <button (click)="autorizarFalso()">Si</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.desautorizar">
     <div id="header">
         Por favor confirme sus acciones
     </div>
@@ -41,11 +53,23 @@
         ¿Está seguro que desea desautorizar a {{popupService.elementType}}?
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.confirmDesautorizar = false">No</button>
+        <button class="cancel" (click)="popupService.desautorizar = false">No</button>
         <button (click)="desautorizar()">Si</button>
     </div>
 </div>
-<div id="container" *ngIf="popupService.confirmCongelar">
+<div id="container" *ngIf="popupService.desautorizarFalso">
+    <div id="header">
+        Por favor confirme sus acciones
+    </div>
+    <div id="content">
+        ¿Está seguro que desea desautorizar a {{popupService.elementType}}?
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.desautorizarFalso = false">No</button>
+        <button (click)="desautorizarFalso()">Si</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.congelar">
     <div id="header">
         Por favor confirme sus acciones
     </div>
@@ -53,11 +77,11 @@
         ¿Está seguro que desea congelar a {{popupService.elementType}}?
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.confirmCongelar = false">No</button>
+        <button class="cancel" (click)="popupService.congelar = false">No</button>
         <button (click)="congelar()">Si</button>
     </div>
 </div>
-<div id="container" *ngIf="popupService.confirmDescongelar">
+<div id="container" *ngIf="popupService.descongelar">
     <div id="header">
         Por favor confirme sus acciones
     </div>
@@ -65,7 +89,7 @@
         ¿Está seguro que desea descongelar a {{popupService.elementType}}?
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.confirmDescongelar = false">No</button>
+        <button class="cancel" (click)="popupService.descongelar = false">No</button>
         <button (click)="descongelar()">Si</button>
     </div>
 </div>
@@ -80,6 +104,7 @@
                     Nombre
                     <input type="text" class="form-input" name="name" required="" ngModel />
                 </p>
+                <p class="error">{{error}}</p>
                 <div id="actions">
                     <button class="cancel" (click)="popupService.cambiarNombre = false">Volver</button>
                     <button type="submit">Guardar</button>
@@ -214,7 +239,7 @@
 
     </div>
 </div>
-<div id="container" *ngIf="popupService.Esencial">
+<div id="container" *ngIf="popupService.esencial">
     <div id="header">
         Esencial
     </div>
@@ -245,10 +270,10 @@
         </div>
     </div>
     <div id="actions">
-        <button (click)="popupService.Esencial= false">Ok</button>
+        <button (click)="popupService.esencial= false">Ok</button>
     </div>
 </div>
-<div id="container" *ngIf="popupService.Gateway">
+<div id="container" *ngIf="popupService.gateway">
     <div id="header">
         Gateways asociados con este dispositivo
     </div>
@@ -276,7 +301,7 @@
 
     </div>
     <div id="actions">
-        <button (click)="popupService.Gateway= false">Ok</button>
+        <button (click)="popupService.gateway= false">Ok</button>
     </div>
 </div>
 <div id="container" *ngIf="popupService.cerradoAutomatico">

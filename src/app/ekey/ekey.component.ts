@@ -3,7 +3,6 @@ import { EkeyServiceService } from '../services/ekey-service.service';
 import { Router } from '@angular/router';
 import { Formulario } from '../Interfaces/Formulario';
 import moment from 'moment';
-import { LockServiceService } from '../services/lock-service.service';
 
 @Component({
   selector: 'app-ekey',
@@ -12,7 +11,7 @@ import { LockServiceService } from '../services/lock-service.service';
 })
 export class EkeyComponent {
 
-  constructor(private lockService: LockServiceService, private router: Router, public ekeyService: EkeyServiceService) {}
+  constructor(private router: Router, public ekeyService: EkeyServiceService) { }
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   error = "";
@@ -87,20 +86,17 @@ export class EkeyComponent {
 
   async crearEkey(datos: Formulario) {
     if (datos.ekeyType === '1') {//PERMANENTE
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0");
-      this.router.navigate(["lock", this.ekeyService.lockID]);
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1);
     }
     else if (datos.ekeyType === '2') {//PERIODICA
       let newStartDay = moment(datos.startDate).valueOf()
       let newEndDay = moment(datos.endDate).valueOf()
       let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
       let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString());
-      this.router.navigate(["lock", this.ekeyService.lockID]);
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 1);
     }
     else if (datos.ekeyType === '3') {//DE UN USO
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1");
-      this.router.navigate(["lock", this.ekeyService.lockID]);
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1", 1);
     }
     else if (datos.ekeyType === '4') {//SOLICITANTE
       let newStartDay = moment(datos.startDate).valueOf()
@@ -111,8 +107,7 @@ export class EkeyComponent {
       this.weekDays.forEach(day => {
         if (day.checked) { selectedDayNumbers.push(day.value) }
       });
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
-      this.router.navigate(["users", this.username, "lock", this.lockId]);
+      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, 1, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
     }
   }
 
@@ -130,29 +125,15 @@ export class EkeyComponent {
           this.error = "Por favor rellene los datos de fecha y/o hora"
         }
         else {
-          if(this.validarFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.ekeyType)){
+          if (this.validarFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.ekeyType)) {
             if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.ekeyType)) {
               this.crearEkey(datos);
+              localStorage.setItem(datos.recieverName, "1")
+              this.router.navigate(["users", this.username, "lock", this.lockId]);
             }
           }
         }
       }
-    }
-  }
-
-  async crearEkeySimple(datos: Formulario){
-    let startDate = moment().valueOf()
-    let endDate = moment().add(24,"hours").valueOf()
-    await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, startDate.toString(), endDate.toString())
-  }
-
-  validarEkeySimple(datos: Formulario){
-    this.error = '';
-    if (!datos.recieverName) {
-      this.error = "Por favor llene el campo 'Nombre del Recipiente'"
-    }
-    else {
-      this.crearEkeySimple(datos);
     }
   }
 

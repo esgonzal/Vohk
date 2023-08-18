@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Passcode } from '../Interfaces/Elements';
-import { LockData, LockDetails } from '../Interfaces/Lock';
+import { LockDetails } from '../Interfaces/Lock';
 import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
 
 @Injectable({
@@ -8,17 +8,19 @@ import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
 })
 export class PopUpService {
 
-  confirmRegister = false;
-  confirmDelete = false;
-  confirmAutorizar = false;
-  confirmDesautorizar = false;
-  confirmCongelar = false;
-  confirmDescongelar = false;
+  registro = false;
+  delete = false;
+  autorizar = false;
+  desautorizar = false;
+  autorizarFalso = false;
+  desautorizarFalso = false;
+  congelar = false;
+  descongelar = false;
   cambiarNombre = false;
   cambiarPeriodo = false;
   editarPasscode = false;
-  Esencial = false;
-  Gateway = false;
+  esencial = false;
+  gateway = false;
   mostrarHora = false;
   cerradoAutomatico = false;
   needGateway = false;

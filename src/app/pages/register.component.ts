@@ -34,7 +34,7 @@ export class RegisterComponent {
         } 
         else {
           this.userService.UserRegister(data.username, data.password);
-          this.popupService.confirmRegister = true;
+          this.popupService.registro = true;
           this.popupService.welcomingMessage = `Bienvenido, ${data.username}! Presione el siguiente botón para iniciar sesión en su cuenta.`;
         }
       }

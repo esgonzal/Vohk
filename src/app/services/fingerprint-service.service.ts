@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import moment from 'moment';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 

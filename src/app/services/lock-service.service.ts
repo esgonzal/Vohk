@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
-import { BehaviorSubject, last, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import moment from 'moment';
-import { AccessTokenData } from '../Interfaces/AccessToken';
-import { LockData } from '../Interfaces/Lock';
+import 'moment-timezone';
+
 
 
 @Injectable({
@@ -19,7 +19,7 @@ export class LockServiceService {
   constructor(private http:HttpClient) { }
 
   public timestamp(){
-    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf();
+    let timeInShanghai = moment().tz('Asia/Shanghai').valueOf()
     return timeInShanghai.toString();
   }
 

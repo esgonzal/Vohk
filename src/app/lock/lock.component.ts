@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { LockData, LockDetails } from '../Interfaces/Lock';
 import { Ekey, Passcode, Card, Fingerprint, Record } from '../Interfaces/Elements';
-import { UserServiceService } from '../services/user-service.service';
 import { LockServiceService } from '../services/lock-service.service';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { PasscodeServiceService } from '../services/passcode-service.service';
@@ -46,23 +45,25 @@ export class LockComponent implements OnInit {
   endDateDeUser = localStorage.getItem('endDate') ?? '';
   fullName = localStorage.getItem('user') ?? '';
   gateway = localStorage.getItem('gateway') ?? '';
+  simpleRight = localStorage.getItem(this.username) ?? '';
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
   fingerprints: Fingerprint[] = []
   cards: Card[] = []
   records: Record[] = []
+  recordsFiltrados: Record[] = []
+  passcodesFiltradas: Passcode[] = []
   ////////////////////////////////////////////////////////////
-  displayedColumnsEkey: string[] = ['keyName', 'username', 'senderUsername', 'date', 'Asignacion', 'Estado', 'Operacion']
+  displayedColumnsEkey: string[] = ['username', 'rol', 'senderUsername', 'date', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsPasscode: string[] = ['keyboardPwdName', 'keyboardPwd', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsCard: string[] = ['cardName', 'cardNumber', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsFingerprint: string[] = ['fingerprintName', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsRecord: string[] = ['Operador', 'Metodo_Apertura', 'Horario_Apertura', 'Estado']
 
-  constructor(private route: ActivatedRoute,
+  constructor(
     private router: Router,
     public popupService: PopUpService,
-    private userService: UserServiceService,
     private lockService: LockServiceService,
     private ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
@@ -129,12 +130,14 @@ export class LockComponent implements OnInit {
       })
     }
     catch (error) { console.error("Error while fetching the records:", error) }
+    this.recordsFiltrados = this.records.filter(record => record.username === this.username);
+    this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.username);
     this.updatePasscodeUsage()
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
     //console.log("eKeys: ", this.ekeys)
-    //console.log("Passcodes: ", this.passcodes)
+    console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
@@ -148,6 +151,14 @@ export class LockComponent implements OnInit {
   }
   Number(palabra: string) {
     return Number(palabra)
+  }
+  rol(username:string){
+    let simpleRight = localStorage.getItem(username);
+    if(simpleRight==='0') {
+      return 'Administrador Secundario'
+    } else {
+      return 'Usuario'
+    }
   }
   periodoValidez(start: number, end: number) {
     if (end === 0) { return 'Permanente' }
@@ -460,11 +471,11 @@ export class LockComponent implements OnInit {
       case 25:
         return 'unlock by card failed—card expired';
       case 26:
-        return 'lock by Bluetooth';
+        return 'Cerrar con Aplicación';
       case 27:
         return 'unlock by Mechanical key';
       case 28:
-        return 'unlock by gateway';
+        return 'Abrir de forma remota';
       case 29:
         return 'apply some force on the Lock';
       case 30:
@@ -587,9 +598,6 @@ export class LockComponent implements OnInit {
         return 'Unknown type';
     }
   }
-  getFullName() {
-    return this.userService.fullNombre_usuario
-  }
   async Unlock() {
     if (this.gateway === '1') {
       await this.gatewayService.unlock(this.token, this.lockId);
@@ -609,7 +617,7 @@ export class LockComponent implements OnInit {
   //SETTINGS
   Esencial() {
     this.popupService.detalles = this.lockDetails;
-    this.popupService.Esencial = true;
+    this.popupService.esencial = true;
   }
   TransferirLock() {
     this.lockService.token = this.token;
@@ -628,7 +636,7 @@ export class LockComponent implements OnInit {
           gatewaysOfLockFetched = true;
 
           if (gatewaysOfLockFetched && gatewaysOfAccountFetched) {
-            this.popupService.Gateway = true;
+            this.popupService.gateway = true;
           }
         }
         else { console.log("Data not yet available.") }
@@ -643,14 +651,14 @@ export class LockComponent implements OnInit {
           gatewaysOfAccountFetched = true;
 
           if (gatewaysOfLockFetched && gatewaysOfAccountFetched) {
-            this.popupService.Gateway = true;
+            this.popupService.gateway = true;
           }
         }
         else { console.log("Data not yet available.") }
       })
     }
     catch (error) { console.error("Error while fetching the gatewaysof the account:", error); }
-    this.popupService.Gateway = true;
+    this.popupService.gateway = true;
 
   }
   HoraDispositivo() {
@@ -695,22 +703,21 @@ export class LockComponent implements OnInit {
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
-    this.popupService.confirmCongelar = true;
+    this.popupService.congelar = true;
   }
   descongelar(ekeyID: number, user: string) {
     this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
-    this.popupService.confirmDescongelar = true;
+    this.popupService.descongelar = true;
   }
   borrarEkey(ekeyID: number) {
     this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
-    this.popupService.confirmDelete = true;
-
+    this.popupService.delete = true;
   }
   cambiarNombreEkey(ekeyID: number) {
     this.popupService.token = this.token;
@@ -738,14 +745,26 @@ export class LockComponent implements OnInit {
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
-    this.popupService.confirmAutorizar = true;
+    this.popupService.autorizar = true;
   }
   Desautorizar(ekeyID: number, user: string) {
     this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementID = ekeyID;
     this.popupService.elementType = user;
-    this.popupService.confirmDesautorizar = true;
+    this.popupService.desautorizar = true;
+  }
+  //
+  AutorizarFalso(ekey: Ekey){
+    this.popupService.elementType = ekey.username;
+    this.popupService.autorizarFalso = true;
+  }
+  DesautorizarFalso(ekey: Ekey){
+    this.popupService.elementType = ekey.username;
+    this.popupService.desautorizarFalso = true;
+  }
+  getVariable(nombre:string){
+    return localStorage.getItem(nombre);
   }
   //FUNCIONES PASSCODE
   crearPasscode() {
@@ -774,11 +793,17 @@ export class LockComponent implements OnInit {
       this.popupService.lockID = this.lockId;
       this.popupService.elementType = 'passcode';
       this.popupService.elementID = passcodeID;
-      this.popupService.confirmDelete = true;
+      this.popupService.delete = true;
     } else {
       this.popupService.needGateway = true;
       console.log("Necesita estar conectado a un gateway para usar esta función")
     }
+  }
+  crearPasscodeSimple(){
+    this.passcodeService.token = this.token;
+    this.passcodeService.lockID = this.lockId;
+    this.passcodeService.passcodesimple = true;
+    this.router.navigate(["users", this.username, "lock", this.lockId, "passcode"]);
   }
   //FUNCIONES CARD
   borrarCard(cardID: number) {
@@ -787,7 +812,7 @@ export class LockComponent implements OnInit {
       this.popupService.lockID = this.lockId;
       this.popupService.elementType = 'card';
       this.popupService.elementID = cardID;
-      this.popupService.confirmDelete = true;
+      this.popupService.delete = true;
     } else {
       this.popupService.needGateway = true;
       console.log("Necesita estar conectado a un gateway para usar esta función")
@@ -819,7 +844,7 @@ export class LockComponent implements OnInit {
       this.popupService.lockID = this.lockId;
       this.popupService.elementType = 'fingerprint';
       this.popupService.elementID = fingerID;
-      this.popupService.confirmDelete = true;
+      this.popupService.delete = true;
     } else {
       this.popupService.needGateway = true;
       console.log("Necesita estar conectado a un gateway para usar esta función")
