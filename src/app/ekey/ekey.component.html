@@ -53,7 +53,7 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY"
-                                required="required" ngModel>
+                                required="required" ngModel (dateChange)="startTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -72,7 +72,7 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY"
-                                required="required" ngModel>
+                                required="required" ngModel (dateChange)="endTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>

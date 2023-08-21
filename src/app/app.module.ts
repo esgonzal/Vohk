@@ -41,6 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TransferLockComponent,
     HomeComponent,
     PerfilComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

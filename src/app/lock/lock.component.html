@@ -44,19 +44,16 @@
                   <button mat-menu-item *ngIf="userType==='110301'" (click)="TransferirLock()">
                     <span>Transferir Dispositivos</span>
                   </button>
-                  <button mat-menu-item *ngIf="userType==='110301'">
-                    <span>Notificación de Apertura</span>
-                  </button>
                   <button mat-menu-item *ngIf="userType==='110301'" (click)="Gateway()">
                     <span>Gateway</span>
                   </button>
                   <button mat-menu-item (click)="HoraDispositivo()">
                     <span>Hora del Dispositivo</span>
                   </button>
-                  <button mat-menu-item *ngIf="simpleRight==='0'" (click)="PassageMode()">
+                  <button mat-menu-item *ngIf="simpleRight!=='1'" (click)="PassageMode()">
                     <span>Modo de Paso</span>
                   </button>
-                  <button mat-menu-item *ngIf="simpleRight==='0'" (click)="AutoLock()">
+                  <button mat-menu-item *ngIf="simpleRight!=='1'" (click)="AutoLock()">
                     <span>Cierre Automático</span>
                   </button>
                 </mat-menu>
@@ -153,12 +150,12 @@
                             <button
                               *ngIf="( (userType==='110301') || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) || (ekey.username===fullName) )"
                               mat-button class="mat-warn" (click)="borrarEkey(ekey.keyId)">Eliminar</button>
-
+                            <!--
                             <button
                               *ngIf="( (userType==='110301') || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) || (ekey.username===fullName) )"
                               mat-button class="mat-primary" (click)="cambiarNombreEkey(ekey.keyId)">Editar
                               Nombre</button>
-
+                            -->
                             <button
                               *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) )"
                               mat-button class="mat-primary" (click)="cambiarPeriodoEkey(ekey.keyId)">Editar

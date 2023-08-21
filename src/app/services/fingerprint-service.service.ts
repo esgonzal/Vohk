@@ -29,7 +29,6 @@ export class FingerprintServiceService {
       try {
         const response = await lastValueFrom(this.http.post(url, body.toString(), options));
         this.dataSubject.next(response);
-        
       } catch (error) {
         console.error("Error getting the list of fingerprints of a lock:", error);
         this.dataSubject.next(null); // Emit null to dataSubject on error

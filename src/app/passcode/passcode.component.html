@@ -1,4 +1,4 @@
-<div class="pagina_completa" *ngIf="!this.passcodeService.passcodesimple">
+<div class="pagina_completa">
     <nav aria-label="breadcrumb-space">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
@@ -7,7 +7,7 @@
             <li class="breadcrumb-item active" aria-current="page">Generar passcode</li>
         </ol>
     </nav>
-    <div class="resto">
+    <div class="resto" *ngIf="this.passcodeService.passcodesimple===false">
         <div class="form-area">
             <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva Passcode</h2>
             <form #formInput="ngForm" (ngSubmit)="validarNuevaPass(formInput.value)" class="common-form">
@@ -46,7 +46,7 @@
                     <span class="input-container">
                         Contraseña de la Passcode
                         <input type="number" class="form-input" name="passcodePwd" placeholder="***" required="required"
-                            ngModel/>
+                            ngModel />
                     </span>
                 </div>
                 <div class="linea" *ngIf="selectedType === '3'">
@@ -55,7 +55,7 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY"
-                                required="required" ngModel>
+                                required="required" ngModel (dateChange)="startTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -74,7 +74,7 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY"
-                                required="required" ngModel>
+                                required="required" ngModel (dateChange)="endTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -93,7 +93,7 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="MM/DD/YYYY"
-                                required="required" ngModel>
+                                required="required" ngModel (dateChange)="startTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -112,7 +112,7 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="MM/DD/YYYY"
-                                required="required" ngModel>
+                                required="required" ngModel (dateChange)="endTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -152,14 +152,27 @@
     </div>
 </div>
 <app-pop-up *ngIf="this.popupService.needGateway"></app-pop-up>
-<div class="pagina_completa" *ngIf="this.passcodeService.passcodesimple">
-    <div class="resto">
+<div class="resto" *ngIf="this.passcodeService.passcodesimple">
+    <div class="form-area">
         <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva Passcode</h2>
         <form #formInput="ngForm" (ngSubmit)="validarPasscodeSimple(formInput.value)" class="common-form">
             <div class="linea">
                 <span class="input-container">
                     Nombre de la Passcode
                     <input type="text" class="form-input" name="name" placeholder="..." ngModel />
+                </span>
+            </div>
+            <div class="linea">
+                <span class="input-container">
+                    Duración
+                    <select #hours name="passcodeType" (change)="onSelectedHour(hours.value)" [(ngModel)]="howManyHours"
+                            style="width: 202px; height: 35px;">
+                            <option default value="">No seleccionado</option>
+                            <option value="1">1 Hora</option>
+                            <option value="6">6 Horas</option>
+                            <option value="12">12 Horas</option>
+                            <option value="24">24 Horas</option>
+                        </select>
                 </span>
             </div>
             <button class="form-button" type="submit">Generar</button>

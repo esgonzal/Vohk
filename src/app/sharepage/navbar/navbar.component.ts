@@ -9,38 +9,31 @@ import { UserServiceService } from 'src/app/services/user-service.service';
 })
 export class NavbarComponent implements OnInit {
 
-  menuType: string = "LoggedOut";
-  username: string | null = "";
-
-  constructor(private router:Router) { }
+  constructor(private router: Router, public userService: UserServiceService) { }
 
   ngOnInit(): void {
-    this.router.events.subscribe((val:any) => {
-      if(val.url){
-        if((localStorage.getItem('user')) && (val.url.includes('users') || val.url.includes('lock') || val.url.includes('home'))){
-          this.menuType = "LoggedIn"
-          this.username = localStorage.getItem('user');
-        }
-        else{
-          this.menuType = "LoggedOut"
-        }
-      }
-    })
   }
 
-  mostrarCerraduras(){
-    this.username = localStorage.getItem('user');
-    this.router.navigate(['users', this.username]);
+  returnNombre(){
+    return localStorage.getItem('user') ?? '';
   }
 
-  toPerfil(){
-    this.username = localStorage.getItem('user');
-    this.router.navigate(['users',this.username,'perfil']);
+  returnLogged(){
+    return localStorage.getItem('logged') ?? '';
   }
 
-  cerrarSesion(){
+  mostrarCerraduras() {
+    let username = localStorage.getItem('user') ?? '';
+    this.router.navigate(['users', username]);
+  }
+
+  toPerfil() {
+    let username = localStorage.getItem('user') ?? '';
+    this.router.navigate(['users', username, 'perfil']);
+  }
+
+  cerrarSesion() {
     localStorage.removeItem('user');
-    localStorage.removeItem('fullName');
     localStorage.removeItem('password');
     localStorage.removeItem('token');
     localStorage.removeItem('keyRight');
@@ -52,7 +45,7 @@ export class NavbarComponent implements OnInit {
     localStorage.removeItem('senderUsername');
     localStorage.removeItem('lockID');
     localStorage.removeItem('gateway');
-    this.menuType = 'LoggedOut';
+    localStorage.removeItem('logged');
     this.router.navigate(['home']);
   }
 }

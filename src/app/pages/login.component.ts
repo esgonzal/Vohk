@@ -1,6 +1,6 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { UserServiceService } from '../services/user-service.service';
-import { HttpClient } from '@angular/common/http'; 
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { User } from '../Interfaces/User';
 
@@ -12,19 +12,19 @@ import { User } from '../Interfaces/User';
 })
 export class LoginComponent {
 
-  loginError:string = "";
-  access_token:string;
+  loginError: string = "";
+  access_token: string;
 
-  constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) {}
+  constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) { }
 
-  async login(data:User){
-    if(data.username == '' && data.password == ''){
+  async login(data: User) {
+    if (data.username == '' && data.password == '') {
       this.loginError = 'Debe ingresar un nombre de usuario y contraseña '
     }
-    else if(data.username == ''){
+    else if (data.username == '') {
       this.loginError = 'Debe ingresar un nombre de usuario '
     }
-    else if(data.password == ''){
+    else if (data.password == '') {
       this.loginError = 'Debe ingresar una contraseña '
     }
     try {
@@ -32,6 +32,10 @@ export class LoginComponent {
       this.userService.data$.subscribe((res) => {
         if (res.access_token) {
           this.access_token = res.access_token
+          localStorage.setItem('logged', '1')
+          localStorage.setItem('user', data.username)
+          localStorage.setItem('password', data.password);
+          localStorage.setItem('token', this.access_token);
           this.router.navigate(['/users/', data.username]); // Navigate to the user page with the username
         } else {
           this.loginError = "Nombre de usuario y/o contraseña inválidos";
@@ -40,9 +44,6 @@ export class LoginComponent {
     } catch (error) {
       console.error("Error while fetching access token:", error);
     }
-    localStorage.setItem('user', data.username)
-    localStorage.setItem('password', data.password);
-    localStorage.setItem('token', this.access_token);
   }
 }
 

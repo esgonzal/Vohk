@@ -28,6 +28,8 @@ export interface LockData {
   specialValue: string;
   timezoneRawOffset: string;
   wirelessKeypadFeatureValue: string;
+  groupId: number;
+  groupName: string;
   //Estos datos se reciben de getEkeysofAccount
   deletePwd: string;
   endDate:string;

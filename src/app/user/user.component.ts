@@ -1,12 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserServiceService } from '../services/user-service.service';
-import { LockServiceService } from '../services/lock-service.service';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { PopUpService } from '../services/pop-up.service';
+import { GroupService } from '../services/group.service';
+import { Group } from '../Interfaces/Group';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -22,6 +23,7 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   token: string;
   ekeyList: LockListResponse;
+  groups: Group[] = [];
   lock: LockData;
   faBatteryFull = faBatteryFull
   faBatteryThreeQuarters = faBatteryThreeQuarters
@@ -31,7 +33,7 @@ export class UserComponent implements OnInit {
   faGear = faGear
   faWifi = faWifi
 
-  constructor(private router: Router, private userService: UserServiceService, private lockService: LockServiceService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
+  constructor(private router: Router, private groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
 
   async ngOnInit() {
     this.username = localStorage.getItem('user') ?? '';
@@ -40,6 +42,15 @@ export class UserComponent implements OnInit {
     if (this.token) {
       await this.EncontrarLocks_EkeysdelUsuario(this.token);
     }
+    try {
+      await this.groupService.getGroupofAccount(this.token)
+      this.groupService.data$.subscribe((data) => {
+        if (data?.list) { this.groupService.groups = data.list }
+        else { console.log("Data not yest available") }
+      })
+    }
+    catch (error) { console.error("Error while fetching the groups:", error)}
+    console.log("Groups: ", this.groupService.groups)
   }
 
   async EncontrarLocks_EkeysdelUsuario(token: string) {//locks y tambien ekeys
@@ -67,7 +78,6 @@ export class UserComponent implements OnInit {
     localStorage.setItem('startDate', lock.startDate)
     localStorage.setItem('endDate', lock.endDate)
     localStorage.setItem('gateway', lock.hasGateway.toString())
-
     this.router.navigate(['users', this.username, 'lock', lock.lockId])
   }
 
@@ -84,5 +94,5 @@ export class UserComponent implements OnInit {
     }
   }
 
-
+  
 }

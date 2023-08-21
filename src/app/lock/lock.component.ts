@@ -14,6 +14,8 @@ import { PopUpService } from '../services/pop-up.service';
 import { GatewayService } from '../services/gateway.service';
 import { PassageModeService } from '../services/passage-mode.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Group } from '../Interfaces/Group';
+import { GroupService } from '../services/group.service';
 
 @Component({
   selector: 'app-lock',
@@ -54,6 +56,7 @@ export class LockComponent implements OnInit {
   records: Record[] = []
   recordsFiltrados: Record[] = []
   passcodesFiltradas: Passcode[] = []
+  groups: Group[] = []
   ////////////////////////////////////////////////////////////
   displayedColumnsEkey: string[] = ['username', 'rol', 'senderUsername', 'date', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsPasscode: string[] = ['keyboardPwdName', 'keyboardPwd', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
@@ -130,6 +133,7 @@ export class LockComponent implements OnInit {
       })
     }
     catch (error) { console.error("Error while fetching the records:", error) }
+    
     this.recordsFiltrados = this.records.filter(record => record.username === this.username);
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.username);
     this.updatePasscodeUsage()
@@ -137,7 +141,7 @@ export class LockComponent implements OnInit {
     //console.log("Configuracion modo de paso: ", this.passageMode)
     //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
     //console.log("eKeys: ", this.ekeys)
-    console.log("Passcodes: ", this.passcodes)
+    //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)

@@ -7,7 +7,7 @@
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div *ngIf="menuType==='LoggedOut'" class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div *ngIf="returnLogged()!=='1'" class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link active" routerLink="register">Registrarse</a>
@@ -17,11 +17,11 @@
                 </li>
             </ul>
         </div>
-        <div *ngIf="menuType==='LoggedIn'" class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div *ngIf="returnLogged()==='1'" class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link active" [matMenuTriggerFor]="menu" aria-label="Settings">
-                        {{username}}
+                        {{returnNombre()}}
                     </a>
                     <mat-menu #menu="matMenu">
                         <button mat-menu-item (click)="mostrarCerraduras()">

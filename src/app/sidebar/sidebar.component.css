@@ -1,0 +1,17 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 15%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .lista-grupos {
+    margin-bottom: 20px; 
+  }
+  
+  .boton-grupos {
+    margin-top: auto; 
+  }

@@ -17,9 +17,11 @@ export class PasscodeComponent {
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   gateway = localStorage.getItem('gateway') ?? ''
+  howManyHours = '';
   error = '';
   selectedType = '';
   onSelected(value: string): void { this.selectedType = value }
+  onSelectedHour(value:string):void { this.howManyHours = value }
 
   transformarHora(Tiempo: string) {
     let tiempoHora = Tiempo.split(":")[0]
@@ -160,8 +162,11 @@ export class PasscodeComponent {
   }
 
   validarPasscodeSimple(datos: Formulario) {
+    console.log("Hora: ",this.howManyHours)
+    console.log("Inicio de clave: ",moment().format("HH:mm DD/MM/YYYY"))
+    console.log("Final de clave: ",moment().add(this.howManyHours, "hours").format("HH:mm DD/MM/YYYY"))
     let startDate = moment().valueOf()
-    let endDate = moment().add(1, "hour").valueOf()
+    let endDate = moment().add(this.howManyHours, "hours").valueOf()
     this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())
     this.passcodeService.passcodesimple = false;
     this.router.navigate(["users", this.username, "lock", this.lockId]);
