@@ -1,11 +1,10 @@
 .contenido {
     display: flex;
     flex-direction: row;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 96px);
 }
 
 .barra-lateral {
-    padding: 10px;
     min-width: 200px;
     max-width: 15%;
     background-color: white;
@@ -14,6 +13,7 @@
 }
 
 .principal {
+    min-width: 1200px;
     flex: 1;
     height: 100%;
     overflow-y: auto;

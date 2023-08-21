@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
@@ -7,7 +7,6 @@ import moment from 'moment';
 import { PopUpService } from '../services/pop-up.service';
 import { GroupService } from '../services/group.service';
 import { Group } from '../Interfaces/Group';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -33,7 +32,7 @@ export class UserComponent implements OnInit {
   faGear = faGear
   faWifi = faWifi
 
-  constructor(private router: Router, private groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
+  constructor(private router: Router, public groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
 
   async ngOnInit() {
     this.username = localStorage.getItem('user') ?? '';
@@ -93,6 +92,5 @@ export class UserComponent implements OnInit {
       return false;
     }
   }
-
   
 }

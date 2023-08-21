@@ -14,6 +14,8 @@ export class GroupService {
   token = localStorage.getItem('token') ?? '';
   groups: Group[] = [];
 
+  seleccionado = 'Todos'
+
   constructor(private http:HttpClient, private lockService: LockServiceService) { }
 
   async getGroupofAccount(token:string) {

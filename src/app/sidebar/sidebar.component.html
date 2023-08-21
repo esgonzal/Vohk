@@ -1,13 +1,13 @@
 <div class="sidebar">
-    <div class="lista-grupos">
-        <div>
-            <button>Todos</button>
-        </div>
-        <div *ngFor="let group of this.groupService.groups">
-            <button>{{group.groupName}}</button>
-        </div>
-    </div>
+    <ul class="lista-grupos">
+        <li>
+            <span [ngClass]="{'selected': selectedGroup === 'Todos'}" (click)="selectGroup('Todos')">Todos</span>
+        </li>
+        <li *ngFor="let group of groupService.groups">
+            <span [ngClass]="{'selected': selectedGroup === group.groupName}" (click)="selectGroup(group.groupName)">{{group.groupName}}</span>
+        </li>
+    </ul>
     <div class="boton-grupos">
-        <button>Grupos de Cerraduras</button>
+        <span>Grupos de Cerraduras</span>
     </div>
 </div>

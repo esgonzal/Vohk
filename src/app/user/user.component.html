@@ -2,7 +2,7 @@
   <div *ngIf="ekeyList">
     <mat-grid-list cols="3" rowHeight="150px">
       <mat-grid-tile *ngFor="let lock of ekeyList.list">
-        <div *ngIf="hasValidAccess(lock)===true">
+        <div *ngIf="hasValidAccess(lock)===true && (groupService.seleccionado === 'Todos' || lock.groupName === groupService.seleccionado)">
           <mat-card class="lock" (click)="onLockButtonClick(lock)">
             <mat-card-header>
               <div class="title-wrapper">
