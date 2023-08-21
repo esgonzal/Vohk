@@ -351,8 +351,8 @@ export class LockComponent implements OnInit {
   consultarEstado(end: number) {
     if (end === 0) { return this.sanitizer.bypassSecurityTrustHtml('<span style="color: green;">Valido</span>'); }
     else {
-      var ahora = moment().format("YYYY/MM/DD HH:mm")
-      var final = moment(end).format("YYYY/MM/DD HH:mm")
+      var ahora = moment()
+      var final = moment(end)
       if (moment(final).isBefore(ahora)) {
         return this.sanitizer.bypassSecurityTrustHtml('<span style="color: red;">Caducado</span>');
       }

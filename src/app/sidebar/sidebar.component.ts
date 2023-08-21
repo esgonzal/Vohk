@@ -19,4 +19,8 @@ export class SidebarComponent {
     this.router.navigate(['/users/', localStorage.getItem('user')]);
   }
 
+  toGrupoCerraduras(){
+    this.router.navigate(['/users/', localStorage.getItem('user'), 'grupos']);
+  }
+
 }

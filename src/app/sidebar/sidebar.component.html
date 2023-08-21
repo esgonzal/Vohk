@@ -7,7 +7,7 @@
             <span [ngClass]="{'selected': selectedGroup === group.groupName}" (click)="selectGroup(group.groupName)">{{group.groupName}}</span>
         </li>
     </ul>
-    <div class="boton-grupos">
+    <div class="boton-grupos" (click)="toGrupoCerraduras()">
         <span>Grupos de Cerraduras</span>
     </div>
 </div>

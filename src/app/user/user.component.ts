@@ -6,7 +6,6 @@ import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter,
 import moment from 'moment';
 import { PopUpService } from '../services/pop-up.service';
 import { GroupService } from '../services/group.service';
-import { Group } from '../Interfaces/Group';
 
 @Component({
   selector: 'app-user',
@@ -22,7 +21,6 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   token: string;
   ekeyList: LockListResponse;
-  groups: Group[] = [];
   lock: LockData;
   faBatteryFull = faBatteryFull
   faBatteryThreeQuarters = faBatteryThreeQuarters
@@ -49,7 +47,15 @@ export class UserComponent implements OnInit {
       })
     }
     catch (error) { console.error("Error while fetching the groups:", error)}
+    this.groupService.groups.forEach(group => {
+      group.lockCount = this.countLocksInGroup(group.groupId)
+    })
     console.log("Groups: ", this.groupService.groups)
+
+  }
+
+  countLocksInGroup(groupId: number): number {
+    return this.ekeyList.list.filter(lock => lock.groupId === groupId).length;
   }
 
   async EncontrarLocks_EkeysdelUsuario(token: string) {//locks y tambien ekeys

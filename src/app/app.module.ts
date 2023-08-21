@@ -42,6 +42,7 @@ import { RouterModule } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { GrupoCerradurasComponent } from './grupo-cerraduras/grupo-cerraduras.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     HomeComponent,
     PerfilComponent,
     SidebarComponent,
+    GrupoCerradurasComponent,
   ],
   imports: [
     BrowserModule,
