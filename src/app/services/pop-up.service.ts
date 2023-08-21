@@ -25,6 +25,7 @@ export class PopUpService {
   cerradoAutomatico = false;
   needGateway = false;
   invalidLock = false;
+  newGroup = false;
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;

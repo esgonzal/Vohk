@@ -13,7 +13,7 @@ export class FingerprintServiceService {
 
   constructor(private http:HttpClient, private lockService:LockServiceService) { }
 
-  async getFingerprintsofLock(token:string, lockID:number){
+  async getFingerprintsofLock(token:string, lockID:number, pageNo: number, pageSize: number){
     let fecha = this.lockService.timestamp()
       let url = 'https://euapi.ttlock.com/v3/fingerprint/list'
       let header = new HttpHeaders({
@@ -23,8 +23,8 @@ export class FingerprintServiceService {
       body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
       body.set('accessToken', token);
       body.set('lockId', lockID.toString());
-      body.set('pageNo', '1');
-      body.set('pageSize', '20');
+      body.set('pageNo', pageNo.toString());
+      body.set('pageSize', pageSize.toString());
       body.set('date', fecha);
       try {
         const response = await lastValueFrom(this.http.post(url, body.toString(), options));

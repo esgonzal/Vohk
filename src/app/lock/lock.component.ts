@@ -90,49 +90,114 @@ export class LockComponent implements OnInit {
     catch (error) { console.error("Error while fetching the Lock details:", error); }
     //Traer ekeys
     try {
-      await this.ekeyService.getEkeysofLock(this.token, this.lockId);
-      this.ekeyService.data$.subscribe((data) => {
-        if (data?.list) { this.ekeys = data.list }
-        else { console.log("Data not yet available.") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the eKeys:", error); }
+      let allEkeys: Ekey[] = [];
+      let pageNo = 1;
+      let pageSize = 100;
+      let isLastPage = false;
+      while (!isLastPage) {
+        await this.ekeyService.getEkeysofLock(this.token, this.lockId, pageNo, pageSize);
+        this.ekeyService.data$.subscribe((data) => {
+          if (data?.list) {
+            allEkeys.push(...data.list);
+            if (data.list.length < pageSize) {
+              isLastPage = true;
+              this.ekeys = allEkeys;
+            }
+          } else {
+            console.log("Data not yet available");
+          }
+        });
+        pageNo++;
+      }
+    } catch (error) { console.error("Error while fetching the eKeys:", error); }
     //Traer passcodes
     try {
-      await this.passcodeService.getPasscodesofLock(this.token, this.lockId);
-      this.passcodeService.data$.subscribe((data) => {
-        if (data?.list) { this.passcodes = data.list }
-        else { console.log("Data not yet available.") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the passcodes:", error) }
+      let allPasscodes: Passcode[] = [];
+      let pageNo = 1;
+      let pageSize = 100;
+      let isLastPage = false;
+      while (!isLastPage) {
+        await this.passcodeService.getPasscodesofLock(this.token, this.lockId, pageNo, pageSize);
+        this.passcodeService.data$.subscribe((data) => {
+          if (data?.list) {
+            allPasscodes.push(...data.list);
+            if (data.list.length < pageSize) {
+              isLastPage = true;
+              this.passcodes = allPasscodes;
+            }
+          } else {
+            console.log("Data not yet available");
+          }
+        });
+        pageNo++;
+      }
+    } catch (error) { console.error("Error while fetching the passcodes:", error) }
     //Traer cards
     try {
-      await this.cardService.getCardsofLock(this.token, this.lockId);
-      this.cardService.data$.subscribe((data) => {
-        if (data?.list) { this.cards = data.list }
-        else { console.log("Data not yet available.") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the cards:", error) }
+      let allCards: Card[] = [];
+      let pageNo = 1;
+      let pageSize = 100;
+      let isLastPage = false;
+      while (!isLastPage) {
+        await this.cardService.getCardsofLock(this.token, this.lockId, pageNo, pageSize);
+        this.cardService.data$.subscribe((data) => {
+          if (data?.list) {
+            allCards.push(...data.list);
+            if (data.list.length < pageSize) {
+              isLastPage = true;
+              this.cards = allCards;
+            }
+          } else {
+            console.log("Data not yet available");
+          }
+        });
+        pageNo++;
+      }
+    } catch (error) { console.error("Error while fetching the cards:", error) }
     //Traer fingerprints
     try {
-      await this.fingerprintService.getFingerprintsofLock(this.token, this.lockId);
-      this.fingerprintService.data$.subscribe((data) => {
-        if (data?.list) { this.fingerprints = data.list }
-        else { console.log("Data not yet available.") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the fingerprints:", error) }
+      let allFingerprints: Fingerprint[] = [];
+      let pageNo = 1;
+      let pageSize = 100;
+      let isLastPage = false;
+      while (!isLastPage) {
+        await this.fingerprintService.getFingerprintsofLock(this.token, this.lockId, pageNo, pageSize);
+        this.fingerprintService.data$.subscribe((data) => {
+          if (data?.list) {
+            allFingerprints.push(...data.list);
+            if (data.list.length < pageSize) {
+              isLastPage = true;
+              this.fingerprints = allFingerprints;
+            }
+          } else {
+            console.log("Data not yet available");
+          }
+        });
+        pageNo++;
+      }
+    } catch (error) { console.error("Error while fetching the fingerprints:", error) }
     //Traer records
     try {
-      await this.recordService.getRecords(this.token, this.lockId)
-      this.recordService.data$.subscribe((data) => {
-        if (data?.list) { this.records = data.list }
-        else { console.log("Data not yest available") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the records:", error) }
+      let allRecords: Record[] = [];
+      let pageNo = 1;
+      let pageSize = 100;
+      let isLastPage = false;
+      while (!isLastPage) {
+        await this.recordService.getRecords(this.token, this.lockId, pageNo, pageSize);
+        this.recordService.data$.subscribe((data) => {
+          if (data?.list) {
+            allRecords.push(...data.list);
+            if (data.list.length < pageSize) {
+              isLastPage = true;
+              this.records = allRecords;
+            }
+          } else {
+            console.log("Data not yet available");
+          }
+        });
+        pageNo++;
+      }
+    } catch (error) { console.error("Error while fetching the records:", error) }
     
     this.recordsFiltrados = this.records.filter(record => record.username === this.username);
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.username);
@@ -156,9 +221,9 @@ export class LockComponent implements OnInit {
   Number(palabra: string) {
     return Number(palabra)
   }
-  rol(username:string){
+  rol(username: string) {
     let simpleRight = localStorage.getItem(username);
-    if(simpleRight==='0') {
+    if (simpleRight === '0') {
       return 'Administrador Secundario'
     } else {
       return 'Usuario'
@@ -759,15 +824,15 @@ export class LockComponent implements OnInit {
     this.popupService.desautorizar = true;
   }
   //
-  AutorizarFalso(ekey: Ekey){
+  AutorizarFalso(ekey: Ekey) {
     this.popupService.elementType = ekey.username;
     this.popupService.autorizarFalso = true;
   }
-  DesautorizarFalso(ekey: Ekey){
+  DesautorizarFalso(ekey: Ekey) {
     this.popupService.elementType = ekey.username;
     this.popupService.desautorizarFalso = true;
   }
-  getVariable(nombre:string){
+  getVariable(nombre: string) {
     return localStorage.getItem(nombre);
   }
   //FUNCIONES PASSCODE
@@ -803,7 +868,7 @@ export class LockComponent implements OnInit {
       console.log("Necesita estar conectado a un gateway para usar esta función")
     }
   }
-  crearPasscodeSimple(){
+  crearPasscodeSimple() {
     this.passcodeService.token = this.token;
     this.passcodeService.lockID = this.lockId;
     this.passcodeService.passcodesimple = true;

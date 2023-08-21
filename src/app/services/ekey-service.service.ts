@@ -19,7 +19,7 @@ export class EkeyServiceService {
 
   constructor(private lockService:LockServiceService, private http:HttpClient) { }
 
-  async getEkeysofAccount(token:string){
+  async getEkeysofAccount(token:string, ){
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/list'
     let header = new HttpHeaders({
@@ -40,7 +40,7 @@ export class EkeyServiceService {
     }
   }
 
-  async getEkeysofLock(token:string, lockID:number){
+  async getEkeysofLock(token:string, lockID:number, pageNo: number, pageSize: number){
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/listKey'
     let header = new HttpHeaders({
@@ -50,8 +50,8 @@ export class EkeyServiceService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
-    body.set('pageNo', '1');
-    body.set('pageSize', '20');
+    body.set('pageNo', pageNo.toString());
+    body.set('pageSize', pageSize.toString());
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));

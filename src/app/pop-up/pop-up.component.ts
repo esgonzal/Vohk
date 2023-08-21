@@ -10,6 +10,7 @@ import { Formulario } from '../Interfaces/Formulario';
 import moment from 'moment';
 import { GatewayAccount } from '../Interfaces/Gateway';
 import { LockServiceService } from '../services/lock-service.service';
+import { GroupService } from '../services/group.service';
 
 
 @Component({
@@ -38,6 +39,7 @@ export class PopUpComponent implements OnInit {
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
     private fingerprintService: FingerprintServiceService,
+    private groupService: GroupService,
     private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -88,6 +90,9 @@ export class PopUpComponent implements OnInit {
           break;
         case 'fingerprint':
           await this.fingerprintService.deleteFingerprint(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
+          break;
+        case 'grupo':
+          await this.groupService.deleteGroup(this.popupService.token, this.popupService.elementID.toString());
           break;
         default:
           console.error('Invalid element type for deletion:', this.popupService.elementID);
@@ -159,6 +164,9 @@ export class PopUpComponent implements OnInit {
             break;
           case 'fingerprint':
             await this.fingerprintService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
+            break;
+          case 'grupo':
+            await this.groupService.renameGroup(this.popupService.token, this.popupService.elementID.toString(), datos.name);
             break;
           default:
             console.error('Invalid element type for deletion:', this.popupService.elementID);
@@ -275,5 +283,17 @@ export class PopUpComponent implements OnInit {
   //popup Hora Dispositivo
   formatearHora() {
     return moment.utc().add(this.popupService.detalles.timezoneRawOffset, "milliseconds").format("YYYY-MM-DD HH:mm:ss")
+  }
+
+  async crearGrupo(datos:Formulario) {
+    this.error = '';
+    if(!datos.name){
+      this.error = "Por favor ingrese el dato requerido"
+    } else {
+      await this.groupService.addGroup(this.popupService.token, datos.name);
+      this.popupService.newGroup = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+    }
   }
 }

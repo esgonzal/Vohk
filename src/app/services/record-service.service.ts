@@ -13,7 +13,7 @@ export class RecordServiceService {
 
   constructor(private http:HttpClient, private lockService:LockServiceService) { }
 
-  async getRecords(token: string, lockID: number){
+  async getRecords(token: string, lockID: number, pageNo: number, pageSize: number){
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lockRecord/list'
     let header = new HttpHeaders({
@@ -23,8 +23,8 @@ export class RecordServiceService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('lockId', lockID.toString());
-    body.set('pageNo', '1');
-    body.set('pageSize', '100');//LOS ULTIMOS 100 RECORDS DE LA CERRADURA
+    body.set('pageNo', pageNo.toString());
+    body.set('pageSize', pageSize.toString());//LOS ULTIMOS 100 RECORDS DE LA CERRADURA
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
