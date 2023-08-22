@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
+import { CardResponse } from '../Interfaces/Elements';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class CardServiceService {
 
   constructor(private lockService:LockServiceService, private http:HttpClient) { }
 
-  async getCardsofLock(token:string, lockID:number, pageNo: number, pageSize: number){
+  getCardsofLock(token:string, lockID:number, pageNo: number, pageSize: number): Observable<CardResponse>{
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/list'
     let header = new HttpHeaders({
@@ -30,13 +31,7 @@ export class CardServiceService {
     body.set('pageNo', pageNo.toString());
     body.set('pageSize', pageSize.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
-    } catch (error) {
-      console.error("Error while blah blah:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<CardResponse>(url, body.toString(), options);
   }
 
   async changeName(token:string, lockID:number, cardID:number, newName:string){

@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
-import { Passcode } from '../Interfaces/Elements';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { Passcode, PasscodeResponse } from '../Interfaces/Elements';
 import { LockServiceService } from './lock-service.service';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class PasscodeServiceService {
 
   constructor(private lockService: LockServiceService, private http:HttpClient) { }
 
-  async getPasscodesofLock(token: string, lockID: number, pageNo: number, pageSize: number){
+  getPasscodesofLock(token: string, lockID: number, pageNo: number, pageSize: number): Observable<PasscodeResponse>{
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/listKeyboardPwd'
     let header = new HttpHeaders({
@@ -33,13 +33,7 @@ export class PasscodeServiceService {
     body.set('pageNo', pageNo.toString());
     body.set('pageSize', pageSize.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-    } catch (error) {
-      console.error("Error while fetching access token:", error);
-      this.dataSubject.next(null);
-    }
+    return this.http.post<PasscodeResponse>(url, body.toString(), options);
   }
 
   async generatePasscode(token: string, lockID:number, type: string, startDate:string, name?:string, endDate?:string){

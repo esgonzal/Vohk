@@ -108,7 +108,7 @@
                       <!--------------------------------->
                     </div>
                     <div>
-                      <table mat-table [dataSource]="ekeys" class="table">
+                      <table mat-table [dataSource]="ekeysDataSource" class="table">
                         <!---->
                         <ng-container matColumnDef="username">
                           <th mat-header-cell *matHeaderCellDef class="table-cell">Cuenta de destinatario</th>
@@ -200,7 +200,7 @@
                       <!--------------------------------->
                     </div>
                     <div>
-                      <table mat-table [dataSource]="passcodes" class="table">
+                      <table mat-table [dataSource]="passcodesDataSource" class="table">
                         <!---->
                         <ng-container matColumnDef="keyboardPwdName">
                           <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
@@ -257,7 +257,7 @@
                     <div class="space-divider">
                     </div>
                     <div>
-                      <table mat-table [dataSource]="cards" class="table">
+                      <table mat-table [dataSource]="cardsDataSource" class="table">
                         <!---->
                         <ng-container matColumnDef="cardName">
                           <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
@@ -315,7 +315,7 @@
                     <div class="space-divider">
                     </div>
                     <div>
-                      <table mat-table [dataSource]="fingerprints" class="table">
+                      <table mat-table [dataSource]="fingerprintsDataSource" class="table">
                         <!---->
                         <ng-container matColumnDef="fingerprintName">
                           <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
@@ -369,7 +369,7 @@
                     <div class="space-divider">
                     </div>
                     <div>
-                      <table mat-table [dataSource]="records" class="table">
+                      <table mat-table [dataSource]="recordsDataSource" class="table">
                         <!---->
                         <ng-container matColumnDef="Operador">
                           <th mat-header-cell *matHeaderCellDef class="table-cell">Operador</th>

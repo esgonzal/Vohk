@@ -27,6 +27,14 @@ export interface Ekey {
     //noKeyPwd: string;
 }
 
+export interface EkeyResponse {
+    list:Ekey[];
+    pageNo:number;
+    pageSize:number;
+    pages:number;
+    total:number
+}
+
 export interface Passcode {
     endDate: string;
     sendDate: string;
@@ -45,6 +53,14 @@ export interface Passcode {
     hasBeenUsed:boolean;
 }
 
+export interface PasscodeResponse {
+    list:Passcode[];
+    pageNo:number;
+    pageSize:number;
+    pages:number;
+    total:number
+}
+
 export interface Card {
     cardId: number;
     lockId: number;
@@ -55,6 +71,14 @@ export interface Card {
     endDate: string;
     createDate: string;
     senderUsername: string;
+}
+
+export interface CardResponse {
+    list:Card[];
+    pageNo:number;
+    pageSize:number;
+    pages:number;
+    total:number
 }
 
 export interface Fingerprint{
@@ -76,6 +100,14 @@ export interface recurringPeriodFingerprint {
     endTime:string;
 }
 
+export interface FingerprintResponse {
+    list:Fingerprint[];
+    pageNo:number;
+    pageSize:number;
+    pages:number;
+    total:number
+}
+
 export interface Record {
     recordId:string;
     lockId:number;
@@ -86,4 +118,12 @@ export interface Record {
     lockDate:string;
     serverDate:string;
     keyboardPwd:string;
+}
+
+export interface RecordResponse {
+    list:Record[];
+    pageNo:number;
+    pageSize:number;
+    pages:number;
+    total:number
 }

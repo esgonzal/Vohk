@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
+import { FingerprintResponse } from '../Interfaces/Elements';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class FingerprintServiceService {
 
   constructor(private http:HttpClient, private lockService:LockServiceService) { }
 
-  async getFingerprintsofLock(token:string, lockID:number, pageNo: number, pageSize: number){
+  getFingerprintsofLock(token:string, lockID:number, pageNo: number, pageSize: number): Observable<FingerprintResponse>{
     let fecha = this.lockService.timestamp()
       let url = 'https://euapi.ttlock.com/v3/fingerprint/list'
       let header = new HttpHeaders({
@@ -26,13 +27,7 @@ export class FingerprintServiceService {
       body.set('pageNo', pageNo.toString());
       body.set('pageSize', pageSize.toString());
       body.set('date', fecha);
-      try {
-        const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-        this.dataSubject.next(response);
-      } catch (error) {
-        console.error("Error getting the list of fingerprints of a lock:", error);
-        this.dataSubject.next(null); // Emit null to dataSubject on error
-      }
+      return this.http.post<FingerprintResponse>(url, body.toString(), options);
   }
 
   async deleteFingerprint(token:string, lockID:number, fingerprintID:number){

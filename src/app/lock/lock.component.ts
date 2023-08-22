@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { LockData, LockDetails } from '../Interfaces/Lock';
-import { Ekey, Passcode, Card, Fingerprint, Record } from '../Interfaces/Elements';
+import { Ekey, Passcode, Card, Fingerprint, Record, RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse } from '../Interfaces/Elements';
 import { LockServiceService } from '../services/lock-service.service';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { PasscodeServiceService } from '../services/passcode-service.service';
@@ -15,7 +15,8 @@ import { GatewayService } from '../services/gateway.service';
 import { PassageModeService } from '../services/passage-mode.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../Interfaces/Group';
-import { GroupService } from '../services/group.service';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-lock',
@@ -58,6 +59,11 @@ export class LockComponent implements OnInit {
   passcodesFiltradas: Passcode[] = []
   groups: Group[] = []
   ////////////////////////////////////////////////////////////
+  ekeysDataSource: MatTableDataSource<Ekey>;
+  passcodesDataSource: MatTableDataSource<Passcode>;
+  cardsDataSource: MatTableDataSource<Card>;
+  fingerprintsDataSource: MatTableDataSource<Fingerprint>;
+  recordsDataSource: MatTableDataSource<Record>;
   displayedColumnsEkey: string[] = ['username', 'rol', 'senderUsername', 'date', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsPasscode: string[] = ['keyboardPwdName', 'keyboardPwd', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsCard: string[] = ['cardName', 'cardNumber', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
@@ -89,135 +95,152 @@ export class LockComponent implements OnInit {
     }
     catch (error) { console.error("Error while fetching the Lock details:", error); }
     //Traer ekeys
-    try {
-      let allEkeys: Ekey[] = [];
-      let pageNo = 1;
-      let pageSize = 100;
-      let isLastPage = false;
-      while (!isLastPage) {
-        await this.ekeyService.getEkeysofLock(this.token, this.lockId, pageNo, pageSize);
-        this.ekeyService.data$.subscribe((data) => {
-          if (data?.list) {
-            allEkeys.push(...data.list);
-            if (data.list.length < pageSize) {
-              isLastPage = true;
-              this.ekeys = allEkeys;
-            }
-          } else {
-            console.log("Data not yet available");
-          }
-        });
-        pageNo++;
-      }
-    } catch (error) { console.error("Error while fetching the eKeys:", error); }
+    await this.fetchEkeys();
     //Traer passcodes
-    try {
-      let allPasscodes: Passcode[] = [];
-      let pageNo = 1;
-      let pageSize = 100;
-      let isLastPage = false;
-      while (!isLastPage) {
-        await this.passcodeService.getPasscodesofLock(this.token, this.lockId, pageNo, pageSize);
-        this.passcodeService.data$.subscribe((data) => {
-          if (data?.list) {
-            allPasscodes.push(...data.list);
-            if (data.list.length < pageSize) {
-              isLastPage = true;
-              this.passcodes = allPasscodes;
-            }
-          } else {
-            console.log("Data not yet available");
-          }
-        });
-        pageNo++;
-      }
-    } catch (error) { console.error("Error while fetching the passcodes:", error) }
+    await this.fetchPasscodes();
     //Traer cards
-    try {
-      let allCards: Card[] = [];
-      let pageNo = 1;
-      let pageSize = 100;
-      let isLastPage = false;
-      while (!isLastPage) {
-        await this.cardService.getCardsofLock(this.token, this.lockId, pageNo, pageSize);
-        this.cardService.data$.subscribe((data) => {
-          if (data?.list) {
-            allCards.push(...data.list);
-            if (data.list.length < pageSize) {
-              isLastPage = true;
-              this.cards = allCards;
-            }
-          } else {
-            console.log("Data not yet available");
-          }
-        });
-        pageNo++;
-      }
-    } catch (error) { console.error("Error while fetching the cards:", error) }
+    await this.fetchCards();
     //Traer fingerprints
-    try {
-      let allFingerprints: Fingerprint[] = [];
-      let pageNo = 1;
-      let pageSize = 100;
-      let isLastPage = false;
-      while (!isLastPage) {
-        await this.fingerprintService.getFingerprintsofLock(this.token, this.lockId, pageNo, pageSize);
-        this.fingerprintService.data$.subscribe((data) => {
-          if (data?.list) {
-            allFingerprints.push(...data.list);
-            if (data.list.length < pageSize) {
-              isLastPage = true;
-              this.fingerprints = allFingerprints;
-            }
-          } else {
-            console.log("Data not yet available");
-          }
-        });
-        pageNo++;
-      }
-    } catch (error) { console.error("Error while fetching the fingerprints:", error) }
+    await this.fetchFingerprints();
     //Traer records
-    try {
-      let allRecords: Record[] = [];
-      let pageNo = 1;
-      let pageSize = 100;
-      let isLastPage = false;
-      while (!isLastPage) {
-        await this.recordService.getRecords(this.token, this.lockId, pageNo, pageSize);
-        this.recordService.data$.subscribe((data) => {
-          if (data?.list) {
-            allRecords.push(...data.list);
-            if (data.list.length < pageSize) {
-              isLastPage = true;
-              this.records = allRecords;
-            }
-          } else {
-            console.log("Data not yet available");
-          }
-        });
-        pageNo++;
-      }
-    } catch (error) { console.error("Error while fetching the records:", error) }
-    
+    await this.fetchRecords();
+    this.updatePasscodeUsage()
+    this.ekeysDataSource = new MatTableDataSource(this.ekeys);
+    this.passcodesDataSource = new MatTableDataSource(this.passcodes);
+    this.cardsDataSource = new MatTableDataSource(this.cards);
+    this.fingerprintsDataSource = new MatTableDataSource(this.fingerprints);
+    this.recordsDataSource = new MatTableDataSource(this.records);
     this.recordsFiltrados = this.records.filter(record => record.username === this.username);
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.username);
-    this.updatePasscodeUsage()
     //console.log("Los detalles del lock: ", this.lockDetails)
-    //console.log("Configuracion modo de paso: ", this.passageMode)
-    //console.log("Gateway del Lock: ", this.gatewaysOfLock, this.gatewaysOfAccount)
     //console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
   }
-  //FUNCIONES PARA FORMATO DE TABLA
+  async fetchEkeys() {
+    try {
+      await this.fetchEkeysPage(1);
+    } catch (error) {
+      console.error("Error while fetching ekeys:", error);
+    }
+  }
+  async fetchEkeysPage(pageNo: number) {
+    try {
+      const response = await lastValueFrom(this.ekeyService.getEkeysofLock(this.token, this.lockId, pageNo, 100))
+      const typedResponse = response as EkeyResponse;
+      if (typedResponse?.list) {
+        this.ekeys.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchEkeysPage(pageNo + 1);
+        }
+      } else {
+        console.log("Ekeys not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching ekeys page:", error);
+    }
+  }
+  async fetchPasscodes() {
+    try {
+      await this.fetchPasscodesPage(1);
+    } catch (error) {
+      console.error("Error while fetching passcodes:", error);
+    }
+  }
+  async fetchPasscodesPage(pageNo: number) {
+    try {
+      const response = await lastValueFrom(this.passcodeService.getPasscodesofLock(this.token, this.lockId, pageNo, 100))
+      const typedResponse = response as PasscodeResponse;
+      if (typedResponse?.list) {
+        this.passcodes.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchPasscodesPage(pageNo + 1);
+        }
+      } else {
+        console.log("Passcodes not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching passcodes page:", error);
+    }
+  }
+  async fetchCards() {
+    try {
+      await this.fetchCardsPage(1);
+    } catch (error) {
+      console.error("Error while fetching cards:", error);
+    }
+  }
+  async fetchCardsPage(pageNo: number) {
+    try {
+      const response = await lastValueFrom(this.cardService.getCardsofLock(this.token, this.lockId, pageNo, 100))
+      const typedResponse = response as CardResponse;
+      if (typedResponse?.list) {
+        this.cards.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchCardsPage(pageNo + 1);
+        }
+      } else {
+        console.log("Cards not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching cards page:", error);
+    }
+  }
+  async fetchFingerprints() {
+    try {
+      await this.fetchFingerprintsPage(1);
+    } catch (error) {
+      console.error("Error while fetching fingerprints:", error);
+    }
+  }
+  async fetchFingerprintsPage(pageNo: number) {
+    try {
+      const response = await lastValueFrom(this.fingerprintService.getFingerprintsofLock(this.token, this.lockId, pageNo, 100))
+      const typedResponse = response as FingerprintResponse;
+      if (typedResponse?.list) {
+        this.fingerprints.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchFingerprintsPage(pageNo + 1);
+        }
+      } else {
+        console.log("Fingerprints not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching fingerprints page:", error);
+    }
+  }
+  async fetchRecords() {
+    try {
+      await this.fetchRecordsPage(1);
+    } catch (error) {
+      console.error("Error while fetching records:", error);
+    }
+  }
+  async fetchRecordsPage(pageNo: number) {
+    try {
+      const response = await lastValueFrom(this.recordService.getRecords(this.token, this.lockId, pageNo, 100))
+      const typedResponse = response as RecordResponse;
+      if (typedResponse?.list) {
+        this.records.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchRecordsPage(pageNo + 1);
+        }
+      } else {
+        console.log("Records not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching records page:", error);
+    }
+  }
   updatePasscodeUsage() {
     for (const passcode of this.passcodes) {
       const usedRecord = this.records.find(record => record.keyboardPwd === passcode.keyboardPwd && record.success === 1);
       if (usedRecord) { passcode.hasBeenUsed = true }
     }
   }
+  //FUNCIONES PARA FORMATO DE TABLA
   Number(palabra: string) {
     return Number(palabra)
   }

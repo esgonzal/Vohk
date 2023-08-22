@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
+import { EkeyResponse } from '../Interfaces/Elements';
 @Injectable({
   providedIn: 'root'
 })
@@ -40,7 +41,7 @@ export class EkeyServiceService {
     }
   }
 
-  async getEkeysofLock(token:string, lockID:number, pageNo: number, pageSize: number){
+  getEkeysofLock(token:string, lockID:number, pageNo: number, pageSize: number): Observable<EkeyResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/listKey'
     let header = new HttpHeaders({
@@ -53,13 +54,7 @@ export class EkeyServiceService {
     body.set('pageNo', pageNo.toString());
     body.set('pageSize', pageSize.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
-    } catch (error) {
-      console.error("Error while getting the list of Ekeys of a lock:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<EkeyResponse>(url, body.toString(), options);
   }
 
   async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string, keyRight:number, keyType?:number, startDay?:string, endDay?:string, weekDays?:string){
