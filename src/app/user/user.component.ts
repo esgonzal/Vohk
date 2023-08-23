@@ -39,15 +39,12 @@ export class UserComponent implements OnInit {
 
   async ngOnInit() {
     await this.fetchGroups();
-    console.log("Groups: ", this.groups)
     await this.getLocksWithoutGroup();
-    console.log("locks sin grupo:", this.locksWithoutGroup)
     this.groupService.selectedGroupSubject.subscribe(selectedGroup => {
       if (selectedGroup) {
         this.fetchLocks(selectedGroup.groupId);
       }
     });
-    console.log("Locks: ", this.locks)
     this.groupService.groups = this.groups;
     this.groupService.locksWithoutGroup = this.locksWithoutGroup;
   }

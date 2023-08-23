@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GroupService } from '../services/group.service';
 import { Router } from '@angular/router';
 import { Group } from '../Interfaces/Group';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,11 @@ import { Group } from '../Interfaces/Group';
 })
 export class SidebarComponent {
 
-  constructor(public groupService: GroupService, private router: Router) { }
+  selectedGroup$: Observable<Group>;
+
+  constructor(public groupService: GroupService, private router: Router) { 
+    this.selectedGroup$ = this.groupService.selectedGroup$; 
+  }
 
   selectGroup(group: Group) {
     if (group.groupName === 'Todos') {
