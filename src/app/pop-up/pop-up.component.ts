@@ -284,7 +284,6 @@ export class PopUpComponent implements OnInit {
   formatearHora() {
     return moment.utc().add(this.popupService.detalles.timezoneRawOffset, "milliseconds").format("YYYY-MM-DD HH:mm:ss")
   }
-
   async crearGrupo(datos:Formulario) {
     this.error = '';
     if(!datos.name){
@@ -295,5 +294,13 @@ export class PopUpComponent implements OnInit {
       const username = localStorage.getItem('user')
       this.router.navigate(['/users', username]);
     }
+  }
+  addLockGroup(){
+    this.popupService.addLockGROUP = true;
+    this.popupService.addRemoveLockGROUP = false;
+  }
+  removeLockGroup(){
+    this.popupService.removeLockGROUP = true;
+    this.popupService.addRemoveLockGROUP = false;
   }
 }

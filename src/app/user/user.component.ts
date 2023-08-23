@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { PopUpService } from '../services/pop-up.service';
 import { GroupService } from '../services/group.service';
+import { Subscription, lastValueFrom } from 'rxjs';
+import { Group, GroupResponse } from '../Interfaces/Group';
 
 @Component({
   selector: 'app-user',
@@ -15,12 +17,14 @@ import { GroupService } from '../services/group.service';
 })
 export class UserComponent implements OnInit {
 
-  username: string;
-  password: string;
+  username = localStorage.getItem('user') ?? '';
+  password = localStorage.getItem('password') ?? '';
   newPassword: string;
   newPasswordDisplay = false;
-  token: string;
+  token = localStorage.getItem('token') ?? '';
   ekeyList: LockListResponse;
+  locks: LockData[] = [];
+  groups: Group[] = [];
   lock: LockData;
   faBatteryFull = faBatteryFull
   faBatteryThreeQuarters = faBatteryThreeQuarters
@@ -29,51 +33,68 @@ export class UserComponent implements OnInit {
   faBatteryEmpty = faBatteryEmpty
   faGear = faGear
   faWifi = faWifi
+  private selectedGroupSubscription: Subscription;
 
-  constructor(private router: Router, public groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
+  constructor(private router: Router, private route: ActivatedRoute, public groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
 
   async ngOnInit() {
-    this.username = localStorage.getItem('user') ?? '';
-    this.password = localStorage.getItem('password') ?? '';
-    this.token = localStorage.getItem('token') ?? '';
-    if (this.token) {
-      await this.EncontrarLocks_EkeysdelUsuario(this.token);
-    }
-    try {
-      await this.groupService.getGroupofAccount(this.token)
-      this.groupService.data$.subscribe((data) => {
-        if (data?.list) { this.groupService.groups = data.list }
-        else { console.log("Data not yest available") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the groups:", error)}
-    this.groupService.groups.forEach(group => {
-      group.lockCount = this.countLocksInGroup(group.groupId)
-    })
-    console.log("Groups: ", this.groupService.groups)
-
+    await this.fetchGroups();
+    console.log("Groups: ", this.groups)
+    this.groupService.selectedGroupSubject.subscribe(selectedGroup => {
+      if (selectedGroup) {
+        this.fetchLocks(selectedGroup.groupId);
+      }
+    });
+    console.log("Locks: ", this.locks)
+    this.groupService.groups = this.groups; 
   }
-
-  countLocksInGroup(groupId: number): number {
-    return this.ekeyList.list.filter(lock => lock.groupId === groupId).length;
+  ngOnDestroy() {
+    if (this.selectedGroupSubscription) {
+      this.selectedGroupSubscription.unsubscribe();
+    }
   }
-
-  async EncontrarLocks_EkeysdelUsuario(token: string) {//locks y tambien ekeys
+  async fetchLocks(groupId: number) {
     try {
-      await this.ekeyService.getEkeysofAccount(token);
-      this.ekeyService.data2$.subscribe((data) => {
-        if (data.list) {
-          console.log(data.list)
-          this.ekeyList = data;
-        } else {
-          console.log("Error en EncontrarLocks_EkeysdelUsuario (user.component.ts)");
-        }
-      });
+      await this.fetchLocksPage(1, groupId);
     } catch (error) {
-      console.error("Error while fetching eKeyList:", error);
+      console.error("Error while fetching Locks: ",error);
     }
   }
-
+  async fetchLocksPage(pageNo: number, groupId?:number){ 
+    this.locks = [];
+    try {
+      const response = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, 100, groupId));
+      const typedResponse = response as LockListResponse;
+      if(typedResponse?.list) {
+        this.locks.push(...typedResponse.list);
+        if(typedResponse.pages > pageNo) {
+          await this.fetchLocksPage(pageNo+1, groupId);
+        }
+      } else {
+        console.log("Locks not yet available")
+      }
+    } catch (error) {
+      console.error("Error while fetching locks page:", error)
+    }
+  }
+  async fetchGroups() {
+    try {
+      const response = await lastValueFrom(this.groupService.getGroupofAccount(this.token));
+      const typedResponse = response as GroupResponse;
+      if (typedResponse?.list) {
+        this.groups = typedResponse.list;
+        // Fetch locks and calculate lock counts for each group
+        for (const group of this.groups) {
+          group.lockCount = await this.calculateLockCountForGroup(group.groupId);
+        }
+      } else {
+        console.log("Groups not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching groups:", error);
+    }
+  }
+  
   onLockButtonClick(lock: LockData) {
     localStorage.setItem('lockID', lock.lockId.toString())
     localStorage.setItem('Alias', lock.lockAlias)
@@ -85,11 +106,9 @@ export class UserComponent implements OnInit {
     localStorage.setItem('gateway', lock.hasGateway.toString())
     this.router.navigate(['users', this.username, 'lock', lock.lockId])
   }
-
   onInvalidButtonClick() {
     this.popupService.invalidLock = true;
   }
-
   hasValidAccess(lock: LockData): boolean {
     if (Number(lock.endDate) === 0 || moment(lock.endDate).isAfter(moment())) {
       return true
@@ -98,5 +117,27 @@ export class UserComponent implements OnInit {
       return false;
     }
   }
+
+  async calculateLockCountForGroup(groupId: number): Promise<number> {
+    let lockCount = 0;
+    let pageNo = 1;
+    const pageSize = 100;
+    while (true) {
+      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, groupId));
+      const locksTypedResponse = locksResponse as LockListResponse;
+      if (locksTypedResponse?.list && locksTypedResponse.list.length > 0) {
+        lockCount += locksTypedResponse.list.length;
+        if (locksTypedResponse.pages > pageNo) {
+          pageNo++;
+        } else {
+          break; // No more pages to fetch
+        }
+      } else {
+        break; // No more locks to fetch
+      }
+    }
+    return lockCount;
+  }
+  
   
 }

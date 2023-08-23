@@ -44,6 +44,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { GrupoCerradurasComponent } from './grupo-cerraduras/grupo-cerraduras.component';
 
+import { GroupService } from './services/group.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -86,7 +88,7 @@ import { GrupoCerradurasComponent } from './grupo-cerraduras/grupo-cerraduras.co
     AppRoutingModule,
     RouterModule.forRoot([])
   ],
-  providers: [DatePipe ],
+  providers: [DatePipe, GroupService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -3,3 +3,7 @@ export interface Group {
     groupName: string
     lockCount: number;
 }
+
+export interface GroupResponse {
+    list:Group[];
+}

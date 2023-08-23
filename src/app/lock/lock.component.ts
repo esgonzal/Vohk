@@ -15,7 +15,7 @@ import { GatewayService } from '../services/gateway.service';
 import { PassageModeService } from '../services/passage-mode.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../Interfaces/Group';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({

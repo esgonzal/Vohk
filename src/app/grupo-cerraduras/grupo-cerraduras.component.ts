@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { GroupService } from '../services/group.service';
 import { PopUpService } from '../services/pop-up.service';
+import { Group } from '../Interfaces/Group';
 
 @Component({
   selector: 'app-grupo-cerraduras',
@@ -32,6 +33,11 @@ export class GrupoCerradurasComponent  {
     this.popupService.elementType = 'grupo';
     this.popupService.elementID = grupoID;
     this.popupService.delete =true
+  }
+
+  cerraduras(group:Group){
+    this.popupService.addRemoveLockGROUP = true;
+    this.popupService.elementType = group.groupName;
   }
 
 }

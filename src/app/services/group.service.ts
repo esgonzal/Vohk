@@ -1,23 +1,32 @@
 import { Injectable } from '@angular/core';
 import { LockServiceService } from './lock-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
-import { Group } from '../Interfaces/Group';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { Group, GroupResponse } from '../Interfaces/Group';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  
+
+  DEFAULT_GROUP: Group = { groupId: 0, groupName: 'Todos', lockCount: 0 };
+
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
+  public selectedGroupSubject = new BehaviorSubject<Group>(this.DEFAULT_GROUP);
+  selectedGroup$ = this.selectedGroupSubject.asObservable();
+
   token = localStorage.getItem('token') ?? '';
   groups: Group[] = [];
-  seleccionado = 'Todos'
+  selectedGroup: Group;
 
-  constructor(private http:HttpClient, private lockService: LockServiceService) { }
+  constructor(private http:HttpClient, private lockService: LockServiceService) {}
 
-  async getGroupofAccount(token:string) {
+  updateSelectedGroup(group: Group) {
+    this.selectedGroupSubject.next(group);
+  }
+
+  getGroupofAccount(token:string): Observable<GroupResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/group/list'
     let header = new HttpHeaders({
@@ -27,13 +36,7 @@ export class GroupService {
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options))
-      this.dataSubject.next(response);
-    } catch (error) {
-      console.error("Error while getting the list of groups of an account:", error)
-      this.dataSubject.next(null);
-    }
+    return this.http.post<GroupResponse>(url, body.toString(), options);
   }
 
   async addGroup(token:string, name:string) {
@@ -121,5 +124,4 @@ export class GroupService {
         this.dataSubject.next(null);
       }
   }
-
 }

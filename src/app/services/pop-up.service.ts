@@ -26,6 +26,9 @@ export class PopUpService {
   needGateway = false;
   invalidLock = false;
   newGroup = false;
+  addRemoveLockGROUP = false;
+  addLockGROUP = false;
+  removeLockGROUP = false;
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;
