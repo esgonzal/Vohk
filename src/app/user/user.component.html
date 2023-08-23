@@ -2,7 +2,8 @@
   <div *ngIf="locks.length > 0">
     <mat-grid-list cols="3" rowHeight="150px">
       <mat-grid-tile *ngFor="let lock of locks">
-        <div *ngIf="hasValidAccess(lock)===true && (!groupService.selectedGroup || lock.groupId  === groupService.selectedGroup.groupId)">
+        <div
+          *ngIf="hasValidAccess(lock)===true && (!groupService.selectedGroup || lock.groupId  === groupService.selectedGroup.groupId)">
           <mat-card class="lock" (click)="onLockButtonClick(lock)">
             <mat-card-header>
               <div class="title-wrapper">
@@ -14,11 +15,13 @@
                       <fa-icon [icon]="faBatteryFull"></fa-icon>
                     </div>
                     <!--BATERIA 3/4-->
-                    <div *ngIf="lock.electricQuantity < 90 && lock.electricQuantity > 60 || lock.electricQuantity == 60" [ngStyle]="{color: 'green'}">
+                    <div *ngIf="lock.electricQuantity < 90 && lock.electricQuantity > 60 || lock.electricQuantity == 60"
+                      [ngStyle]="{color: 'green'}">
                       <fa-icon [icon]="faBatteryThreeQuarters"></fa-icon>
                     </div>
                     <!--BATERIA 2/4-->
-                    <div *ngIf="lock.electricQuantity < 60 && lock.electricQuantity > 40 || lock.electricQuantity == 40" [ngStyle]="{color: 'green'}">
+                    <div *ngIf="lock.electricQuantity < 60 && lock.electricQuantity > 40 || lock.electricQuantity == 40"
+                      [ngStyle]="{color: 'green'}">
                       <fa-icon [icon]="faBatteryHalf"></fa-icon>
                     </div>
                     <!--BATERIA 1/4-->
@@ -51,11 +54,13 @@
                       <fa-icon [icon]="faBatteryFull"></fa-icon>
                     </div>
                     <!--BATERIA 3/4-->
-                    <div *ngIf="lock.electricQuantity < 90 && lock.electricQuantity > 60 || lock.electricQuantity == 60" [ngStyle]="{color: 'green'}">
+                    <div *ngIf="lock.electricQuantity < 90 && lock.electricQuantity > 60 || lock.electricQuantity == 60"
+                      [ngStyle]="{color: 'green'}">
                       <fa-icon [icon]="faBatteryThreeQuarters"></fa-icon>
                     </div>
                     <!--BATERIA 2/4-->
-                    <div *ngIf="lock.electricQuantity < 60 && lock.electricQuantity > 40 || lock.electricQuantity == 40" [ngStyle]="{color: 'green'}">
+                    <div *ngIf="lock.electricQuantity < 60 && lock.electricQuantity > 40 || lock.electricQuantity == 40"
+                      [ngStyle]="{color: 'green'}">
                       <fa-icon [icon]="faBatteryHalf"></fa-icon>
                     </div>
                     <!--BATERIA 1/4-->

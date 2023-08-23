@@ -41,6 +41,4 @@ export class PopUpService {
   passcode: Passcode;
   group: Group;
   locksWithoutGroup: LockData[];
-
-  constructor() { }
 }

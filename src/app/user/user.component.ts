@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { EkeyServiceService } from '../services/ekey-service.service';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
@@ -35,7 +35,7 @@ export class UserComponent implements OnInit {
   faWifi = faWifi
   private selectedGroupSubscription: Subscription;
 
-  constructor(private router: Router, private route: ActivatedRoute, public groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
+  constructor(private router: Router, public groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
 
   async ngOnInit() {
     await this.fetchGroups();
@@ -48,7 +48,7 @@ export class UserComponent implements OnInit {
       }
     });
     console.log("Locks: ", this.locks)
-    this.groupService.groups = this.groups; 
+    this.groupService.groups = this.groups;
     this.groupService.locksWithoutGroup = this.locksWithoutGroup;
   }
   ngOnDestroy() {
@@ -60,18 +60,18 @@ export class UserComponent implements OnInit {
     try {
       await this.fetchLocksPage(1, groupId);
     } catch (error) {
-      console.error("Error while fetching Locks: ",error);
+      console.error("Error while fetching Locks: ", error);
     }
   }
-  async fetchLocksPage(pageNo: number, groupId?:number){ 
+  async fetchLocksPage(pageNo: number, groupId?: number) {
     this.locks = [];
     try {
       const response = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, 100, groupId));
       const typedResponse = response as LockListResponse;
-      if(typedResponse?.list) {
+      if (typedResponse?.list) {
         this.locks.push(...typedResponse.list);
-        if(typedResponse.pages > pageNo) {
-          await this.fetchLocksPage(pageNo+1, groupId);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchLocksPage(pageNo + 1, groupId);
         }
       } else {
         console.log("Locks not yet available")
@@ -97,29 +97,6 @@ export class UserComponent implements OnInit {
       console.error("Error while fetching groups:", error);
     }
   }
-  
-  onLockButtonClick(lock: LockData) {
-    localStorage.setItem('lockID', lock.lockId.toString())
-    localStorage.setItem('Alias', lock.lockAlias)
-    localStorage.setItem('Bateria', lock.electricQuantity.toString())
-    localStorage.setItem('userType', lock.userType)
-    localStorage.setItem('keyRight', lock.keyRight.toString())
-    localStorage.setItem('startDate', lock.startDate)
-    localStorage.setItem('endDate', lock.endDate)
-    localStorage.setItem('gateway', lock.hasGateway.toString())
-    this.router.navigate(['users', this.username, 'lock', lock.lockId])
-  }
-  onInvalidButtonClick() {
-    this.popupService.invalidLock = true;
-  }
-  hasValidAccess(lock: LockData): boolean {
-    if (Number(lock.endDate) === 0 || moment(lock.endDate).isAfter(moment())) {
-      return true
-    }
-    else {
-      return false;
-    }
-  }
   async calculateLockCountForGroup(group: Group): Promise<number> {
     let lockCount = 0;
     let pageNo = 1;
@@ -142,14 +119,13 @@ export class UserComponent implements OnInit {
     }
     return lockCount;
   }
-
-  async getLocksWithoutGroup(){
+  async getLocksWithoutGroup() {
     let pageNo = 1;
     const pageSize = 100;
-    while(true){
+    while (true) {
       const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, 0));
       const locksTypedResponse = locksResponse as LockListResponse;
-      if(locksTypedResponse?.list) {
+      if (locksTypedResponse?.list) {
         this.locksWithoutGroup.push(...locksTypedResponse.list.filter(lock => !lock.groupId))
         if (locksTypedResponse.pages > pageNo) {
           pageNo++;
@@ -158,7 +134,29 @@ export class UserComponent implements OnInit {
         }
       } else {
         break; // No more locks to fetch
-      } 
-    } 
+      }
+    }
+  }
+  onLockButtonClick(lock: LockData) {
+    localStorage.setItem('lockID', lock.lockId.toString())
+    localStorage.setItem('Alias', lock.lockAlias)
+    localStorage.setItem('Bateria', lock.electricQuantity.toString())
+    localStorage.setItem('userType', lock.userType)
+    localStorage.setItem('keyRight', lock.keyRight.toString())
+    localStorage.setItem('startDate', lock.startDate)
+    localStorage.setItem('endDate', lock.endDate)
+    localStorage.setItem('gateway', lock.hasGateway.toString())
+    this.router.navigate(['users', this.username, 'lock', lock.lockId])
+  }
+  onInvalidButtonClick() {
+    this.popupService.invalidLock = true;
+  }
+  hasValidAccess(lock: LockData): boolean {
+    if (Number(lock.endDate) === 0 || moment(lock.endDate).isAfter(moment())) {
+      return true
+    }
+    else {
+      return false;
+    }
   }
 }

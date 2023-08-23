@@ -5,7 +5,6 @@ export interface GatewayLock {
     rssi: number;
     rssiUpdateDate: string;
 }
-
 export interface GatewayAccount {
     gatewayId: number;
     gatewayMac: string;

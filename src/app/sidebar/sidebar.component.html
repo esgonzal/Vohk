@@ -1,11 +1,13 @@
 <div class="sidebar">
     <ul class="lista-grupos">
         <li>
-            <span [ngClass]="{'selected': groupService.selectedGroup === groupService.DEFAULT_GROUP}" (click)="selectGroup(groupService.DEFAULT_GROUP)">Todos</span>
+            <span [ngClass]="{'selected': groupService.selectedGroup === groupService.DEFAULT_GROUP}"
+                (click)="selectGroup(groupService.DEFAULT_GROUP)">Todos</span>
         </li>
         <li *ngFor="let group of groupService.groups">
             <ng-container *ngIf="group.lockCount > 0">
-                <span [ngClass]="{'selected': groupService.selectedGroup === group}" (click)="selectGroup(group)">{{group.groupName}}</span>
+                <span [ngClass]="{'selected': groupService.selectedGroup === group}"
+                    (click)="selectGroup(group)">{{group.groupName}}</span>
             </ng-container>
         </li>
     </ul>

@@ -26,16 +26,17 @@ export class EkeyComponent {
     { name: 'Domingo', value: 1, checked: false }
   ];
 
-  onSelected(value: string): void { this.selectedType = value }
-
-  onCheckboxChange(event: any, day: any) { day.checked = event.target.checked }
-
+  onSelected(value: string): void { 
+    this.selectedType = value 
+  }
+  onCheckboxChange(event: any, day: any) { 
+    day.checked = event.target.checked 
+  }
   transformarHora(Tiempo: string) {
     let tiempoHora = Tiempo.split(":")[0]
     let tiempoMinuto = Tiempo.split(":")[1]
     return ((Number(tiempoHora) * 60 + Number(tiempoMinuto)) * 60000).toString()
   }
-
   validaFechaUsuario(diaFinal: string, horaFinal: string, tipo: string): boolean {
     if (this.ekeyService.endDateUser !== '0') {
       if (tipo === '1' || tipo === '3') {
@@ -63,7 +64,6 @@ export class EkeyComponent {
       return true;
     }
   }
-
   validarFechaInicio(diaInicial: string, horaInicial: string, diaFinal: string, horaFinal: string, tipo: string): boolean {
     if (tipo !== '1' && tipo !== '3') {
       let startDate = moment(diaInicial).add(this.transformarHora(horaInicial), "milliseconds")
@@ -83,7 +83,6 @@ export class EkeyComponent {
       return true
     }
   }
-
   async crearEkey(datos: Formulario) {
     if (datos.ekeyType === '1') {//PERMANENTE
       await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1);
@@ -110,7 +109,6 @@ export class EkeyComponent {
       await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, 1, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
     }
   }
-
   validarNuevaEkey(datos: Formulario) {
     this.error = '';
     if (!datos.recieverName) {
@@ -136,5 +134,4 @@ export class EkeyComponent {
       }
     }
   }
-
 }

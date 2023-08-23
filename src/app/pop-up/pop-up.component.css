@@ -97,7 +97,7 @@ button {
 .input-container {
   display: flex;
   flex-direction: row;
-  gap: 10px; 
+  gap: 10px;
   justify-content: center;
 }
 
@@ -105,4 +105,3 @@ button {
   font-size: smaller;
   color: red;
 }
-

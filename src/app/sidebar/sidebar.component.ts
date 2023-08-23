@@ -9,8 +9,8 @@ import { Group } from '../Interfaces/Group';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  
-  constructor(public groupService: GroupService, private router: Router){}
+
+  constructor(public groupService: GroupService, private router: Router) { }
 
   selectGroup(group: Group) {
     if (group.groupName === 'Todos') {
@@ -20,10 +20,7 @@ export class SidebarComponent {
     }
     this.router.navigate(['users', localStorage.getItem('user')]);
   }
-
-
-  toGrupoCerraduras(){
+  toGrupoCerraduras() {
     this.router.navigate(['/users/', localStorage.getItem('user'), 'grupos']);
   }
-
 }

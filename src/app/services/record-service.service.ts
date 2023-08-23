@@ -9,14 +9,15 @@ import { Observable } from 'rxjs';
 })
 export class RecordServiceService {
 
-  constructor(private http:HttpClient, private lockService:LockServiceService) { }
+  constructor(private http: HttpClient, private lockService: LockServiceService) { }
 
   getRecords(token: string, lockID: number, pageNo: number, pageSize: number): Observable<RecordResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lockRecord/list'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);

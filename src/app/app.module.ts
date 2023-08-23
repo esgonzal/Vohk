@@ -13,7 +13,6 @@ import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
 import { HomeComponent } from './home/home.component';
 import { PerfilComponent } from './perfil/perfil.component';
 
-
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from "@angular/common/http";
 
@@ -88,7 +87,7 @@ import { GroupService } from './services/group.service';
     AppRoutingModule,
     RouterModule.forRoot([])
   ],
-  providers: [DatePipe, GroupService ],
+  providers: [DatePipe, GroupService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

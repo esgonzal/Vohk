@@ -1,13 +1,12 @@
-export interface MoreLockData{
+export interface MoreLockData {
   groupId: number;
   protocolVersion: number;
   protocolType: number;
   orgId: number;
   scene: number;
-  logoUrl: string;  
+  logoUrl: string;
   showAdminKbpwdFlag: boolean
 }
-
 export interface LockData {
   //Estos datos se reciben de getLockListAccount. bindDate y electricQuantityUpdateDate Son los únicos no compartidos con getEkeysofAccount
   //bindDate: number;
@@ -32,21 +31,20 @@ export interface LockData {
   groupName: string;
   //Estos datos se reciben de getEkeysofAccount
   deletePwd: string;
-  endDate:string;
-  keyId:number;
-  keyName:string;
+  endDate: string;
+  keyId: number;
+  keyName: string;
   keyRight: number;
-  keyStatus:string;
-  remarks:string;
-  remoteEnable:number;
-  startDate:string;
-  userType:string;
+  keyStatus: string;
+  remarks: string;
+  remoteEnable: number;
+  startDate: string;
+  userType: string;
 }
-
 export interface LockDetails {
   //Estos datos vienen de LockDetails. Solo se muestran los únicos
   adminPwd: string;
-  aesKeyStr:string;
+  aesKeyStr: string;
   autoLockTime: number;
   date: number;
   deletePwd: string;
@@ -64,8 +62,8 @@ export interface LockDetails {
   lockKey: string;
   lockMac: string;
   lockName: string;
-  lockSound:number;
-  lockUpdateDate:number;
+  lockSound: number;
+  lockUpdateDate: number;
   lockVersion: MoreLockData[];
   modelNum: string;
   noKeyPwd: string;
@@ -81,7 +79,6 @@ export interface LockDetails {
   timezoneRawOffset: string;
   wirelessKeypadFeatureValue: string;
 }
-
 export interface LockListResponse {
   list: LockData[];
   pageNo: number;

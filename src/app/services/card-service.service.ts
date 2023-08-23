@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import moment from 'moment';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { CardResponse } from '../Interfaces/Elements';
@@ -16,14 +15,15 @@ export class CardServiceService {
   lockID: number;
   cardID: number;
 
-  constructor(private lockService:LockServiceService, private http:HttpClient) { }
+  constructor(private lockService: LockServiceService, private http: HttpClient) { }
 
-  getCardsofLock(token:string, lockID:number, pageNo: number, pageSize: number): Observable<CardResponse>{
+  getCardsofLock(token: string, lockID: number, pageNo: number, pageSize: number): Observable<CardResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/list'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -33,13 +33,13 @@ export class CardServiceService {
     body.set('date', fecha);
     return this.http.post<CardResponse>(url, body.toString(), options);
   }
-
-  async changeName(token:string, lockID:number, cardID:number, newName:string){
+  async changeName(token: string, lockID: number, cardID: number, newName: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/rename'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -56,13 +56,13 @@ export class CardServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async deleteCard(token:string, lockID:number, cardID:number){
+  async deleteCard(token: string, lockID: number, cardID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/delete'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -79,13 +79,13 @@ export class CardServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async changePeriod(token:string, lockID:number, cardID:number, newStartDate:string, newEndDate:string){
+  async changePeriod(token: string, lockID: number, cardID: number, newStartDate: string, newEndDate: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/changePeriod'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);

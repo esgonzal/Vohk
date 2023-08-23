@@ -13,11 +13,11 @@ export interface Ekey {
     senderUsername: string;
     remarks: string;
     date: string;
-    keyType:number;
-    startDay:string;
-    endDay:string;
-    weekDays:string;
-    remoteEnable:number;
+    keyType: number;
+    startDay: string;
+    endDay: string;
+    weekDays: string;
+    remoteEnable: number;
     //Recibidos de ekeyService.getEkeysofAccount
     //lockData: string;
     //usertype: string;
@@ -26,15 +26,13 @@ export interface Ekey {
     //lockMac: string;
     //noKeyPwd: string;
 }
-
 export interface EkeyResponse {
-    list:Ekey[];
-    pageNo:number;
-    pageSize:number;
-    pages:number;
-    total:number
+    list: Ekey[];
+    pageNo: number;
+    pageSize: number;
+    pages: number;
+    total: number
 }
-
 export interface Passcode {
     endDate: string;
     sendDate: string;
@@ -50,17 +48,15 @@ export interface Passcode {
     senderUsername?: string; // Optional property
     receiverUsername?: string; // Optional property
     status: number;
-    hasBeenUsed:boolean;
+    hasBeenUsed: boolean;
 }
-
 export interface PasscodeResponse {
-    list:Passcode[];
-    pageNo:number;
-    pageSize:number;
-    pages:number;
-    total:number
+    list: Passcode[];
+    pageNo: number;
+    pageSize: number;
+    pages: number;
+    total: number
 }
-
 export interface Card {
     cardId: number;
     lockId: number;
@@ -72,20 +68,18 @@ export interface Card {
     createDate: string;
     senderUsername: string;
 }
-
 export interface CardResponse {
-    list:Card[];
-    pageNo:number;
-    pageSize:number;
-    pages:number;
-    total:number
+    list: Card[];
+    pageNo: number;
+    pageSize: number;
+    pages: number;
+    total: number
 }
-
-export interface Fingerprint{
+export interface Fingerprint {
     fingerprintId: number;
     lockId: number;
     fingerprintNumber: string;
-    fingerprintType:number;
+    fingerprintType: number;
     fingerprintName: number;
     startDate: number;
     endDate: number;
@@ -93,37 +87,33 @@ export interface Fingerprint{
     createDate: string;
     senderUsername: string;
 }
-
 export interface recurringPeriodFingerprint {
-    weekDay:number;
-    startTime:string;
-    endTime:string;
+    weekDay: number;
+    startTime: string;
+    endTime: string;
 }
-
 export interface FingerprintResponse {
-    list:Fingerprint[];
-    pageNo:number;
-    pageSize:number;
-    pages:number;
-    total:number
+    list: Fingerprint[];
+    pageNo: number;
+    pageSize: number;
+    pages: number;
+    total: number
 }
-
 export interface Record {
-    recordId:string;
-    lockId:number;
-    recordTypeFromLock:number;
-    recordType:number;
-    success:number;
-    username:string;
-    lockDate:string;
-    serverDate:string;
-    keyboardPwd:string;
+    recordId: string;
+    lockId: number;
+    recordTypeFromLock: number;
+    recordType: number;
+    success: number;
+    username: string;
+    lockDate: string;
+    serverDate: string;
+    keyboardPwd: string;
 }
-
 export interface RecordResponse {
-    list:Record[];
-    pageNo:number;
-    pageSize:number;
-    pages:number;
-    total:number
+    list: Record[];
+    pageNo: number;
+    pageSize: number;
+    pages: number;
+    total: number
 }

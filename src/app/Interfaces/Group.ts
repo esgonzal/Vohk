@@ -6,7 +6,6 @@ export interface Group {
     lockCount: number;
     locks: LockData[]
 }
-
 export interface GroupResponse {
-    list:Group[];
+    list: Group[];
 }

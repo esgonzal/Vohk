@@ -324,12 +324,11 @@ export class PopUpComponent implements OnInit {
       this.selectedLockIds.splice(lockIdIndex, 1);
     }
   }
-  
-  async removeSelectedLocksFromGroup(){
-    if(this.selectedLockIds.length === 0){
+  async removeSelectedLocksFromGroup() {
+    if (this.selectedLockIds.length === 0) {
       console.log("Seleccione al menos una cerradura para remover");
     } else {
-      for ( const lockId of this.selectedLockIds ){
+      for (const lockId of this.selectedLockIds) {
         await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), "0")
       }
       this.popupService.removeLockGROUP = false;
@@ -348,5 +347,5 @@ export class PopUpComponent implements OnInit {
       const username = localStorage.getItem('user');
       this.router.navigate(['/users', username]);
     }
-  }  
+  }
 }

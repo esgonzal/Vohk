@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { UserServiceService } from './services/user-service.service';
-
 
 @Component({
   selector: 'app-root',
@@ -10,9 +8,9 @@ import { UserServiceService } from './services/user-service.service';
 export class AppComponent {
   title = 'vohk';
 
-  constructor(){}
+  constructor() { }
 
-  returnLogged(){
+  returnLogged() {
     return localStorage.getItem('logged') ?? '';
   }
 

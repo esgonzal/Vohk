@@ -19,30 +19,31 @@ export class EkeyServiceService {
   endDateUser: string;
   ekeysimple = false;
 
-  constructor(private lockService:LockServiceService, private http:HttpClient) { }
+  constructor(private lockService: LockServiceService, private http: HttpClient) { }
 
-  getEkeysofAccount(token:string, pageNo:number, pageSize:number, groupId?:number): Observable<LockListResponse> {
+  getEkeysofAccount(token: string, pageNo: number, pageSize: number, groupId?: number): Observable<LockListResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/list'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('pageNo', pageNo.toString());
     body.set('pageSize', pageSize.toString());
     body.set('date', fecha.toString());
-    if(groupId!==undefined){body.set('groupId', groupId.toString())}
+    if (groupId !== undefined) { body.set('groupId', groupId.toString()) }
     return this.http.post<LockListResponse>(url, body.toString(), options);
   }
-
-  getEkeysofLock(token:string, lockID:number, pageNo: number, pageSize: number): Observable<EkeyResponse> {
+  getEkeysofLock(token: string, lockID: number, pageNo: number, pageSize: number): Observable<EkeyResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/listKey'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -52,13 +53,13 @@ export class EkeyServiceService {
     body.set('date', fecha);
     return this.http.post<EkeyResponse>(url, body.toString(), options);
   }
-
-  async sendEkey(token:string, lockID:number, recieverName:string, keyName:string, startDate:string, endDate:string, keyRight:number, keyType?:number, startDay?:string, endDay?:string, weekDays?:string){
+  async sendEkey(token: string, lockID: number, recieverName: string, keyName: string, startDate: string, endDate: string, keyRight: number, keyType?: number, startDay?: string, endDay?: string, weekDays?: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/send'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -89,15 +90,15 @@ export class EkeyServiceService {
       console.error("Error while sending a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
-    
-  }
 
-  async deleteEkey(token:string, keyID:number){
+  }
+  async deleteEkey(token: string, keyID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/delete'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -112,13 +113,13 @@ export class EkeyServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async freezeEkey(token:string, keyID:number){
+  async freezeEkey(token: string, keyID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/freeze'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -133,13 +134,13 @@ export class EkeyServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async unfreezeEkey(token:string, keyID:number){
+  async unfreezeEkey(token: string, keyID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/unfreeze'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -147,29 +148,29 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); 
+      this.dataSubject.next(response);
       console.log(response)
     } catch (error) {
       console.error("Error while unfreezing a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async modifyEkey(token:string, ekeyID:number, newName?:string, remoteEnable?:string ){
+  async modifyEkey(token: string, ekeyID: number, newName?: string, remoteEnable?: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/update'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
     body.set('keyId', ekeyID.toString());
     body.set('date', fecha);
-    if(newName !== undefined){
+    if (newName !== undefined) {
       body.set('keyName', newName);
     }
-    if (remoteEnable !== undefined){
+    if (remoteEnable !== undefined) {
       body.set('remoteEnable', remoteEnable);
     }
     try {
@@ -181,13 +182,13 @@ export class EkeyServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async changePeriod(token:string, ekeyID:number, newStartDate:string, newEndDate:string){
+  async changePeriod(token: string, ekeyID: number, newStartDate: string, newEndDate: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/changePeriod'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -204,13 +205,13 @@ export class EkeyServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async AuthorizeEkey(token:string, lockID:number, keyID:number){
+  async AuthorizeEkey(token: string, lockID: number, keyID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/authorize'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -226,13 +227,13 @@ export class EkeyServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async cancelAuthorizeEkey(token:string, lockID:number, keyID:number){
+  async cancelAuthorizeEkey(token: string, lockID: number, keyID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/unauthorize'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -241,7 +242,7 @@ export class EkeyServiceService {
     body.set('date', fecha);
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); 
+      this.dataSubject.next(response);
       console.log(response)
     } catch (error) {
       console.error("Error while authorizing a Ekey:", error);

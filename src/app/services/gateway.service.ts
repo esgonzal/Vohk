@@ -7,7 +7,7 @@ import { LockServiceService } from './lock-service.service';
   providedIn: 'root'
 })
 export class GatewayService {
-  
+
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
   private dataSubject2 = new BehaviorSubject<any>(null);
@@ -16,14 +16,15 @@ export class GatewayService {
   token: string;
   lockID: number;
 
-  constructor(private http:HttpClient, private lockService:LockServiceService) { }
+  constructor(private http: HttpClient, private lockService: LockServiceService) { }
 
-  async getGatewayListOfLock(token:string, lockID:number){
+  async getGatewayListOfLock(token: string, lockID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/gateway/listByLock'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -37,13 +38,13 @@ export class GatewayService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async getLockListOfGateway(token:string, gatewayID:number){
+  async getLockListOfGateway(token: string, gatewayID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/gateway/listLock'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -57,13 +58,13 @@ export class GatewayService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-  
-  async getGatewaysAccount(token:string){
+  async getGatewaysAccount(token: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/gateway/list'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -78,13 +79,13 @@ export class GatewayService {
       this.dataSubject2.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async unlock(token:string, lockID:number){
+  async unlock(token: string, lockID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/unlock'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -99,13 +100,13 @@ export class GatewayService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async lock(token:string, lockID:number){
+  async lock(token: string, lockID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/lock'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);

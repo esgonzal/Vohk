@@ -21,7 +21,7 @@ export class PasscodeComponent {
   error = '';
   selectedType = '';
   onSelected(value: string): void { this.selectedType = value }
-  onSelectedHour(value:string):void { this.howManyHours = value }
+  onSelectedHour(value: string): void { this.howManyHours = value }
 
   transformarHora(Tiempo: string) {
     let tiempoHora = Tiempo.split(":")[0]
@@ -146,7 +146,7 @@ export class PasscodeComponent {
           this.error = "Por favor introduzca una contraseña"
         }
         else {
-          if(Number(datos.passcodePwd)<1000 || Number(datos.passcodePwd)>999999999){
+          if (Number(datos.passcodePwd) < 1000 || Number(datos.passcodePwd) > 999999999) {
             this.error = "La contraseña debe tener entre 4 y 9 digitos"
           }
           else {
@@ -162,9 +162,9 @@ export class PasscodeComponent {
   }
 
   validarPasscodeSimple(datos: Formulario) {
-    console.log("Hora: ",this.howManyHours)
-    console.log("Inicio de clave: ",moment().format("HH:mm DD/MM/YYYY"))
-    console.log("Final de clave: ",moment().add(this.howManyHours, "hours").format("HH:mm DD/MM/YYYY"))
+    console.log("Hora: ", this.howManyHours)
+    console.log("Inicio de clave: ", moment().format("HH:mm DD/MM/YYYY"))
+    console.log("Final de clave: ", moment().add(this.howManyHours, "hours").format("HH:mm DD/MM/YYYY"))
     let startDate = moment().valueOf()
     let endDate = moment().add(this.howManyHours, "hours").valueOf()
     this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())

@@ -41,15 +41,15 @@
 }
 
 .form-button {
-    padding: 15px;
+  padding: 15px;
 }
 
 button {
-    padding: 10px 40px;
-    background-color: #f9c114;
-    border: 0px;
-    color: black;
-    font-size: 18px;
-    cursor: pointer;
-    width: 50%;
-  }
+  padding: 10px 40px;
+  background-color: #f9c114;
+  border: 0px;
+  color: black;
+  font-size: 18px;
+  cursor: pointer;
+  width: 50%;
+}

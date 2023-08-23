@@ -12,30 +12,31 @@ export class FingerprintServiceService {
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
 
-  constructor(private http:HttpClient, private lockService:LockServiceService) { }
+  constructor(private http: HttpClient, private lockService: LockServiceService) { }
 
-  getFingerprintsofLock(token:string, lockID:number, pageNo: number, pageSize: number): Observable<FingerprintResponse>{
+  getFingerprintsofLock(token: string, lockID: number, pageNo: number, pageSize: number): Observable<FingerprintResponse> {
     let fecha = this.lockService.timestamp()
-      let url = 'https://euapi.ttlock.com/v3/fingerprint/list'
-      let header = new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded'});
-      let options = { headers: header};
-      let body = new URLSearchParams();
-      body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-      body.set('accessToken', token);
-      body.set('lockId', lockID.toString());
-      body.set('pageNo', pageNo.toString());
-      body.set('pageSize', pageSize.toString());
-      body.set('date', fecha);
-      return this.http.post<FingerprintResponse>(url, body.toString(), options);
+    let url = 'https://euapi.ttlock.com/v3/fingerprint/list'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockID.toString());
+    body.set('pageNo', pageNo.toString());
+    body.set('pageSize', pageSize.toString());
+    body.set('date', fecha);
+    return this.http.post<FingerprintResponse>(url, body.toString(), options);
   }
-
-  async deleteFingerprint(token:string, lockID:number, fingerprintID:number){
+  async deleteFingerprint(token: string, lockID: number, fingerprintID: number) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/fingerprint/delete'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -51,13 +52,13 @@ export class FingerprintServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async changeName(token:string, lockID:number, fingerprintID:number, newName:string){
+  async changeName(token: string, lockID: number, fingerprintID: number, newName: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/fingerprint/rename'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);
@@ -73,13 +74,13 @@ export class FingerprintServiceService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
-  async changePeriod(token:string, lockID:number, fingerprintID:number, newStartDate:string, newEndDate:string){
+  async changePeriod(token: string, lockID: number, fingerprintID: number, newStartDate: string, newEndDate: string) {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/fingerprint/changePeriod'
     let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'});
-    let options = { headers: header};
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('accessToken', token);

@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 export class PassageModeComponent implements OnInit {
   constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) { }
   username = localStorage.getItem('user') ?? ''
-  lockId:number = Number(localStorage.getItem('lockID') ?? '')
+  lockId: number = Number(localStorage.getItem('lockID') ?? '')
   isPassageModeToggleOn: boolean = false;
   weekDays = [
     { name: 'Lunes', value: 1, checked: false },
@@ -25,7 +25,7 @@ export class PassageModeComponent implements OnInit {
   isAllHoursToggleOn: boolean = true;
   startHour: string = '';
   endHour: string = '';
-  error:string ='';
+  error: string = '';
 
   ngOnInit(): void {
     this.updateValues()
@@ -78,7 +78,7 @@ export class PassageModeComponent implements OnInit {
         selectedDayNumbers.push(day.value);
       }
     });
-    if(selectedDayNumbers.length === 0 && this.isPassageModeToggleOn){
+    if (selectedDayNumbers.length === 0 && this.isPassageModeToggleOn) {
       this.error = 'Si quiere activar el Modo de Paso, debe seleccionar al menos un día'
     }
     else {
@@ -92,10 +92,10 @@ export class PassageModeComponent implements OnInit {
       }
       try {
         await this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)
-        this.router.navigate(["users",this.username ,"lock", this.lockId]);
+        this.router.navigate(["users", this.username, "lock", this.lockId]);
       } catch (error) {
         console.error("Error while setting passage mode:", error);
       }
-    }  
+    }
   }
 }
