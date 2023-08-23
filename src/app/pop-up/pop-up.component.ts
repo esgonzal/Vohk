@@ -11,6 +11,7 @@ import moment from 'moment';
 import { GatewayAccount } from '../Interfaces/Gateway';
 import { LockServiceService } from '../services/lock-service.service';
 import { GroupService } from '../services/group.service';
+import { LockData } from '../Interfaces/Lock';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class PopUpComponent implements OnInit {
   selectedType = '';
   error = '';
   ////////////////////////////////
+  selectedLockIds: number[] = [];
 
   constructor(public dialogRef: MatDialog,
     public popupService: PopUpService,
@@ -110,8 +112,8 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  autorizarFalso(){
-    console.log("Se cambio el simpleRight de", this.popupService.elementType,"a 0")
+  autorizarFalso() {
+    console.log("Se cambio el simpleRight de", this.popupService.elementType, "a 0")
     localStorage.setItem(this.popupService.elementType, "0")
     this.popupService.autorizarFalso = false;
   }
@@ -122,8 +124,8 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  desautorizarFalso(){
-    console.log("Se cambio el simpleRight de", this.popupService.elementType,"a 1")
+  desautorizarFalso() {
+    console.log("Se cambio el simpleRight de", this.popupService.elementType, "a 1")
     localStorage.setItem(this.popupService.elementType, "1")
     this.popupService.desautorizarFalso = false;
   }
@@ -151,7 +153,7 @@ export class PopUpComponent implements OnInit {
   //popup eKey, card y fingerprint
   async cambiarNombre(datos: Formulario) {
     this.error = '';
-    if(!datos.name){
+    if (!datos.name) {
       this.error = "Por favor ingrese el dato requerido"
     } else {
       if (this.popupService.cambiarNombre) {
@@ -284,9 +286,9 @@ export class PopUpComponent implements OnInit {
   formatearHora() {
     return moment.utc().add(this.popupService.detalles.timezoneRawOffset, "milliseconds").format("YYYY-MM-DD HH:mm:ss")
   }
-  async crearGrupo(datos:Formulario) {
+  async crearGrupo(datos: Formulario) {
     this.error = '';
-    if(!datos.name){
+    if (!datos.name) {
       this.error = "Por favor ingrese el dato requerido"
     } else {
       await this.groupService.addGroup(this.popupService.token, datos.name);
@@ -295,12 +297,56 @@ export class PopUpComponent implements OnInit {
       this.router.navigate(['/users', username]);
     }
   }
-  addLockGroup(){
+  openAddLockGroup() {
     this.popupService.addLockGROUP = true;
     this.popupService.addRemoveLockGROUP = false;
   }
-  removeLockGroup(){
+  openRemoveLockGroup() {
     this.popupService.removeLockGROUP = true;
     this.popupService.addRemoveLockGROUP = false;
   }
+  toggleLockSelection(lockId: number) {
+    const index = this.selectedLockIds.indexOf(lockId);
+    if (index !== -1) {
+      // If lock ID is already in the array, remove it
+      this.selectedLockIds.splice(index, 1);
+    } else {
+      // If lock ID is not in the array, add it
+      this.selectedLockIds.push(lockId);
+    }
+    console.log("selectedLockIds: ", this.selectedLockIds)
+  }
+  toggleLockSelection2(lock: LockData) {
+    const lockIdIndex = this.selectedLockIds.indexOf(lock.lockId);
+    if (lockIdIndex === -1) {
+      this.selectedLockIds.push(lock.lockId);
+    } else {
+      this.selectedLockIds.splice(lockIdIndex, 1);
+    }
+  }
+  
+  async removeSelectedLocksFromGroup(){
+    if(this.selectedLockIds.length === 0){
+      console.log("Seleccione al menos una cerradura para remover");
+    } else {
+      for ( const lockId of this.selectedLockIds ){
+        await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), "0")
+      }
+      this.popupService.removeLockGROUP = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+    }
+  }
+  async addSelectedLocksToGroup() {
+    if (this.selectedLockIds.length === 0) {
+      console.log("Seleccione al menos una cerradura para añadir");
+    } else {
+      for (const lockId of this.selectedLockIds) {
+        await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), this.popupService.group.groupId.toString());
+      }
+      this.popupService.addLockGROUP = false;
+      const username = localStorage.getItem('user');
+      this.router.navigate(['/users', username]);
+    }
+  }  
 }

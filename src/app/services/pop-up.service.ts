@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Passcode } from '../Interfaces/Elements';
-import { LockDetails } from '../Interfaces/Lock';
+import { LockData, LockDetails } from '../Interfaces/Lock';
 import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
+import { Group } from '../Interfaces/Group';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,8 @@ export class PopUpService {
   elementType: string;
   elementID: number;
   passcode: Passcode;
+  group: Group;
+  locksWithoutGroup: LockData[];
 
   constructor() { }
 }

@@ -36,8 +36,10 @@ export class GrupoCerradurasComponent  {
   }
 
   cerraduras(group:Group){
+    this.popupService.group = group;
+    this.popupService.token = this.token;
+    this.popupService.locksWithoutGroup = this.groupService.locksWithoutGroup;
     this.popupService.addRemoveLockGROUP = true;
-    this.popupService.elementType = group.groupName;
   }
 
 }

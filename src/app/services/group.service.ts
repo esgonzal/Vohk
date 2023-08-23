@@ -3,13 +3,14 @@ import { LockServiceService } from './lock-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { Group, GroupResponse } from '../Interfaces/Group';
+import { LockData } from '../Interfaces/Lock';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
 
-  DEFAULT_GROUP: Group = { groupId: 0, groupName: 'Todos', lockCount: 0 };
+  DEFAULT_GROUP: Group = { groupId: 0, groupName: 'Todos', lockCount: 0, locks:[]};
 
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
@@ -18,6 +19,7 @@ export class GroupService {
 
   token = localStorage.getItem('token') ?? '';
   groups: Group[] = [];
+  locksWithoutGroup: LockData[];
   selectedGroup: Group;
 
   constructor(private http:HttpClient, private lockService: LockServiceService) {}

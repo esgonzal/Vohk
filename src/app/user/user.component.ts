@@ -24,8 +24,8 @@ export class UserComponent implements OnInit {
   token = localStorage.getItem('token') ?? '';
   ekeyList: LockListResponse;
   locks: LockData[] = [];
+  locksWithoutGroup: LockData[] = [];
   groups: Group[] = [];
-  lock: LockData;
   faBatteryFull = faBatteryFull
   faBatteryThreeQuarters = faBatteryThreeQuarters
   faBatteryHalf = faBatteryHalf
@@ -40,6 +40,8 @@ export class UserComponent implements OnInit {
   async ngOnInit() {
     await this.fetchGroups();
     console.log("Groups: ", this.groups)
+    await this.getLocksWithoutGroup();
+    console.log("locks sin grupo:", this.locksWithoutGroup)
     this.groupService.selectedGroupSubject.subscribe(selectedGroup => {
       if (selectedGroup) {
         this.fetchLocks(selectedGroup.groupId);
@@ -47,6 +49,7 @@ export class UserComponent implements OnInit {
     });
     console.log("Locks: ", this.locks)
     this.groupService.groups = this.groups; 
+    this.groupService.locksWithoutGroup = this.locksWithoutGroup;
   }
   ngOnDestroy() {
     if (this.selectedGroupSubscription) {
@@ -85,7 +88,7 @@ export class UserComponent implements OnInit {
         this.groups = typedResponse.list;
         // Fetch locks and calculate lock counts for each group
         for (const group of this.groups) {
-          group.lockCount = await this.calculateLockCountForGroup(group.groupId);
+          group.lockCount = await this.calculateLockCountForGroup(group);
         }
       } else {
         console.log("Groups not yet available");
@@ -117,16 +120,17 @@ export class UserComponent implements OnInit {
       return false;
     }
   }
-
-  async calculateLockCountForGroup(groupId: number): Promise<number> {
+  async calculateLockCountForGroup(group: Group): Promise<number> {
     let lockCount = 0;
     let pageNo = 1;
     const pageSize = 100;
+    group.locks = [];
     while (true) {
-      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, groupId));
+      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, group.groupId));
       const locksTypedResponse = locksResponse as LockListResponse;
       if (locksTypedResponse?.list && locksTypedResponse.list.length > 0) {
         lockCount += locksTypedResponse.list.length;
+        group.locks.push(...locksTypedResponse.list);
         if (locksTypedResponse.pages > pageNo) {
           pageNo++;
         } else {
@@ -138,6 +142,23 @@ export class UserComponent implements OnInit {
     }
     return lockCount;
   }
-  
-  
+
+  async getLocksWithoutGroup(){
+    let pageNo = 1;
+    const pageSize = 100;
+    while(true){
+      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, 0));
+      const locksTypedResponse = locksResponse as LockListResponse;
+      if(locksTypedResponse?.list) {
+        this.locksWithoutGroup.push(...locksTypedResponse.list.filter(lock => !lock.groupId))
+        if (locksTypedResponse.pages > pageNo) {
+          pageNo++;
+        } else {
+          break; // No more pages to fetch
+        }
+      } else {
+        break; // No more locks to fetch
+      } 
+    } 
+  }
 }

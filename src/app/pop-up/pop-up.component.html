@@ -412,44 +412,60 @@
 </div>
 <div id="container" *ngIf="popupService.addRemoveLockGROUP">
     <div id="header">
-        {{popupService.elementType}}
+        {{popupService.group.groupName}}
     </div>
     <div id="content">
         <div class="form-area">
-            
+            <ul>
+                <li *ngFor="let lock of popupService.group.locks">
+                    {{ lock.lockAlias }}
+                </li>
+            </ul>
         </div>
     </div>
     <div id="actions">
         <button class="cancel" (click)="popupService.addRemoveLockGROUP = false">Volver</button>
-        <button (click)="addLockGroup()">+</button>
-        <button (click)="removeLockGroup()">-</button>
+        <button (click)="openAddLockGroup()">+</button>
+        <button (click)="openRemoveLockGroup()">-</button>
     </div>
 </div>
 <div id="container" *ngIf="popupService.addLockGROUP">
     <div id="header">
-        Añadir Cerradura
+        Añadir Cerradura a {{popupService.group.groupName}}
     </div>
     <div id="content">
         <div class="form-area">
-            Lista seleccionable de cerraduras sin grupo
+            <div *ngFor="let lock of popupService.locksWithoutGroup">
+                <label>
+                    <input type="checkbox" [value]="lock.lockId" (change)="toggleLockSelection2(lock)">
+                    {{ lock.lockAlias }}
+                </label>
+            </div>
         </div>
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.addLockGROUP = false; popupService.addRemoveLockGROUP = true">Volver</button>
-        <button>OK</button>
+        <button class="cancel"
+            (click)="popupService.addLockGROUP = false; popupService.addRemoveLockGROUP = true">Volver</button>
+        <button (click)="addSelectedLocksToGroup()">OK</button>
     </div>
 </div>
 <div id="container" *ngIf="popupService.removeLockGROUP">
     <div id="header">
-        Eliminar Cerradura
+        Eliminar Cerradura de {{popupService.group.groupName}}
     </div>
     <div id="content">
         <div class="form-area">
-            Lista seleccionable de cerraduras en el grupo
+            <div *ngFor="let lock of popupService.group.locks">
+                <label>
+                    <input type="checkbox" (change)="toggleLockSelection(lock.lockId)">
+                    {{ lock.lockAlias }}
+                </label>
+            </div>
         </div>
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.removeLockGROUP = false; popupService.addRemoveLockGROUP = true">Volver</button>
-        <button>OK</button>
+        <button class="cancel"
+            (click)="popupService.removeLockGROUP = false; popupService.addRemoveLockGROUP = true">Volver</button>
+        <button (click)="removeSelectedLocksFromGroup()">OK</button>
     </div>
 </div>
