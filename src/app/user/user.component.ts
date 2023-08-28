@@ -23,6 +23,7 @@ export class UserComponent implements OnInit {
   newPasswordDisplay = false;
   token = localStorage.getItem('token') ?? '';
   ekeyList: LockListResponse;
+  allLocks: LockData[] = [];
   locks: LockData[] = [];
   locksWithoutGroup: LockData[] = [];
   groups: Group[] = [];
@@ -38,17 +39,17 @@ export class UserComponent implements OnInit {
   constructor(private router: Router, public groupService: GroupService, private ekeyService: EkeyServiceService, public popupService: PopUpService) { }
 
   async ngOnInit() {
+    await this.getAllLocks();
     await this.fetchGroups();
-    await this.getLocksWithoutGroup();
+    //await this.getLocksWithoutGroup();
     this.groupService.selectedGroupSubject.subscribe(async selectedGroup => {
       if (selectedGroup) {
         await this.fetchLocks(selectedGroup.groupId);
+        console.log("All Locks",this.allLocks)
+        console.log("Locks without group",this.locksWithoutGroup)
       }
     });
-    this.groupService.groups = this.groups;
-    this.groupService.locksWithoutGroup = this.locksWithoutGroup;
-    this.ekeyService.currentLocks = this.locks
-    console.log("Locks:",this.locks)
+
   }
   ngOnDestroy() {
     if (this.selectedGroupSubscription) {
@@ -61,6 +62,8 @@ export class UserComponent implements OnInit {
     } catch (error) {
       console.error("Error while fetching Locks: ", error);
     }
+    console.log("Locks:", this.locks)
+
   }
   async fetchLocksPage(pageNo: number, groupId?: number) {
     this.locks = [];
@@ -78,6 +81,7 @@ export class UserComponent implements OnInit {
     } catch (error) {
       console.error("Error while fetching locks page:", error)
     }
+
   }
   async fetchGroups() {
     try {
@@ -95,6 +99,7 @@ export class UserComponent implements OnInit {
     } catch (error) {
       console.error("Error while fetching groups:", error);
     }
+    this.groupService.groups = this.groups;
   }
   async calculateLockCountForGroup(group: Group): Promise<number> {
     let lockCount = 0;
@@ -118,6 +123,29 @@ export class UserComponent implements OnInit {
     }
     return lockCount;
   }
+  async getAllLocks() {
+    let pageNo = 1;
+    const pageSize = 100;
+    while (true) {
+      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, 0));
+      const locksTypedResponse = locksResponse as LockListResponse;
+      if (locksTypedResponse?.list) {
+        this.allLocks.push(...locksTypedResponse.list)
+        this.locksWithoutGroup.push(...locksTypedResponse.list.filter(lock => !lock.groupId))
+        if (locksTypedResponse.pages > pageNo) {
+          pageNo++;
+        } else {
+          break; // No more pages to fetch
+        }
+      } else {
+        break; // No more locks to fetch
+      }
+    }
+    this.ekeyService.currentLocks = this.allLocks.filter(
+      lock => lock.userType === '110301' || (lock.userType === '110301' && lock.keyRight === 1)
+    );
+    this.groupService.locksWithoutGroup = this.locksWithoutGroup;
+  }
   async getLocksWithoutGroup() {
     let pageNo = 1;
     const pageSize = 100;
@@ -135,6 +163,7 @@ export class UserComponent implements OnInit {
         break; // No more locks to fetch
       }
     }
+    this.groupService.locksWithoutGroup = this.locksWithoutGroup;
   }
   onLockButtonClick(lock: LockData) {
     localStorage.setItem('lockID', lock.lockId.toString())
