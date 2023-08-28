@@ -114,7 +114,7 @@ export class MultipleEkeyComponent {
       await this.ekeyService.sendEkey(this.ekeyService.token, lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, 1, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
     }
   }
-  validarNuevaEkey(datos: Formulario) {
+  validarNuevaEkey(datos: Formulario, lockID:number) {
     this.error = '';
     if (!datos.recieverName) {
       this.error = "Por favor llene el campo 'Nombre del Recipiente'"
@@ -130,7 +130,7 @@ export class MultipleEkeyComponent {
         else {
           if (this.validarFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.ekeyType)) {
             if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.ekeyType)) {
-              this.crearEkey(datos, this.ekeyService.lockID);
+              this.crearEkey(datos, lockID);
               localStorage.setItem(datos.recieverName, "1")
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             }
@@ -150,20 +150,14 @@ export class MultipleEkeyComponent {
       console.log("Elija un tipo de ekey")
     }
     else {
-      console.log(this.ekeyService.selectedLocks)
-      console.log(this.ekeyService.recipients)
-      console.log(datos)
       for (let i = 0; i < this.ekeyService.selectedLocks.length; i++) {
         const lockId = this.ekeyService.selectedLocks[i];
         for (let j = 0; j < this.ekeyService.recipients.length; j++) {
           datos.name = this.ekeyService.recipients[j].ekeyName;
           datos.recieverName = this.ekeyService.recipients[j].username;
-          this.crearEkey(datos, lockId)
-          localStorage.setItem(datos.recieverName, "1")
+          this.validarNuevaEkey(datos, lockId)
         }
       }
-      this.router.navigate(["users", this.username, "lock", this.lockId]);
     }
   }
-
 }

@@ -34,8 +34,6 @@ export class PopUpComponent implements OnInit {
   ////////////////////////////////
   selectedLockIds: number[] = [];
   
-
-
   constructor(public dialogRef: MatDialog,
     public popupService: PopUpService,
     private router: Router,
@@ -351,8 +349,12 @@ export class PopUpComponent implements OnInit {
       this.router.navigate(['/users', username]);
     }
   }
+
+  isLockSelected(lockId: number): boolean {
+    return this.ekeyService.selectedLocks.includes(lockId);
+  }
   selectLocks(){
-    this.ekeyService.selectedLocks = this.selectedLockIds
+    this.ekeyService.selectedLocks = this.popupService.selectedLockIds_forMultipleEkeys
     this.popupService.selectLocksForMultipleEkeys = false;
   }
 

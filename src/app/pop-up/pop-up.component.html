@@ -492,7 +492,7 @@
         <div class="form-area">
             <div *ngFor="let lock of ekeyService.currentLocks">
                 <label>
-                    <input type="checkbox" [value]="lock.lockId" (change)="toggleLockSelection(lock.lockId)">
+                    <input type="checkbox" [value]="lock.lockId" (change)="popupService.toggleLockSelection(lock.lockId)" [checked]="isLockSelected(lock.lockId)">
                     {{ lock.lockAlias }}
                 </label>
             </div>
