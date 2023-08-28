@@ -456,7 +456,7 @@
     <div id="actions">
         <button class="cancel"
             (click)="popupService.addLockGROUP = false; popupService.addRemoveLockGROUP = true">Volver</button>
-        <button>OK</button>
+        <button (click)="addSelectedLocksToGroup()">OK</button>
     </div>
 </div>
 <div id="container" *ngIf="popupService.removeLockGROUP">
@@ -482,5 +482,57 @@
         <button class="cancel"
             (click)="popupService.removeLockGROUP = false; popupService.addRemoveLockGROUP = true">Volver</button>
         <button (click)="removeSelectedLocksFromGroup()">OK</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.selectLocksForMultipleEkeys">
+    <div id="header">
+        Seleccione Cerradura para compartir
+    </div>
+    <div id="content">
+        <div class="form-area">
+            <div *ngFor="let lock of ekeyService.currentLocks">
+                <label>
+                    <input type="checkbox" [value]="lock.lockId" (change)="toggleLockSelection(lock.lockId)">
+                    {{ lock.lockAlias }}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.selectLocksForMultipleEkeys = false">Volver</button>
+        <button (click)="selectLocks()" >OK</button>
+    </div>
+</div>
+<div id="container" *ngIf="popupService.addRecipientsForMultipleEkeys">
+    <div id="header">
+        Añadir Recipiente(s)
+    </div>
+    <div id="content">
+        <div class="form-area">
+            <form #addRecipient="ngForm" (ngSubmit)="onSubmit()" class="common-form">
+                <div *ngFor="let recipient of recipients; let i = index" class="recipient-pair">
+                    <p>
+                        Cuenta de Destinatario
+                        <input type="text" class="form-input" required [(ngModel)]="recipient.username"
+                            name="recipientAccount{{i}}">
+                    </p>
+                    <p>
+                        Nombre de ekey
+                        <input type="text" class="form-input" required [(ngModel)]="recipient.ekeyName"
+                            name="ekeyName{{i}}">
+                    </p>
+                    <button type="button" (click)="removeRecipientPair(i)">X</button>
+                </div>
+                <p class="error">{{error}}</p>
+                <div id="actions">
+                    <button type="button" (click)="addRecipientPair()">+Añadir</button>
+                    <button class="cancel" (click)="popupService.addRecipientsForMultipleEkeys = false">Volver</button>
+                    <button type="submit">OK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="actions">
+
     </div>
 </div>

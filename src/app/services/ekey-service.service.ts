@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { EkeyResponse } from '../Interfaces/Elements';
-import { LockListResponse } from '../Interfaces/Lock';
+import { LockData, LockListResponse } from '../Interfaces/Lock';
+import { RecipientList } from '../Interfaces/RecipientList';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +18,9 @@ export class EkeyServiceService {
   token: string;
   lockID: number;
   endDateUser: string;
+  currentLocks: LockData[] = []
+  selectedLocks: number[] = [];
+  recipients: RecipientList[] = [];
   ekeysimple = false;
 
   constructor(private lockService: LockServiceService, private http: HttpClient) { }

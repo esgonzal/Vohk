@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
-import { EkeyServiceService } from '../services/ekey-service.service';
 import { Router } from '@angular/router';
-import { Formulario } from '../Interfaces/Formulario';
 import moment from 'moment';
+import { Formulario } from '../Interfaces/Formulario';
+import { EkeyServiceService } from '../services/ekey-service.service';
+import { RecipientList } from '../Interfaces/RecipientList';
+import { PopUpService } from '../services/pop-up.service';
 
 @Component({
-  selector: 'app-ekey',
-  templateUrl: './ekey.component.html',
-  styleUrls: ['./ekey.component.css']
+  selector: 'app-multiple-ekey',
+  templateUrl: './multiple-ekey.component.html',
+  styleUrls: ['./multiple-ekey.component.css']
 })
-export class EkeyComponent {
+export class MultipleEkeyComponent {
 
-  constructor(private router: Router, public ekeyService: EkeyServiceService) { }
+  constructor(private router: Router, public ekeyService: EkeyServiceService, public popupService: PopUpService) { }
+
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   error = "";
@@ -25,6 +28,8 @@ export class EkeyComponent {
     { name: 'Sabado', value: 7, checked: false },
     { name: 'Domingo', value: 1, checked: false }
   ];
+  selectedLocks: number[] = []//Add the lockIds of selected locks
+  recipientes: RecipientList[] = []//Add the name and ekeyName to be sent for every lock in selectedLocks
 
   onSelected(value: string): void { 
     this.selectedType = value 
@@ -83,19 +88,19 @@ export class EkeyComponent {
       return true
     }
   }
-  async crearEkey(datos: Formulario) {
+  async crearEkey(datos: Formulario, lockID:number) {
     if (datos.ekeyType === '1') {//PERMANENTE
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1);
+      await this.ekeyService.sendEkey(this.ekeyService.token, lockID, datos.recieverName, datos.name, "0", "0", 1);
     }
     else if (datos.ekeyType === '2') {//PERIODICA
       let newStartDay = moment(datos.startDate).valueOf()
       let newEndDay = moment(datos.endDate).valueOf()
       let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
       let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 1);
+      await this.ekeyService.sendEkey(this.ekeyService.token, lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 1);
     }
     else if (datos.ekeyType === '3') {//DE UN USO
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1", 1);
+      await this.ekeyService.sendEkey(this.ekeyService.token, lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1", 1);
     }
     else if (datos.ekeyType === '4') {//SOLICITANTE
       let newStartDay = moment(datos.startDate).valueOf()
@@ -106,7 +111,7 @@ export class EkeyComponent {
       this.weekDays.forEach(day => {
         if (day.checked) { selectedDayNumbers.push(day.value) }
       });
-      await this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, 1, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
+      await this.ekeyService.sendEkey(this.ekeyService.token, lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, 1, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers))
     }
   }
   validarNuevaEkey(datos: Formulario) {
@@ -125,7 +130,7 @@ export class EkeyComponent {
         else {
           if (this.validarFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.ekeyType)) {
             if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.ekeyType)) {
-              this.crearEkey(datos);
+              this.crearEkey(datos, this.ekeyService.lockID);
               localStorage.setItem(datos.recieverName, "1")
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             }
@@ -134,7 +139,31 @@ export class EkeyComponent {
       }
     }
   }
-  toMultipleEkeys() {
-    this.router.navigate(['users', this.username, 'lock', this.lockId, 'ekey','multiple'])
+  generarMultiple(datos:Formulario){
+    if(this.ekeyService.selectedLocks.length===0) {
+      console.log("seleccione al menos 1 cerradura")
+    }
+    else if(this.ekeyService.recipients.length===0) {
+      console.log("Agregue al menos 1 receptor")
+    } 
+    else if(this.selectedType===''){
+      console.log("Elija un tipo de ekey")
+    }
+    else {
+      console.log(this.ekeyService.selectedLocks)
+      console.log(this.ekeyService.recipients)
+      console.log(datos)
+      for (let i = 0; i < this.ekeyService.selectedLocks.length; i++) {
+        const lockId = this.ekeyService.selectedLocks[i];
+        for (let j = 0; j < this.ekeyService.recipients.length; j++) {
+          datos.name = this.ekeyService.recipients[j].ekeyName;
+          datos.recieverName = this.ekeyService.recipients[j].username;
+          this.crearEkey(datos, lockId)
+          localStorage.setItem(datos.recieverName, "1")
+        }
+      }
+      this.router.navigate(["users", this.username, "lock", this.lockId]);
+    }
   }
+
 }

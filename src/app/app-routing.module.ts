@@ -11,6 +11,7 @@ import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
 import { HomeComponent } from './home/home.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { GrupoCerradurasComponent } from './grupo-cerraduras/grupo-cerraduras.component';
+import { MultipleEkeyComponent } from './multiple-ekey/multiple-ekey.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'users/:username/lock/:id', component: LockComponent },
   { path: 'users/:username/lock/:id/passcode', component: PasscodeComponent },
   { path: 'users/:username/lock/:id/ekey', component: EkeyComponent },
+  { path: 'users/:username/lock/:id/ekey/multiple', component: MultipleEkeyComponent },
   { path: 'users/:username/lock/:id/passageMode', component: PassageModeComponent },
   { path: 'users/:username/lock/:id/transferLock', component: TransferLockComponent }
 ];

@@ -30,6 +30,8 @@ export class PopUpService {
   addRemoveLockGROUP = false;
   addLockGROUP = false;
   removeLockGROUP = false;
+  selectLocksForMultipleEkeys = false;
+  addRecipientsForMultipleEkeys = false;
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;

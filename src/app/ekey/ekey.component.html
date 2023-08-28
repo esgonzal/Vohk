@@ -8,6 +8,9 @@
         </ol>
     </nav>
     <div class="resto">
+        <div>
+            <button (click)="toMultipleEkeys()">Enviar multiple Ekeys</button>
+        </div>
         <div class="form-area">
             <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva eKey</h2>
             <form #formInput="ngForm" (ngSubmit)="validarNuevaEkey(formInput.value)" class="common-form">

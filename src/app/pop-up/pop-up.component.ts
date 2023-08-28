@@ -12,6 +12,7 @@ import { GatewayAccount } from '../Interfaces/Gateway';
 import { LockServiceService } from '../services/lock-service.service';
 import { GroupService } from '../services/group.service';
 import { LockData } from '../Interfaces/Lock';
+import { RecipientList } from '../Interfaces/RecipientList';
 
 
 @Component({
@@ -32,12 +33,14 @@ export class PopUpComponent implements OnInit {
   error = '';
   ////////////////////////////////
   selectedLockIds: number[] = [];
+  
+
 
   constructor(public dialogRef: MatDialog,
     public popupService: PopUpService,
     private router: Router,
     private lockService: LockServiceService,
-    private ekeyService: EkeyServiceService,
+    public ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
     private fingerprintService: FingerprintServiceService,
@@ -347,5 +350,22 @@ export class PopUpComponent implements OnInit {
       const username = localStorage.getItem('user');
       this.router.navigate(['/users', username]);
     }
+  }
+  selectLocks(){
+    this.ekeyService.selectedLocks = this.selectedLockIds
+    this.popupService.selectLocksForMultipleEkeys = false;
+  }
+
+  recipients: RecipientList[] = [];
+  addRecipientPair() {
+    this.recipients.push({ username: '', ekeyName: '' });
+  }
+  removeRecipientPair(index: number) {
+    this.recipients.splice(index, 1);
+  }
+  onSubmit() {
+    console.log(this.recipients)
+    this.ekeyService.recipients = this.recipients;
+    this.popupService.addRecipientsForMultipleEkeys = false;
   }
 }

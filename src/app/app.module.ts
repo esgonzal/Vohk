@@ -44,6 +44,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { GrupoCerradurasComponent } from './grupo-cerraduras/grupo-cerraduras.component';
 
 import { GroupService } from './services/group.service';
+import { MultipleEkeyComponent } from './multiple-ekey/multiple-ekey.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { GroupService } from './services/group.service';
     PerfilComponent,
     SidebarComponent,
     GrupoCerradurasComponent,
+    MultipleEkeyComponent,
   ],
   imports: [
     BrowserModule,
