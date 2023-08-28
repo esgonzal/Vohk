@@ -47,8 +47,8 @@ export class UserComponent implements OnInit {
     });
     this.groupService.groups = this.groups;
     this.groupService.locksWithoutGroup = this.locksWithoutGroup;
-    this.ekeyService.currentLocks = this.locks;
-    console.log("Locks:", this.locks)
+    this.ekeyService.currentLocks = this.locks
+    console.log("Locks:",this.locks)
   }
   ngOnDestroy() {
     if (this.selectedGroupSubscription) {

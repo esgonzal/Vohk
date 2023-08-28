@@ -51,6 +51,8 @@
   flex-grow: 1;
   padding: 30px;
   font-size: 18px;
+  max-height: 70vh; 
+  overflow-y: auto;
 }
 
 #actions {
@@ -99,6 +101,23 @@ button {
   flex-direction: row;
   gap: 10px;
   justify-content: center;
+}
+
+.recipient-pair {
+  border-bottom: 1px solid #ccc; /* Change color as needed */
+  padding-top: 20px;
+}
+
+.x-button {
+  font-size: 12px; /* Adjust the font size to your preference */
+  background: red;
+  border: 1px solid;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  width: 20px; /* Equal width and height for a perfect circle */
+  height: 20px;
+  border-radius: 50%; 
 }
 
 .error {

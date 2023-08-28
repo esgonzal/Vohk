@@ -141,14 +141,11 @@ export class MultipleEkeyComponent {
   }
   generarMultiple(datos:Formulario){
     if(this.ekeyService.selectedLocks.length===0) {
-      console.log("seleccione al menos 1 cerradura")
+      this.error = "Seleccione al menos 1 cerradura";
     }
     else if(this.ekeyService.recipients.length===0) {
-      console.log("Agregue al menos 1 receptor")
+      this.error = "Agregue al menos 1 receptor";
     } 
-    else if(this.selectedType===''){
-      console.log("Elija un tipo de ekey")
-    }
     else {
       for (let i = 0; i < this.ekeyService.selectedLocks.length; i++) {
         const lockId = this.ekeyService.selectedLocks[i];

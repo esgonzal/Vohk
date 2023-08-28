@@ -492,47 +492,54 @@
         <div class="form-area">
             <div *ngFor="let lock of ekeyService.currentLocks">
                 <label>
-                    <input type="checkbox" [value]="lock.lockId" (change)="popupService.toggleLockSelection(lock.lockId)" [checked]="isLockSelected(lock.lockId)">
+                    <input type="checkbox" [value]="lock.lockId"
+                        (change)="popupService.toggleLockSelection(lock.lockId)"
+                        [checked]="isLockSelected(lock.lockId)">
                     {{ lock.lockAlias }}
                 </label>
             </div>
         </div>
     </div>
     <div id="actions">
-        <button class="cancel" (click)="popupService.selectLocksForMultipleEkeys = false">Volver</button>
-        <button (click)="selectLocks()" >OK</button>
+        <button (click)="selectLocks()">OK</button>
     </div>
 </div>
 <div id="container" *ngIf="popupService.addRecipientsForMultipleEkeys">
     <div id="header">
-        Añadir Recipiente(s)
+        Añadir Receptor(es)
     </div>
     <div id="content">
         <div class="form-area">
-            <form #addRecipient="ngForm" (ngSubmit)="onSubmit()" class="common-form">
-                <div *ngFor="let recipient of recipients; let i = index" class="recipient-pair">
-                    <p>
-                        Cuenta de Destinatario
-                        <input type="text" class="form-input" required [(ngModel)]="recipient.username"
-                            name="recipientAccount{{i}}">
-                    </p>
-                    <p>
-                        Nombre de ekey
-                        <input type="text" class="form-input" required [(ngModel)]="recipient.ekeyName"
-                            name="ekeyName{{i}}">
-                    </p>
-                    <button type="button" (click)="removeRecipientPair(i)">X</button>
+            <form #addRecipient="ngForm" class="common-form">
+                <div *ngFor="let recipient of popupService.recipients; let i = index" class="recipient-pair"
+                    style="display: flex;">
+                    <div>
+                        <p>
+                            Cuenta de Destinatario
+                            <input type="text" class="form-input" required [(ngModel)]="recipient.username"
+                                name="recipientAccount{{i}}">
+                        </p>
+                        <p>
+                            Nombre de ekey
+                            <input type="text" class="form-input" required [(ngModel)]="recipient.ekeyName"
+                                name="ekeyName{{i}}">
+                        </p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <button type="button" class="x-button" (click)="removeRecipientPair(i)">X</button>
+                    </div>
                 </div>
                 <p class="error">{{error}}</p>
-                <div id="actions">
-                    <button type="button" (click)="addRecipientPair()">+Añadir</button>
-                    <button class="cancel" (click)="popupService.addRecipientsForMultipleEkeys = false">Volver</button>
-                    <button type="submit">OK</button>
-                </div>
             </form>
         </div>
     </div>
-    <div id="actions">
-
+    <div id="actions" style="justify-content: space-around;">
+        <div>
+            <button type="button" (click)="addRecipientPair()">+Añadir</button>
+        </div>
+        <div style="display:flex ;gap: 20px;">
+            <button class="cancel" (click)="popupService.addRecipientsForMultipleEkeys = false">Volver</button>
+            <button type="submit" (click)="onSubmit()">OK</button>
+        </div>
     </div>
 </div>

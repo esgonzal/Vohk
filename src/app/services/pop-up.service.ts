@@ -3,6 +3,7 @@ import { Passcode } from '../Interfaces/Elements';
 import { LockData, LockDetails } from '../Interfaces/Lock';
 import { GatewayAccount, GatewayLock } from '../Interfaces/Gateway';
 import { Group } from '../Interfaces/Group';
+import { RecipientList } from '../Interfaces/RecipientList';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,7 @@ export class PopUpService {
   group: Group;
   locksWithoutGroup: LockData[];
   selectedLockIds_forMultipleEkeys: number[] = [];
+  recipients: RecipientList[] = [];
 
   toggleLockSelection(lockId: number) {
     const index = this.selectedLockIds_forMultipleEkeys.indexOf(lockId);

@@ -349,7 +349,6 @@ export class PopUpComponent implements OnInit {
       this.router.navigate(['/users', username]);
     }
   }
-
   isLockSelected(lockId: number): boolean {
     return this.ekeyService.selectedLocks.includes(lockId);
   }
@@ -357,17 +356,15 @@ export class PopUpComponent implements OnInit {
     this.ekeyService.selectedLocks = this.popupService.selectedLockIds_forMultipleEkeys
     this.popupService.selectLocksForMultipleEkeys = false;
   }
-
-  recipients: RecipientList[] = [];
   addRecipientPair() {
-    this.recipients.push({ username: '', ekeyName: '' });
+    this.popupService.recipients.push({ username: '', ekeyName: '' });
   }
   removeRecipientPair(index: number) {
-    this.recipients.splice(index, 1);
+    this.popupService.recipients.splice(index, 1);
   }
   onSubmit() {
-    console.log(this.recipients)
-    this.ekeyService.recipients = this.recipients;
+    console.log(this.popupService.recipients)
+    this.ekeyService.recipients = this.popupService.recipients;
     this.popupService.addRecipientsForMultipleEkeys = false;
   }
 }
