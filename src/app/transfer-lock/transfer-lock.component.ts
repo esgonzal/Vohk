@@ -18,6 +18,6 @@ export class TransferLockComponent {
   async transferir() {
     let lockIDList: string = "[".concat(this.lockId.toString()).concat("]");
     await this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)
-    this.router.navigate(["users", this.username, "lock", this.lockId]);
+    this.router.navigate(["users", this.username]);
   }
 }

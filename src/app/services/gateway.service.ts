@@ -121,4 +121,48 @@ export class GatewayService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
+
+  async getLockTime(token: string, lockId: number) {
+    let fecha = this.lockService.timestamp();
+    let url = 'https://euapi.ttlock.com/v3/lock/queryDate'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockId.toString())
+    body.set('date', fecha);
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response);
+      console.log(response)
+    } catch (error) {
+      console.error("Error while getting the time of the lock:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
+
+  async adjustLockTime(token: string, lockId: number) {
+    let fecha = this.lockService.timestamp();
+    let url = 'https://euapi.ttlock.com/v3/lock/updateDate'
+    let header = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let options = { headers: header };
+    let body = new URLSearchParams();
+    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
+    body.set('accessToken', token);
+    body.set('lockId', lockId.toString())
+    body.set('date', fecha);
+    try {
+      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
+      this.dataSubject.next(response);
+      console.log(response)
+    } catch (error) {
+      console.error("Error while getting the time of the lock:", error);
+      this.dataSubject.next(null); // Emit null to dataSubject on error
+    }
+  }
 }

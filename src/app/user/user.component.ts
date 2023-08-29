@@ -49,7 +49,6 @@ export class UserComponent implements OnInit {
         console.log("Locks without group",this.locksWithoutGroup)
       }
     });
-
   }
   ngOnDestroy() {
     if (this.selectedGroupSubscription) {
@@ -62,7 +61,7 @@ export class UserComponent implements OnInit {
     } catch (error) {
       console.error("Error while fetching Locks: ", error);
     }
-    console.log("Locks:", this.locks)
+    console.log("Locks actuales", this.locks)
 
   }
   async fetchLocksPage(pageNo: number, groupId?: number) {

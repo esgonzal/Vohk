@@ -74,6 +74,7 @@ export class EkeyServiceService {
     body.set('endDate', endDate);
     body.set('date', fecha);
     body.set('keyRight', keyRight.toString());
+    body.set('createUser','1');
     if (keyType !== undefined) {
       body.set('keyType', keyType.toString());
     }
@@ -94,7 +95,6 @@ export class EkeyServiceService {
       console.error("Error while sending a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
-
   }
   async deleteEkey(token: string, keyID: number) {
     let fecha = this.lockService.timestamp()

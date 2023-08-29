@@ -285,7 +285,7 @@ export class PopUpComponent implements OnInit {
   }
   //popup Hora Dispositivo
   formatearHora() {
-    return moment.utc().add(this.popupService.detalles.timezoneRawOffset, "milliseconds").format("YYYY-MM-DD HH:mm:ss")
+    return moment(this.popupService.currentTime).format("DD/MM/YYYY HH:mm:ss")
   }
   async crearGrupo(datos: Formulario) {
     this.error = '';

@@ -36,6 +36,7 @@ export class PopUpService {
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;
+  currentTime: number;
   welcomingMessage: string;
   token: string;
   lockID: number;

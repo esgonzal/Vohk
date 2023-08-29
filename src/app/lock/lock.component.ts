@@ -115,7 +115,7 @@ export class LockComponent implements OnInit {
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
-    //console.log("Cards: ", this.cards)
+    console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
   }
@@ -753,9 +753,22 @@ export class LockComponent implements OnInit {
     this.popupService.gateway = true;
 
   }
-  HoraDispositivo() {
-    this.popupService.detalles = this.lockDetails;
-    this.popupService.mostrarHora = true;
+  async HoraDispositivo() {
+    if (this.gateway === '1') {
+      this.gatewayService.token = this.token;
+      this.gatewayService.lockID = this.lockId;
+      try {
+        await this.gatewayService.getLockTime(this.token,this.lockId);
+        this.gatewayService.data$.subscribe((data) => {
+          if(data) {
+            this.popupService.currentTime = data.date;
+          }
+        })
+      } catch (error) { console.error("Error while fetching lock's time:", error) }
+      this.popupService.mostrarHora = true;
+    } else {
+      this.popupService.needGateway = true;
+    }
   }
   async PassageMode() {
     if (this.gateway === '1') {
