@@ -13,10 +13,11 @@ import { PopUpService } from '../services/pop-up.service';
 })
 export class PasscodeComponent {
 
-  constructor(public passcodeService: PasscodeServiceService, private lockService: LockServiceService, private router: Router, public popupService: PopUpService) { }
+  constructor(public passcodeService: PasscodeServiceService, public lockService: LockServiceService, private router: Router, public popupService: PopUpService) { }
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   gateway = localStorage.getItem('gateway') ?? ''
+  featureValue = localStorage.getItem('features') ?? '';
   howManyHours = '';
   error = '';
   selectedType = '';

@@ -50,10 +50,10 @@
                   <button mat-menu-item (click)="HoraDispositivo()">
                     <span>Hora del Dispositivo</span>
                   </button>
-                  <button mat-menu-item *ngIf="simpleRight!=='1'" (click)="PassageMode()">
+                  <button mat-menu-item *ngIf="simpleRight!=='1' && lockService.checkFeature(featureValue, 22)" (click)="PassageMode()">
                     <span>Modo de Paso</span>
                   </button>
-                  <button mat-menu-item *ngIf="simpleRight!=='1'" (click)="AutoLock()">
+                  <button mat-menu-item *ngIf="simpleRight!=='1' && lockService.checkFeature(featureValue, 4)" (click)="AutoLock()">
                     <span>Cierre Automático</span>
                   </button>
                 </mat-menu>
@@ -82,12 +82,12 @@
           <div class="derecho">
             <div class="lock-unlock">
               <div>
-                <button (click)="Unlock()">
+                <button (click)="Unlock()" *ngIf="lockService.checkFeature(featureValue, 10)">
                   Abrir
                 </button>
               </div>
               <div>
-                <button (click)="Lock()">
+                <button (click)="Lock()" *ngIf="lockService.checkFeature(featureValue, 8)">
                   Cerrar
                 </button>
               </div>
@@ -188,7 +188,7 @@
                     </div>
                   </div>
                 </mat-tab>
-                <mat-tab label="Códigos">
+                <mat-tab label="Códigos" *ngIf="lockService.checkFeature(featureValue, 0)">
                   <div class="contenido">
                     <div class="button-container">
                       <!--   BOTON DE NUEVA PASSCODE   -->
@@ -248,7 +248,7 @@
                     </div>
                   </div>
                 </mat-tab>
-                <mat-tab label="Tarjetas RF">
+                <mat-tab label="Tarjetas RF" *ngIf="lockService.checkFeature(featureValue, 1)">
                   <div class="contenido">
                     <div class="space-divider">
                     </div>
@@ -306,7 +306,7 @@
                     </div>
                   </div>
                 </mat-tab>
-                <mat-tab label="Huellas">
+                <mat-tab label="Huellas" *ngIf="lockService.checkFeature(featureValue, 2)">
                   <div class="contenido">
                     <div class="space-divider">
                     </div>
@@ -400,7 +400,7 @@
                 </mat-tab>
               </div>
               <div *ngIf="simpleRight==='1'">
-                <mat-tab label="Códigos">
+                <mat-tab label="Códigos" *ngIf="lockService.checkFeature(featureValue, 0)">
                   <div class="contenido">
                     <div class="button-container">
                       <button class="nueva-button" (click)="crearPasscodeSimple()">Crear Passcode Temporal</button>

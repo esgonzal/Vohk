@@ -31,6 +31,11 @@ export class LockServiceService {
     }
     return fechaInShanghai.toString();
   }
+  public checkFeature(featureValue: string, bit: number) {
+    const binaryValue = BigInt(`0x${featureValue}`).toString(2)
+    const reversedBinary = binaryValue.split('').reverse().join('');
+    return reversedBinary[bit] === '1';
+  }
   async getLockListAccount(token: string) {
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/list'

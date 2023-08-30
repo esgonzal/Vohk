@@ -48,6 +48,7 @@ export class LockComponent implements OnInit {
   endDateDeUser = localStorage.getItem('endDate') ?? '';
   fullName = localStorage.getItem('user') ?? '';
   gateway = localStorage.getItem('gateway') ?? '';
+  featureValue = localStorage.getItem('features') ?? '';
   simpleRight = localStorage.getItem(this.username) ?? '';
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
@@ -73,7 +74,7 @@ export class LockComponent implements OnInit {
   constructor(
     private router: Router,
     public popupService: PopUpService,
-    private lockService: LockServiceService,
+    public lockService: LockServiceService,
     private ekeyService: EkeyServiceService,
     private passcodeService: PasscodeServiceService,
     private cardService: CardServiceService,
@@ -83,6 +84,70 @@ export class LockComponent implements OnInit {
     private passageModeService: PassageModeService,
     private sanitizer: DomSanitizer
   ) { }
+
+  featureList = [
+    { bit: 0, feature: "Passcode" },
+    { bit: 1, feature: "Card" },
+    { bit: 2, feature: "Fingerprint" },
+    { bit: 3, feature: "Wrist strap" },
+    { bit: 4, feature: "Support configuration of auto lock time" },
+    { bit: 5, feature: "Support clear passcode" },
+    { bit: 6, feature: "Firmware upgrade" },
+    { bit: 7, feature: "Management of passcodes" },
+    { bit: 8, feature: "Support lock command" },
+    { bit: 9, feature: "Hide or display the passcodes, you can control it." },
+    { bit: 10, feature: "Support unlocking via gateway" },
+    { bit: 11, feature: "Support freeze and unfreeze lock" },
+    { bit: 12, feature: "Support cyclic passcodes" },
+    { bit: 13, feature: "Support door sensor" },
+    { bit: 14, feature: "Support configuration of unlocking via gateway, turn on or turn off it." },
+    { bit: 15, feature: "Voice prompts management, turn on or turn off it." },
+    { bit: 16, feature: "NB-IoT" },
+    { bit: 17, feature: "This bit is discarded" },
+    { bit: 18, feature: "Support query of super passcode" },
+    { bit: 19, feature: "Support hotel card" },
+    { bit: 20, feature: "The lock does not have a clock chip" },
+    { bit: 21, feature: "When the lock's Bluetooth is not broadcasting, you cannot unlock via APP." },
+    { bit: 22, feature: "Passage mode" },
+    { bit: 23, feature: "When you have set the auto lock of passage mode, turn off auto lock is supported" },
+    { bit: 24, feature: "Wireless keypad" },
+    { bit: 25, feature: "Support time config of the light." },
+    { bit: 26, feature: "Support blacklist of hotel card" },
+    { bit: 27, feature: "Support ID card" },
+    { bit: 28, feature: "Tamper Alert can be turned on and turned off." },
+    { bit: 29, feature: "Reset Button can be turned on and turned off." },
+    { bit: 30, feature: "Privacy Lock can be turned on and turned off." },
+    { bit: 31, feature: "This bit is not used" },
+    { bit: 32, feature: "Support deadlock" },
+    { bit: 33, feature: "Support exception of passage mode" },
+    { bit: 34, feature: "Support cyclic card and fingerprint" },
+    { bit: 35, feature: "Privacy lock can be controlled by APP" },
+    { bit: 36, feature: "Support setting of open direction" },
+    { bit: 37, feature: "Support Finger vein" },
+    { bit: 38, feature: "Telink bluetooth chip" },
+    { bit: 39, feature: "NB-IoT activate mode can be configured" },
+    { bit: 40, feature: "Support recovery of cyclic passcode" },
+    { bit: 41, feature: "Support wireless keyfob (remote control)" },
+    { bit: 42, feature: "Support query of accessory battery level" },
+    { bit: 43, feature: "Configuration of sound volume and language is supported" },
+    { bit: 44, feature: "Support QR code" },
+    { bit: 45, feature: "Support unknown status of door sensor" },
+    { bit: 46, feature: "Auto unlock in passage mode" },
+    { bit: 47, feature: "Support adding fingerprint via gateway" },
+    { bit: 48, feature: "Support Miaxis fingerprint data" },
+    { bit: 49, feature: "Support Syno fingerprint data" },
+    { bit: 50, feature: "Support wireless door sensor" },
+    { bit: 51, feature: "Support alert when door is not locked" },
+    { bit: 53, feature: "Support 3D face" },
+    { bit: 55, feature: "Support CPU card" },
+    { bit: 56, feature: "Support WiFi" },
+    { bit: 58, feature: "WiFi lock which supports fixed IP address" },
+    { bit: 60, feature: "Support incomplete keyboard passcode" },
+    { bit: 63, feature: "Support dual certification" },
+    { bit: 67, feature: "Support Xmsilicon visual intercom" },
+    { bit: 69, feature: "Support Zhiantec face module" },
+    { bit: 70, feature: "Support palm vein" },
+  ];
 
   async ngOnInit() {
     //Traer LockDetails
@@ -118,6 +183,12 @@ export class LockComponent implements OnInit {
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
+    for (const feature of this.featureList) {
+      const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
+      if(isSupported){
+        console.log(`${feature.bit} - ${feature.feature} - ${isSupported}`);
+      }
+    }
   }
   async fetchEkeys() {
     try {
@@ -758,9 +829,9 @@ export class LockComponent implements OnInit {
       this.gatewayService.token = this.token;
       this.gatewayService.lockID = this.lockId;
       try {
-        await this.gatewayService.getLockTime(this.token,this.lockId);
+        await this.gatewayService.getLockTime(this.token, this.lockId);
         this.gatewayService.data$.subscribe((data) => {
-          if(data) {
+          if (data) {
             this.popupService.currentTime = data.date;
           }
         })

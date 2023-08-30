@@ -173,6 +173,7 @@ export class UserComponent implements OnInit {
     localStorage.setItem('startDate', lock.startDate)
     localStorage.setItem('endDate', lock.endDate)
     localStorage.setItem('gateway', lock.hasGateway.toString())
+    localStorage.setItem('features', lock.featureValue)
     this.router.navigate(['users', this.username, 'lock', lock.lockId])
   }
   onInvalidButtonClick() {

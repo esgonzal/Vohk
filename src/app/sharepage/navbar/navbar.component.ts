@@ -39,6 +39,7 @@ export class NavbarComponent {
     localStorage.removeItem('lockID');
     localStorage.removeItem('gateway');
     localStorage.removeItem('logged');
+    localStorage.removeItem('features');
     this.router.navigate(['home']);
   }
 }
