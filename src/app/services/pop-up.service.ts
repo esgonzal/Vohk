@@ -33,6 +33,7 @@ export class PopUpService {
   removeLockGROUP = false;               //La accion de quitar una cerradura del grupo se hace en un pop up
   selectLocksForMultipleEkeys = false;   //La accion de seleccionar cerraduras para enviar multiples ekeys se hace en un pop up
   addRecipientsForMultipleEkeys = false; //La accion de agregar receptores para enviar multiples ekeys se hace en un pop up
+  resetPassword = false;                 //La accion de cambiar contraseña de un usuario se hace en un pop up
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;

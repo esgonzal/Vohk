@@ -1,8 +1,73 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Cerraduras</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Perfil de la Cuenta</li>
-  </ol>
-</nav>
+<div class="pagina_completa">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Cerraduras</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Perfil de la Cuenta</li>
+    </ol>
+  </nav>
+  <div class="resto">
+    <div class="linea">
+      <div class="titulo">
+        Nombre de Usuario
+      </div>
+      <div class="content">
+        
+      </div>
+      <div class="-button">
+        <button>Editar</button>
+      </div>
+    </div>
+    <div class="linea">
+      <div class="titulo">
+        País / region
+      </div>
+      <div class="content">
+        Chile
+      </div>
+      <div class="-button">
 
-<p>perfil works!</p>
+      </div>
+    </div>
+    <div class="linea">
+      <div class="titulo">
+        Account
+      </div>
+      <div class="content">
+        {{username}}
+      </div>
+      <div class="-button">
+        <button>Editar</button>
+      </div>
+    </div>
+    <div class="linea">
+      <div class="titulo">
+        Email
+      </div>
+      <div class="content">
+
+      </div>
+      <div class="-button">
+        <button>Bind</button>
+      </div>
+    </div>
+    <div class="linea">
+      <div class="titulo">
+        Contraseña
+      </div>
+      <div class="content">
+        <span class="password-input">
+          {{ showPassword ? password : maskPassword(password) }}
+        </span>
+        <button (click)="togglePasswordVisibility()">
+          <span class="password-icon" [class.visible]="showPassword" [class.hidden]="!showPassword">
+            <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+          </span>
+        </button>
+      </div>
+      <div class="-button">
+        <button (click)="resetPassword()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-pop-up *ngIf="this.popupService.resetPassword" style="z-index: 10;"></app-pop-up>

@@ -542,3 +542,27 @@
         </div>
     </div>
 </div>
+<div id="container" *ngIf="popupService.resetPassword">
+    <div id="header">
+        Reestablecer contraseña
+    </div>
+    <div id="content">
+        <div class="input-container">
+            <label for="currentPassword">Contraseña actual:</label>
+            <input type="password" id="currentPassword" [(ngModel)]="currentPassword">
+        </div>
+        <div class="input-container">
+            <label for="newPassword">Nueva contraseña:</label>
+            <input type="password" id="newPassword" [(ngModel)]="newPassword">
+        </div>
+        <div class="input-container">
+            <label for="confirmPassword">Confirmar nueva contraseña:</label>
+            <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword">
+        </div>
+        <p class="error">{{error}}</p>
+    </div>
+    <div id="actions">
+        <button class="cancel" (click)="popupService.resetPassword = false">Volver</button>
+        <button (click)="resetPassword()">Ok</button>
+    </div>
+</div>

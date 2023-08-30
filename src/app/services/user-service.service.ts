@@ -84,12 +84,10 @@ export class UserServiceService {
       'Content-Type': 'application/x-www-form-urlencoded'
     });
     let options = { headers: header };
-    let prefix = 'bhaaa_';
-    let username = prefix.concat(nombre)
     let body = new URLSearchParams();
     body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
     body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
-    body.set('username', username);
+    body.set('username', nombre);
     body.set('password', clave_encriptada);
     body.set('date', date.toString());
     let res = this.http.post(url, body.toString(), options)

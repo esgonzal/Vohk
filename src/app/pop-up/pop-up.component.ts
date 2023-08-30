@@ -13,6 +13,7 @@ import { LockServiceService } from '../services/lock-service.service';
 import { GroupService } from '../services/group.service';
 import { LockData } from '../Interfaces/Lock';
 import { RecipientList } from '../Interfaces/RecipientList';
+import { UserServiceService } from '../services/user-service.service';
 
 
 @Component({
@@ -33,6 +34,9 @@ export class PopUpComponent implements OnInit {
   error = '';
   ////////////////////////////////
   selectedLockIds: number[] = [];
+  currentPassword: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
   
   constructor(public dialogRef: MatDialog,
     public popupService: PopUpService,
@@ -43,7 +47,9 @@ export class PopUpComponent implements OnInit {
     private cardService: CardServiceService,
     private fingerprintService: FingerprintServiceService,
     private groupService: GroupService,
-    private cdr: ChangeDetectorRef) { }
+    private cdr: ChangeDetectorRef,
+    private userService: UserServiceService
+    ) { }
 
   ngOnInit(): void {
     // Esto es para mostrar los valores actuales del AutoLockTime si es que estaba activado desde antes
@@ -73,12 +79,10 @@ export class PopUpComponent implements OnInit {
       }
     }
   }
-  //popup Register
   navigateToLogin() {
     this.popupService.registro = false;
     this.router.navigate(['/login']);
   }
-  //popup eKey, passcode, card y fingerprint
   async delete() {
     if (this.popupService.delete) {
       switch (this.popupService.elementType) {
@@ -106,7 +110,6 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  //popup eKey
   async autorizar() {
     await this.ekeyService.AuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
     this.popupService.autorizar = false;
@@ -118,7 +121,6 @@ export class PopUpComponent implements OnInit {
     localStorage.setItem(this.popupService.elementType, "0")
     this.popupService.autorizarFalso = false;
   }
-  //popup eKey
   async desautorizar() {
     await this.ekeyService.cancelAuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
     this.popupService.desautorizar = false;
@@ -130,14 +132,12 @@ export class PopUpComponent implements OnInit {
     localStorage.setItem(this.popupService.elementType, "1")
     this.popupService.desautorizarFalso = false;
   }
-  //popup eKey
   async congelar() {
     await this.ekeyService.freezeEkey(this.popupService.token, this.popupService.elementID);
     this.popupService.congelar = false;
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  //popup eKey
   async descongelar() {
     await this.ekeyService.unfreezeEkey(this.popupService.token, this.popupService.elementID);
     this.popupService.descongelar = false;
@@ -151,7 +151,6 @@ export class PopUpComponent implements OnInit {
       return '2'
     }
   }
-  //popup eKey, card y fingerprint
   async cambiarNombre(datos: Formulario) {
     this.error = '';
     if (!datos.name) {
@@ -181,7 +180,6 @@ export class PopUpComponent implements OnInit {
       this.router.navigate(['/users', username]);
     }
   }
-  //popup eKey, card y fingerprint
   async cambiarPeriodo(datos: Formulario) {
     this.error = '';
     if (!datos.startDate || !datos.startHour || !datos.endDate || !datos.endHour) {
@@ -212,7 +210,6 @@ export class PopUpComponent implements OnInit {
       this.router.navigate(['/users', username]);
     }
   }
-  //popup passcode
   async editarPasscode(datos: Formulario) {
     const startDate = moment(datos.startDate).format("YYYY-MM-DD");
     const endDate = moment(datos.endDate).format("YYYY-MM-DD");
@@ -225,13 +222,11 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  //popup gateway
   encontrarRed(gatewayID: number) {
     this.gatewayEncontrado = this.popupService.gatewaysOfAccount.find((gw: { gatewayId: number }) => gw.gatewayId === gatewayID)
     this.redWiFi = this.gatewayEncontrado?.networkName;
     return this.redWiFi;
   }
-  //popup gateway
   displayrssi(rssi: number) {
     if (rssi > -75) {
       return 'Fuerte '.concat(rssi.toString());
@@ -243,19 +238,16 @@ export class PopUpComponent implements OnInit {
       return 'Mediana '.concat(rssi.toString());
     }
   }
-  //popup autoLock
   onSelected(value: string): void {
     this.selectedType = value;
     if (this.selectedType !== '6') { this.customAutoLockTime = 0; }
   }
-  //popup autoLock
   autoLockToggleChange(event: any) {
     this.autoLockToggle = event.checked;
     this.selectedType = this.autoLockToggle ? '1' : '6';
     if (!this.autoLockToggle) { this.customAutoLockTime = 0; }
     this.cdr.detectChanges()
   }
-  //popup autoLock
   transformarAsegundos(value: string) {
     switch (value) {
       case "1":
@@ -272,7 +264,6 @@ export class PopUpComponent implements OnInit {
         return this.customAutoLockTime;
     }
   }
-  //popup autoLock
   async cambiarAutoLock() {
     let segundos: number = -1;
     if (this.autoLockToggle) {
@@ -283,7 +274,6 @@ export class PopUpComponent implements OnInit {
     const username = localStorage.getItem('user')
     this.router.navigate(['/users', username]);
   }
-  //popup Hora Dispositivo
   formatearHora() {
     return moment(this.popupService.currentTime).format("DD/MM/YYYY HH:mm:ss")
   }
@@ -366,5 +356,33 @@ export class PopUpComponent implements OnInit {
     console.log(this.popupService.recipients)
     this.ekeyService.recipients = this.popupService.recipients;
     this.popupService.addRecipientsForMultipleEkeys = false;
+  }
+  async resetPassword(){
+    this.error = ''
+    console.log("Contraseña actual:",this.currentPassword)
+    console.log("Contraseña nueva:",this.newPassword)
+    console.log("Contraseña confirmar nueva:",this.confirmPassword)
+    if(this.currentPassword!=='' && this.newPassword!=='' && this.confirmPassword!==''){
+      if(this.currentPassword === localStorage.getItem('password')){
+        const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if(passwordPattern.test(this.newPassword)) {
+          if(this.newPassword===this.confirmPassword){
+            await this.userService.ResetPassword(localStorage.getItem('user')  ?? '', this.newPassword)
+            localStorage.setItem('password', this.newPassword)
+            this.popupService.resetPassword = false;
+            this.router.navigate(['/users', localStorage.getItem('user')  ?? '']);
+          } else {
+            this.error = 'No coincide la contraseña. Por favor intente de nuevo'
+          }
+        } else {
+          this.error = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos un número, letra y símbolos'
+        }
+      } else {
+        this.error = 'Contraseña inválida'
+      }
+    } else {
+      this.error = 'Por favor, introduzca una contraseña'
+    }
+    
   }
 }

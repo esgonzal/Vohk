@@ -126,6 +126,7 @@ export class EkeyComponent {
           if (this.validarFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.ekeyType)) {
             if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.ekeyType)) {
               this.crearEkey(datos);
+              //Funcion mandar correo a usuario nuevo
               localStorage.setItem(datos.recieverName, "1")
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             }

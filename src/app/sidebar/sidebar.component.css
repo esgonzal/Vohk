@@ -24,6 +24,10 @@
   cursor: pointer;
 }
 
+.lista-grupos li span:hover {
+  color: rgb(126, 101, 235);
+}
+
 .boton-grupos {
   display: flex;
   justify-content: center;

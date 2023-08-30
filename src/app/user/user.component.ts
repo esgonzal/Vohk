@@ -46,7 +46,7 @@ export class UserComponent implements OnInit {
       if (selectedGroup) {
         await this.fetchLocks(selectedGroup.groupId);
         console.log("All Locks",this.allLocks)
-        console.log("Locks without group",this.locksWithoutGroup)
+        //console.log("Locks without group",this.locksWithoutGroup)
       }
     });
   }
@@ -61,7 +61,7 @@ export class UserComponent implements OnInit {
     } catch (error) {
       console.error("Error while fetching Locks: ", error);
     }
-    console.log("Locks actuales", this.locks)
+    //console.log("Locks actuales", this.locks)
 
   }
   async fetchLocksPage(pageNo: number, groupId?: number) {
