@@ -186,7 +186,7 @@ export class LockComponent implements OnInit {
     for (const feature of this.featureList) {
       const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
       if(isSupported){
-        console.log(`${feature.bit} - ${feature.feature} - ${isSupported}`);
+        //console.log(`${feature.bit} - ${feature.feature} - ${isSupported}`);
       }
     }
   }

@@ -117,3 +117,9 @@ export interface RecordResponse {
     pages: number;
     total: number
 }
+export interface sendEkeyResponse {
+    errcode: number;
+    errmsg: string;
+    description: string;
+    keyId: number;
+}

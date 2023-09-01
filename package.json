@@ -27,6 +27,7 @@
     "@syncfusion/ej2-angular-navigations": "^22.2.8",
     "big-integer": "^1.6.51",
     "crypto-js": "^4.1.1",
+    "emailjs-com": "^3.2.0",
     "long": "^5.2.3",
     "luxon": "^3.3.0",
     "moment": "^2.29.4",

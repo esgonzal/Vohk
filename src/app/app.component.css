@@ -1,3 +1,7 @@
+.navBar {
+  min-width: 1200px;
+}
+
 .contenido {
   display: flex;
   flex-direction: row;

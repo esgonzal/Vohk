@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import emailjs from 'emailjs-com';
 
 @Component({
   selector: 'app-home',
@@ -8,7 +8,9 @@ import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-mat
 })
 export class HomeComponent {
 
-  selectedDateTime: Date = new Date();
+  recipientEmail: string = '';
+  emailSubject: string = '';
+  emailContent: string = '';
 
 
 }

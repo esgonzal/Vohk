@@ -12,9 +12,7 @@ import { GatewayAccount } from '../Interfaces/Gateway';
 import { LockServiceService } from '../services/lock-service.service';
 import { GroupService } from '../services/group.service';
 import { LockData } from '../Interfaces/Lock';
-import { RecipientList } from '../Interfaces/RecipientList';
 import { UserServiceService } from '../services/user-service.service';
-
 
 @Component({
   selector: 'app-pop-up',
@@ -375,7 +373,7 @@ export class PopUpComponent implements OnInit {
             this.error = 'No coincide la contraseña. Por favor intente de nuevo'
           }
         } else {
-          this.error = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos un número, letra y símbolos'
+          this.error = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos un número, letra y símbolo'
         }
       } else {
         this.error = 'Contraseña inválida'
