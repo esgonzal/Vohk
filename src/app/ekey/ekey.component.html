@@ -13,10 +13,10 @@
         </div>
         <div class="form-area">
             <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva eKey</h2>
-            <form #formInput="ngForm" (ngSubmit)="validarNuevaEkey(formInput.value)" class="common-form">
+            <form #formInput="ngForm" (ngSubmit)="botonGenerarEkey(formInput.value)" class="common-form">
                 <div class="linea">
                     <span class="input-container">
-                        Nombre del Recipiente*
+                        Nombre del Destinatario*
                         <input type="text" class="form-input" name="recieverName" placeholder="..." ngModel />
                     </span>
                 </div>

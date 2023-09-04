@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { User } from '../Interfaces/User';
+import { User, UserRegisterResponse } from '../Interfaces/User';
 import { UserServiceService } from '../services/user-service.service';
 import { PopUpService } from '../services/pop-up.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +18,9 @@ export class RegisterComponent {
 
   registerError: string = "";
 
-  signUp(data: User) {
+  async signUp(data: User) {
+    console.log("nombre:",data.username)
+    console.log("contraseña:",data.password)
     if (data.username == '' || data.password == '' || data.confirmPassword == '') {
       this.registerError = 'Nombre de usuario y/o contraseña inválidos '
     }
@@ -31,9 +34,14 @@ export class RegisterComponent {
           this.registerError = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos dos tipos de números, letras y símbolos'
         }
         else {
-          this.userService.UserRegister(data.username, data.password);
-          this.popupService.registro = true;
-          this.popupService.welcomingMessage = `Bienvenido, ${data.username}! Presione el siguiente botón para iniciar sesión en su cuenta.`;
+          const user = data.username.split('@');
+          console.log("sin el @:",user)
+          const response = await lastValueFrom(this.userService.UserRegister(user[0], data.password)) as UserRegisterResponse;
+          console.log(response)
+          if (response.username) {
+            this.popupService.registro = true;
+            this.popupService.welcomingMessage = `Bienvenido, ${data.username}! Presione el siguiente botón para iniciar sesión en su cuenta.`;
+          }
         }
       }
     }
