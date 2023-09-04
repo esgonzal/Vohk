@@ -74,6 +74,7 @@ export class EkeyServiceService {
     body.set('endDate', endDate);
     body.set('date', fecha);
     body.set('keyRight', keyRight.toString());
+    body.set('createUser','1');
     if (keyType !== undefined) {
       body.set('keyType', keyType.toString());
     }
