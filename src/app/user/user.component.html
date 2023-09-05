@@ -1,4 +1,5 @@
 <div class="listado_objetos">
+  <app-loader [loader]="isLoading"></app-loader>
   <div *ngIf="locks.length > 0">
     <mat-grid-list cols="3" rowHeight="150px">
       <mat-grid-tile *ngFor="let lock of locks">

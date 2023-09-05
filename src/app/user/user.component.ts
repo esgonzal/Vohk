@@ -22,6 +22,7 @@ export class UserComponent implements OnInit {
   newPassword: string;
   newPasswordDisplay = false;
   token = localStorage.getItem('token') ?? '';
+  isLoading: boolean = false;
   ekeyList: LockListResponse;
   allLocks: LockData[] = [];
   locks: LockData[] = [];
@@ -56,16 +57,19 @@ export class UserComponent implements OnInit {
     }
   }
   async fetchLocks(groupId: number) {
+    this.isLoading = true;
     try {
       await this.fetchLocksPage(1, groupId);
     } catch (error) {
       console.error("Error while fetching Locks: ", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
     //console.log("Locks actuales", this.locks)
-
   }
   async fetchLocksPage(pageNo: number, groupId?: number) {
     this.locks = [];
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, 100, groupId));
       const typedResponse = response as LockListResponse;
@@ -79,10 +83,12 @@ export class UserComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching locks page:", error)
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
-
   }
   async fetchGroups() {
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.groupService.getGroupofAccount(this.token));
       const typedResponse = response as GroupResponse;
@@ -97,6 +103,8 @@ export class UserComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching groups:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
     this.groupService.groups = this.groups;
   }
