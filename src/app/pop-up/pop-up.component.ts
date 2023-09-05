@@ -35,7 +35,7 @@ export class PopUpComponent implements OnInit {
   currentPassword: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
-  
+
   constructor(public dialogRef: MatDialog,
     public popupService: PopUpService,
     private router: Router,
@@ -47,7 +47,7 @@ export class PopUpComponent implements OnInit {
     private groupService: GroupService,
     private cdr: ChangeDetectorRef,
     private userService: UserServiceService
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     // Esto es para mostrar los valores actuales del AutoLockTime si es que estaba activado desde antes
@@ -152,7 +152,7 @@ export class PopUpComponent implements OnInit {
   async cambiarNombre(datos: Formulario) {
     this.error = '';
     if (!datos.name) {
-      this.error = "Por favor ingrese el dato requerido"
+      this.error = "Por favor ingrese un nombre"
     } else {
       if (this.popupService.cambiarNombre) {
         switch (this.popupService.elementType) {
@@ -183,42 +183,53 @@ export class PopUpComponent implements OnInit {
     if (!datos.startDate || !datos.startHour || !datos.endDate || !datos.endHour) {
       this.error = "Por favor ingrese los datos requeridos"
     } else {
-      const startDate = moment(datos.startDate).format("YYYY-MM-DD");
-      const endDate = moment(datos.endDate).format("YYYY-MM-DD");
-      const fechaInicial = startDate.concat('-').concat(datos.startHour);
-      const fechaFinal = endDate.concat('-').concat(datos.endHour);
-      if (this.popupService.cambiarPeriodo) {
+      let newStartDay = moment(datos.startDate).valueOf()
+      let newEndDay = moment(datos.endDate).valueOf()
+      let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+      let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+      if (moment(newEndDate).isAfter(moment(newStartDate))) {
         switch (this.popupService.elementType) {
           case 'ekey':
-            await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+            await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, newStartDate.toString(), newEndDate.toString());
             break;
           case 'card':
-            await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+            await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, newStartDate.toString(), newEndDate.toString());
             break;
           case 'fingerprint':
-            await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+            await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, newStartDate.toString(), newEndDate.toString());
             break;
           default:
             console.error('Invalid element type for deletion:', this.popupService.elementID);
             break;
         }
+        this.popupService.cambiarPeriodo = false;
+        const username = localStorage.getItem('user')
+        this.router.navigate(['/users', username]);
+      } else {
+        this.error = 'La fecha de término no puede ser antes que la fecha de inicio';
       }
-      this.popupService.cambiarPeriodo = false;
-      const username = localStorage.getItem('user')
-      this.router.navigate(['/users', username]);
     }
   }
   async editarPasscode(datos: Formulario) {
-    const startDate = moment(datos.startDate).format("YYYY-MM-DD");
-    const endDate = moment(datos.endDate).format("YYYY-MM-DD");
-    const fechaInicial = startDate.concat('-').concat(datos.startHour);
-    const fechaFinal = endDate.concat('-').concat(datos.endHour);
-    if (this.popupService.editarPasscode) {
-      await this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, this.lockService.convertirDate(fechaInicial), this.lockService.convertirDate(fechaFinal));
+    this.error = '';
+    if (!datos.startDate || !datos.startHour || !datos.endDate || !datos.endHour) {
+      this.error = "Por favor ingrese los datos requeridos"
+    } else {
+      let newStartDay = moment(datos.startDate).valueOf()
+      let newEndDay = moment(datos.endDate).valueOf()
+      let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+      let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+      if (moment(newEndDate).isAfter(moment(newStartDate))) {
+        if (this.popupService.editarPasscode) {
+          await this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, newStartDate.toString(), newEndDate.toString());
+        }
+        this.popupService.editarPasscode = false;
+        const username = localStorage.getItem('user')
+        this.router.navigate(['/users', username]);
+      } else {
+        this.error = 'La fecha de término no puede ser antes que la fecha de inicio';
+      }
     }
-    this.popupService.editarPasscode = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
   }
   encontrarRed(gatewayID: number) {
     this.gatewayEncontrado = this.popupService.gatewaysOfAccount.find((gw: { gatewayId: number }) => gw.gatewayId === gatewayID)
@@ -340,7 +351,7 @@ export class PopUpComponent implements OnInit {
   isLockSelected(lockId: number): boolean {
     return this.ekeyService.selectedLocks.includes(lockId);
   }
-  selectLocks(){
+  selectLocks() {
     this.ekeyService.selectedLocks = this.popupService.selectedLockIds_forMultipleEkeys
     this.popupService.selectLocksForMultipleEkeys = false;
   }
@@ -355,20 +366,20 @@ export class PopUpComponent implements OnInit {
     this.ekeyService.recipients = this.popupService.recipients;
     this.popupService.addRecipientsForMultipleEkeys = false;
   }
-  async resetPassword(){
+  async resetPassword() {
     this.error = ''
-    console.log("Contraseña actual:",this.currentPassword)
-    console.log("Contraseña nueva:",this.newPassword)
-    console.log("Contraseña confirmar nueva:",this.confirmPassword)
-    if(this.currentPassword!=='' && this.newPassword!=='' && this.confirmPassword!==''){
-      if(this.currentPassword === localStorage.getItem('password')){
+    console.log("Contraseña actual:", this.currentPassword)
+    console.log("Contraseña nueva:", this.newPassword)
+    console.log("Contraseña confirmar nueva:", this.confirmPassword)
+    if (this.currentPassword !== '' && this.newPassword !== '' && this.confirmPassword !== '') {
+      if (this.currentPassword === localStorage.getItem('password')) {
         const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if(passwordPattern.test(this.newPassword)) {
-          if(this.newPassword===this.confirmPassword){
-            await this.userService.ResetPassword(localStorage.getItem('user')  ?? '', this.newPassword)
+        if (passwordPattern.test(this.newPassword)) {
+          if (this.newPassword === this.confirmPassword) {
+            await this.userService.ResetPassword(localStorage.getItem('user') ?? '', this.newPassword)
             localStorage.setItem('password', this.newPassword)
             this.popupService.resetPassword = false;
-            this.router.navigate(['/users', localStorage.getItem('user')  ?? '']);
+            this.router.navigate(['/users', localStorage.getItem('user') ?? '']);
           } else {
             this.error = 'No coincide la contraseña. Por favor intente de nuevo'
           }
@@ -381,6 +392,33 @@ export class PopUpComponent implements OnInit {
     } else {
       this.error = 'Por favor, introduzca una contraseña'
     }
-    
+
+  }
+  compartirCodigo(datos: Formulario) {
+    this.error = '';
+    if (this.userService.isValidEmail(datos.name)) {
+      if (this.popupService.passcode.keyboardPwdType === 1) {//De un uso
+        this.passcodeService.sendEmail_OneUsePasscode(datos.name, this.popupService.passcode.keyboardPwd)
+        this.popupService.sharePasscode = false;
+      }
+      if (this.popupService.passcode.keyboardPwdType === 2) {//Permanente
+        this.passcodeService.sendEmail_PermanentPasscode(datos.name, this.popupService.passcode.keyboardPwd)
+        this.popupService.sharePasscode = false;
+      }
+      if (this.popupService.passcode.keyboardPwdType === 3) {//Peridica
+        this.passcodeService.sendEmail_PeriodPasscode(datos.name, this.popupService.passcode.keyboardPwd, moment(this.popupService.passcode.startDate).format("DD/MM/YYYY HH:mm"), moment(this.popupService.passcode.endDate).format("DD/MM/YYYY HH:mm"))
+        this.popupService.sharePasscode = false;
+      }
+      if (this.popupService.passcode.keyboardPwdType === 4) {//Borrar
+        this.passcodeService.sendEmail_ErasePasscode(datos.name, this.popupService.passcode.keyboardPwd)
+        this.popupService.sharePasscode = false;
+      }
+      else {//Recurrente
+        this.passcodeService.sendEmail_RecurringPasscode(datos.name, this.popupService.passcode.keyboardPwd, moment(this.popupService.passcode.startDate).format("HH:mm"), moment(this.popupService.passcode.endDate).format("HH:mm"), this.popupService.passcode.keyboardPwdType);
+        this.popupService.sharePasscode = false;
+      }
+    } else {
+      this.error = "Ingrese un correo electrónico válido."
+    }
   }
 }

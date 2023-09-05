@@ -20,16 +20,10 @@ export class LockServiceService {
     let timeInShanghai = moment().tz('Asia/Shanghai').valueOf()
     return timeInShanghai.toString();
   }
-  public convertirDate(date: string) {
-    let fechaInShanghai = moment(date, "YYYY-MM-DD-HH:mm").valueOf();
-    if (Number.isNaN(fechaInShanghai)) {
-      let hora = moment(date, "HH:mm").valueOf();
-      if (Number.isNaN(hora)) {
-        return date;
-      }
-      return hora.toString();
-    }
-    return fechaInShanghai.toString();
+  public transformarHora(Tiempo: string) {//Esta funcion está encargada de convertir el resultado del timepicker, un string de formato ("HH:mm"), en un number que representa el tiempo en milisegundos
+    let tiempoHora = Tiempo.split(":")[0]
+    let tiempoMinuto = Tiempo.split(":")[1]
+    return ((Number(tiempoHora) * 60 + Number(tiempoMinuto)) * 60000).toString()
   }
   public checkFeature(featureValue: string, bit: number) {
     const binaryValue = BigInt(`0x${featureValue}`).toString(2)

@@ -33,6 +33,7 @@ export class GatewayService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while getting the list of Gateways of a Lock:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -53,6 +54,7 @@ export class GatewayService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject2.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while getting the list of Gateways of a Lock:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -74,6 +76,7 @@ export class GatewayService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject2.next(response);
+      console.log(response)
     } catch (error) {
       console.error("Error while getting the list of Gateways of an Account:", error);
       this.dataSubject2.next(null); // Emit null to dataSubject on error
@@ -121,7 +124,6 @@ export class GatewayService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
   async getLockTime(token: string, lockId: number) {
     let fecha = this.lockService.timestamp();
     let url = 'https://euapi.ttlock.com/v3/lock/queryDate'
@@ -143,7 +145,6 @@ export class GatewayService {
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
   }
-
   async adjustLockTime(token: string, lockId: number) {
     let fecha = this.lockService.timestamp();
     let url = 'https://euapi.ttlock.com/v3/lock/updateDate'

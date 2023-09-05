@@ -981,6 +981,10 @@ export class LockComponent implements OnInit {
     this.passcodeService.passcodesimple = true;
     this.router.navigate(["users", this.username, "lock", this.lockId, "passcode"]);
   }
+  compartirPasscode(passcode: Passcode){
+    this.popupService.passcode = passcode;
+    this.popupService.sharePasscode = true;
+  }
   //FUNCIONES CARD
   borrarCard(cardID: number) {
     if (this.gateway === '1') {

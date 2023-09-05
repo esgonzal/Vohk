@@ -34,6 +34,7 @@ export class PopUpService {
   selectLocksForMultipleEkeys = false;   //La accion de seleccionar cerraduras para enviar multiples ekeys se hace en un pop up
   addRecipientsForMultipleEkeys = false; //La accion de agregar receptores para enviar multiples ekeys se hace en un pop up
   resetPassword = false;                 //La accion de cambiar contraseña de un usuario se hace en un pop up
+  sharePasscode = false;                 //La accion de compartir código se hace en un pop up
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;

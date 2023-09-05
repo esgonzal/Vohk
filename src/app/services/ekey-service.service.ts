@@ -5,6 +5,8 @@ import { LockServiceService } from './lock-service.service';
 import { EkeyResponse, sendEkeyResponse } from '../Interfaces/Elements';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { RecipientList } from '../Interfaces/RecipientList';
+import emailjs from 'emailjs-com';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +18,8 @@ export class EkeyServiceService {
   data2$ = this.dataSubject2.asObservable();
 
   token: string;
+  username = localStorage.getItem('user') ?? ''
+  lockAlias = localStorage.getItem('Alias') ?? ''
   lockID: number;
   endDateUser: string;
   currentLocks: LockData[] = []
@@ -245,5 +249,123 @@ export class EkeyServiceService {
       console.error("Error while authorizing a Ekey:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
     }
+  }
+  sendEmail_permanentEkey(recipientEmail: string, keyName: string) {//Template para eKey permanente a una cuenta existente
+    //esteban.vohk@gmail.com
+    emailjs.send('contact_service', 'SendEkeyPermanent', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      ekey_name: keyName
+    }, 'IHg0KzBkt_UoFb1yg')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_periodicEkey(recipientEmail: string, keyName: string, start: string, end: string) {//Template para eKey periodica a una cuenta existente
+    //esteban.vohk@gmail.com
+    emailjs.send('contact_service', 'SendEkeyPeriodic', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      ekey_name: keyName,
+      start: start,
+      end: end
+    }, 'IHg0KzBkt_UoFb1yg')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_oneTimeEkey(recipientEmail: string, keyName: string) {//Template para eKey de un uso a una cuenta existente
+    //esteban.vohk+1@gmail.com
+    emailjs.send('contact_service', 'SendEkeyOneTime', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      ekey_name: keyName
+    }, 'JGXYy0TqnFt_IB5f4')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_solicitanteEkey(recipientEmail: string, keyName: string, weekDays: string, start: string, end: string) {//Template para eKey solicitante a una cuenta existente
+    //esteban.vohk+1@gmail.com
+    emailjs.send('contact_service', 'SendEkeySolicitante', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      ekey_name: keyName,
+      week_days: weekDays,
+      start: start,
+      end: end
+    }, 'JGXYy0TqnFt_IB5f4')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_permanentEkey_newAccount(recipientEmail: string, keyName: string, password: string) {//Template para eKey permanente a una cuenta nueva
+    //esteban.vohk+2@gmail.com
+    emailjs.send('contact_service', 'SendEkeyPermanentNewUser', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      password: password,
+      ekey_name: keyName
+    }, '8Q0_n1lg4twgrBlaf')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_periodicEkey_newAccount(recipientEmail: string, keyName: string, start: string, end: string, password: string) {//Template para eKey periodica a una cuenta nueva
+    //esteban.vohk+2@gmail.com
+    emailjs.send('contact_service', 'SendEkeyPeriodicNewUser', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      password: password,
+      ekey_name: keyName,
+      start: start,
+      end: end
+    }, '8Q0_n1lg4twgrBlaf')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_oneTimeEkey_newAccount(recipientEmail: string, keyName: string, password: string) {//Template para eKey de un uso a una cuenta nueva
+    //esteban.vohk+3@gmail.com
+    emailjs.send('contact_service', 'SendEkeyOneTimeNewUser', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      password: password,
+      ekey_name: keyName
+    }, 'ENb99SX5j4gqE1TFZ')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
+  }
+  sendEmail_solicitanteEkey_newAccount(recipientEmail: string, keyName: string, weekDays: string, start: string, end: string, password: string) {//Template para eKey solicitante a una cuenta nueva
+    //esteban.vohk+3@gmail.com
+    emailjs.send('contact_service', 'SendEkeySolicitanteNewUs', {
+      to_email: recipientEmail,
+      from_name: this.username,
+      subject: 'Una eKey ha sido compartida contigo',
+      to_name: recipientEmail,
+      lock_alias: this.lockAlias,
+      password: password,
+      ekey_name: keyName,
+      week_days: weekDays,
+      start: start,
+      end: end
+    }, 'ENb99SX5j4gqE1TFZ')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
   }
 }

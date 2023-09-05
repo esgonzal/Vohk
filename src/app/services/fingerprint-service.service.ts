@@ -47,6 +47,7 @@ export class FingerprintServiceService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject
+      console.log(response)
     } catch (error) {
       console.error("Error while deleting the fingerprint:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error
@@ -69,6 +70,7 @@ export class FingerprintServiceService {
     try {
       const response = await lastValueFrom(this.http.post(url, body.toString(), options));
       this.dataSubject.next(response); // Emit the response to dataSubject
+      console.log(response)
     } catch (error) {
       console.error("Error while renaming the fingerprint:", error);
       this.dataSubject.next(null); // Emit null to dataSubject on error

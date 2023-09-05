@@ -24,12 +24,6 @@ export class PasscodeComponent {
   onSelected(value: string): void { this.selectedType = value }
   onSelectedHour(value: string): void { this.howManyHours = value }
 
-  transformarHora(Tiempo: string) {
-    let tiempoHora = Tiempo.split(":")[0]
-    let tiempoMinuto = Tiempo.split(":")[1]
-    return ((Number(tiempoHora) * 60 + Number(tiempoMinuto)) * 60000).toString()
-  }
-
   validaFechaUsuario(diaFinal: string, horaFinal: string, tipo: string): boolean {
     if (this.passcodeService.endDateUser !== '0') {
       if (tipo === "1" || tipo === "2" || tipo === "4" || tipo === "Custom_Permanent") {
@@ -40,7 +34,7 @@ export class PasscodeComponent {
       else {
         let unixTimestamp = parseInt(this.passcodeService.endDateUser);
         let endUser = moment.unix(unixTimestamp / 1000);
-        let endDate = moment(diaFinal).add(this.transformarHora(horaFinal), "milliseconds")
+        let endDate = moment(diaFinal).add(this.lockService.transformarHora(horaFinal), "milliseconds")
         if (endUser.isBefore(endDate)) {
           this.error = "La clave termina posterior a su permiso de autorización, comuníquese con el administrador de esta cerradura"
           //El usuario termina antes que la clave
@@ -57,18 +51,17 @@ export class PasscodeComponent {
       return true;
     }
   }
-
   validaFechaInicio(diaInicial: string, horaInicial: string, diaFinal: string, horaFinal: string, tipo: string): boolean {
     if (tipo !== "1" && tipo !== "2" && tipo !== "4" && tipo !== "Custom_Permanent") {
-      let start = moment(diaInicial).add(this.transformarHora(horaInicial), "milliseconds")
+      let start = moment(diaInicial).add(this.lockService.transformarHora(horaInicial), "milliseconds")
       if (start.add(24, 'hours').isBefore(moment())) {
         this.error = "La passcode no puede iniciar 24 horas antes que ahora"
         //La clave empieza 24 horas antes que ahora
         return false;
       }
       else {
-        let startDate = moment(diaInicial).add(this.transformarHora(horaInicial), "milliseconds")
-        let endDate = moment(diaFinal).add(this.transformarHora(horaFinal), "milliseconds")
+        let startDate = moment(diaInicial).add(this.lockService.transformarHora(horaInicial), "milliseconds")
+        let endDate = moment(diaFinal).add(this.lockService.transformarHora(horaFinal), "milliseconds")
         if (endDate.isBefore(startDate)) {
           this.error = "El tiempo de inicio debe ser anterior al tiempo de finalización"
           //La clave termina antes de la fecha de inicio
@@ -85,22 +78,22 @@ export class PasscodeComponent {
       return true;
     }
   }
-
   async crearpasscode(datos: Formulario) {
     if (!datos.passcodePwd) {
       if (datos.startDate) {
         //PERIODIC PASSCODE
+        console.log(datos)
         let newStartDay = moment(datos.startDate).valueOf()
         let newEndDay = moment(datos.endDate).valueOf()
-        let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
-        let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
+        let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+        let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
         await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, newStartDate.toString(), datos.name, newEndDate.toString());
         this.router.navigate(["users", this.username, "lock", this.lockId]);
       }
       else {
         if (datos.startHour) {
           //RECURRING PASSCODE
-          await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.convertirDate(datos.startHour), datos.name, this.lockService.convertirDate(datos.endHour));
+          await this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.transformarHora(datos.startHour), datos.name, this.lockService.transformarHora(datos.endHour));
           this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
         else {
@@ -116,8 +109,8 @@ export class PasscodeComponent {
           //CUSTOM PERIOD PASSCODE
           let newStartDay = moment(datos.startDate).valueOf()
           let newEndDay = moment(datos.endDate).valueOf()
-          let newStartDate = moment(newStartDay).add(this.transformarHora(datos.startHour), "milliseconds").valueOf()
-          let newEndDate = moment(newEndDay).add(this.transformarHora(datos.endHour), "milliseconds").valueOf()
+          let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+          let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
           await this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, newStartDate.toString(), newEndDate.toString());
           this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
@@ -131,7 +124,6 @@ export class PasscodeComponent {
       }
     }
   }
-
   validarNuevaPass(datos: Formulario) {
     this.error = '';
     if (!datos.passcodeType) {
@@ -161,11 +153,7 @@ export class PasscodeComponent {
       }
     }
   }
-
   validarPasscodeSimple(datos: Formulario) {
-    console.log("Hora: ", this.howManyHours)
-    console.log("Inicio de clave: ", moment().format("HH:mm DD/MM/YYYY"))
-    console.log("Final de clave: ", moment().add(this.howManyHours, "hours").format("HH:mm DD/MM/YYYY"))
     let startDate = moment().valueOf()
     let endDate = moment().add(this.howManyHours, "hours").valueOf()
     this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())
