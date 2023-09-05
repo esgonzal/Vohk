@@ -123,6 +123,13 @@ export interface sendEkeyResponse {
     description: string;
     keyId: number;
 }
+export interface createPasscodeResponse {
+    errcode: number;
+    errmsg: string;
+    description: string;
+    keyboardPwdId: number;
+    keyboardPwd: string;
+}
 export interface operationResponse {
     errcode: number;
     errmsg: string;

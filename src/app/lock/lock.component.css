@@ -1,6 +1,9 @@
 app-pop-up {
   z-index: 9999;
 }
+.pagina_completa {
+  position: relative;
+}
 
 .breadcrumb {
   background-color: white;
@@ -131,3 +134,4 @@ app-pop-up {
   text-align: left;
   padding: 8px;
 }
+

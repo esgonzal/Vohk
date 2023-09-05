@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
-import { PasscodeResponse, operationResponse } from '../Interfaces/Elements';
+import { PasscodeResponse, createPasscodeResponse, operationResponse } from '../Interfaces/Elements';
 import { LockServiceService } from './lock-service.service';
 import emailjs from 'emailjs-com';
 
@@ -37,7 +37,7 @@ export class PasscodeServiceService {
     body.set('date', fecha);
     return this.http.post<PasscodeResponse>(url, body.toString(), options);
   }
-  async generatePasscode(token: string, lockID: number, type: string, startDate: string, name?: string, endDate?: string) {
+  generatePasscode(token: string, lockID: number, type: string, startDate: string, name?: string, endDate?: string): Observable<createPasscodeResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/get'
     let header = new HttpHeaders({
@@ -53,16 +53,9 @@ export class PasscodeServiceService {
     body.set('startDate', startDate);
     if (name !== undefined) { body.set('keyboardPwdName', name) }
     if (endDate !== undefined) { body.set('endDate', endDate) }
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while generating a random passcode:", error);
-      this.dataSubject.next(null);
-    }
+    return this.http.post<createPasscodeResponse>(url, body.toString(), options);
   }
-  async generateCustomPasscode(token: string, lockID: number, keyboardPwd: string, keyboardPwdType: string, keyboardPwdName?: string, startDate?: string, endDate?: string) {
+  generateCustomPasscode(token: string, lockID: number, keyboardPwd: string, keyboardPwdType: string, keyboardPwdName?: string, startDate?: string, endDate?: string): Observable<createPasscodeResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/add'
     let header = new HttpHeaders({
@@ -80,14 +73,7 @@ export class PasscodeServiceService {
     if (keyboardPwdName !== undefined) { body.set('keyboardPwdName', keyboardPwdName); }
     if (startDate !== undefined) { body.set('startDate', startDate) }
     if (endDate !== undefined) { body.set('endDate', endDate) }
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while generating a custom passcode:", error);
-      this.dataSubject.next(null);
-    }
+    return this.http.post<createPasscodeResponse>(url, body.toString(), options);
   }
   deletePasscode(token: string, lockID: number, keyboardPwdId: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()

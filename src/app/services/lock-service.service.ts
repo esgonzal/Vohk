@@ -110,7 +110,7 @@ export class LockServiceService {
     body.set('date', fecha.toString());
     return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async transferLock(token: string, receiverUsername: string, lockIdList: string) {
+  transferLock(token: string, receiverUsername: string, lockIdList: string): Observable<operationResponse> {
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/transfer'
     let header = new HttpHeaders({
@@ -123,12 +123,6 @@ export class LockServiceService {
     body.set('receiverUsername', receiverUsername);
     body.set('lockIdList', lockIdList);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response)
-    } catch (error) {
-      console.error("Error while transfering a lock:", error);
-      throw new Error("transfering the lock failed.");
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
 }

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { LockServiceService } from '../services/lock-service.service';
 import { Router } from '@angular/router';
+import { operationResponse } from '../Interfaces/Elements';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-transfer-lock',
@@ -17,7 +19,11 @@ export class TransferLockComponent {
 
   async transferir() {
     let lockIDList: string = "[".concat(this.lockId.toString()).concat("]");
-    await this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)
-    this.router.navigate(["users", this.username]);
+    let response = await lastValueFrom(this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)) as operationResponse;
+    console.log(response)
+    if(response.errcode === 0) {
+      this.router.navigate(["users", this.username]);
+      console.log("La cerradura se transfirió exitosamente")
+    }
   }
 }

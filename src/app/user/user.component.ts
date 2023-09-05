@@ -45,7 +45,7 @@ export class UserComponent implements OnInit {
     this.groupService.selectedGroupSubject.subscribe(async selectedGroup => {
       if (selectedGroup) {
         await this.fetchLocks(selectedGroup.groupId);
-        console.log("All Locks",this.allLocks)
+        //console.log("All Locks",this.allLocks)
         //console.log("Locks without group",this.locksWithoutGroup)
       }
     });

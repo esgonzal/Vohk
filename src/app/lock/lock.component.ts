@@ -17,6 +17,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { Jelly } from '@uiball/loaders';
+
 
 @Component({
   selector: 'app-lock',
@@ -35,6 +37,7 @@ export class LockComponent implements OnInit {
   faGear = faGear
   faWifi = faWifi
   ////////////////////////////////////////////////////////////
+  isLoading: boolean = false;
   lock: LockData;
   lockDetails: LockDetails;
   token = localStorage.getItem('token') ?? '';
@@ -179,13 +182,13 @@ export class LockComponent implements OnInit {
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.username);
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("eKeys: ", this.ekeys)
-    console.log("Passcodes: ", this.passcodes)
+    //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
     for (const feature of this.featureList) {
       const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
-      if(isSupported){
+      if (isSupported) {
         //console.log(`${feature.bit} - ${feature.feature} - ${isSupported}`);
       }
     }
@@ -763,7 +766,14 @@ export class LockComponent implements OnInit {
   }
   async Unlock() {
     if (this.gateway === '1') {
-      await this.gatewayService.unlock(this.token, this.lockId);
+      this.isLoading = true;
+      try {
+        await this.gatewayService.unlock(this.token, this.lockId);
+      } catch (error) {
+        console.error("Error unlocking:", error);
+      } finally {
+        this.isLoading = false;
+      }
     } else {
       this.popupService.needGateway = true;
       console.log("Necesita estar conectado a un gateway para usar esta función")
@@ -771,7 +781,14 @@ export class LockComponent implements OnInit {
   }
   async Lock() {
     if (this.gateway === '1') {
-      await this.gatewayService.lock(this.token, this.lockId);
+      this.isLoading = true;
+      try {
+        await this.gatewayService.lock(this.token, this.lockId);
+      } catch (error) {
+        console.error("Error locking:", error);
+      } finally {
+        this.isLoading = false;
+      }
     } else {
       this.popupService.needGateway = true;
       console.log("Necesita estar conectado a un gateway para usar esta función")
@@ -930,7 +947,6 @@ export class LockComponent implements OnInit {
     this.popupService.elementType = user;
     this.popupService.desautorizar = true;
   }
-  //
   AutorizarFalso(ekey: Ekey) {
     this.popupService.elementType = ekey.username;
     this.popupService.autorizarFalso = true;
@@ -981,7 +997,7 @@ export class LockComponent implements OnInit {
     this.passcodeService.passcodesimple = true;
     this.router.navigate(["users", this.username, "lock", this.lockId, "passcode"]);
   }
-  compartirPasscode(passcode: Passcode){
+  compartirPasscode(passcode: Passcode) {
     this.popupService.passcode = passcode;
     this.popupService.sharePasscode = true;
   }
