@@ -20,6 +20,7 @@ export class PasscodeComponent {
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   gateway = localStorage.getItem('gateway') ?? ''
   featureValue = localStorage.getItem('features') ?? '';
+  isLoading: boolean = false;
   howManyHours = '';
   error = '';
   selectedType = '';
@@ -82,48 +83,55 @@ export class PasscodeComponent {
   }
   async crearpasscode(datos: Formulario) {
     let response;
-    if (!datos.passcodePwd) {
-      if (datos.startDate) {
-        //PERIODIC PASSCODE
-        let newStartDay = moment(datos.startDate).valueOf()
-        let newEndDay = moment(datos.endDate).valueOf()
-        let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
-        let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
-        response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, newStartDate.toString(), datos.name, newEndDate.toString())) as createPasscodeResponse;
-      }
-      else {
-        if (datos.startHour) {
-          //RECURRING PASSCODE
-          response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.transformarHora(datos.startHour), datos.name, this.lockService.transformarHora(datos.endHour))) as createPasscodeResponse;
-        }
-        else {
-          //PERMANENT PASSCODE
-          response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, moment().valueOf().toString(), datos.name)) as createPasscodeResponse
-        }
-      }
-    }
-    else {
-      if (this.gateway === '1') {
+    this.isLoading = true;
+    try {
+      if (!datos.passcodePwd) {
         if (datos.startDate) {
-          //CUSTOM PERIOD PASSCODE
+          //PERIODIC PASSCODE
           let newStartDay = moment(datos.startDate).valueOf()
           let newEndDay = moment(datos.endDate).valueOf()
           let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
           let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
-          response = await lastValueFrom(this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, newStartDate.toString(), newEndDate.toString())) as createPasscodeResponse;
+          response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, newStartDate.toString(), datos.name, newEndDate.toString())) as createPasscodeResponse;
         }
         else {
-          //CUSTOM PERMANENT PASSCODE
-          response = await lastValueFrom(this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0")) as createPasscodeResponse;
+          if (datos.startHour) {
+            //RECURRING PASSCODE
+            response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.transformarHora(datos.startHour), datos.name, this.lockService.transformarHora(datos.endHour))) as createPasscodeResponse;
+          }
+          else {
+            //PERMANENT PASSCODE
+            response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, moment().valueOf().toString(), datos.name)) as createPasscodeResponse
+          }
         }
-      } else {
-        this.popupService.needGateway = true;
       }
-    }
-    console.log(response)
-    if (response?.keyboardPwdId) {
-      this.router.navigate(["users", this.username, "lock", this.lockId]);
-      console.log("Se creó la passcode con exito")
+      else {
+        if (this.gateway === '1') {
+          if (datos.startDate) {
+            //CUSTOM PERIOD PASSCODE
+            let newStartDay = moment(datos.startDate).valueOf()
+            let newEndDay = moment(datos.endDate).valueOf()
+            let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+            let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+            response = await lastValueFrom(this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "3", datos.name, newStartDate.toString(), newEndDate.toString())) as createPasscodeResponse;
+          }
+          else {
+            //CUSTOM PERMANENT PASSCODE
+            response = await lastValueFrom(this.passcodeService.generateCustomPasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodePwd, "2", datos.name, "0", "0")) as createPasscodeResponse;
+          }
+        } else {
+          this.popupService.needGateway = true;
+        }
+      }
+      console.log(response)
+      if (response?.keyboardPwdId) {
+        this.router.navigate(["users", this.username, "lock", this.lockId]);
+        console.log("Se creó la passcode con exito")
+      }
+    } catch (error) {
+      console.error("Error while creating Passcode:", error);
+    } finally {
+      this.isLoading = false;
     }
   }
   validarNuevaPass(datos: Formulario) {

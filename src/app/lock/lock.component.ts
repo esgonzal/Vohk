@@ -193,13 +193,17 @@ export class LockComponent implements OnInit {
     }
   }
   async fetchEkeys() {
+    this.isLoading = true;
     try {
       await this.fetchEkeysPage(1);
     } catch (error) {
       console.error("Error while fetching ekeys:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchEkeysPage(pageNo: number) {
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.ekeyService.getEkeysofLock(this.token, this.lockId, pageNo, 100))
       const typedResponse = response as EkeyResponse;
@@ -213,16 +217,22 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching ekeys page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchPasscodes() {
+    this.isLoading = true;
     try {
       await this.fetchPasscodesPage(1);
     } catch (error) {
       console.error("Error while fetching passcodes:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchPasscodesPage(pageNo: number) {
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.passcodeService.getPasscodesofLock(this.token, this.lockId, pageNo, 100))
       const typedResponse = response as PasscodeResponse;
@@ -236,16 +246,22 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching passcodes page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchCards() {
+    this.isLoading = true;
     try {
       await this.fetchCardsPage(1);
     } catch (error) {
       console.error("Error while fetching cards:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchCardsPage(pageNo: number) {
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.cardService.getCardsofLock(this.token, this.lockId, pageNo, 100))
       const typedResponse = response as CardResponse;
@@ -259,16 +275,22 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching cards page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchFingerprints() {
+    this.isLoading = true;
     try {
       await this.fetchFingerprintsPage(1);
     } catch (error) {
       console.error("Error while fetching fingerprints:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchFingerprintsPage(pageNo: number) {
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.fingerprintService.getFingerprintsofLock(this.token, this.lockId, pageNo, 100))
       const typedResponse = response as FingerprintResponse;
@@ -282,16 +304,22 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching fingerprints page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchRecords() {
+    this.isLoading = true;
     try {
       await this.fetchRecordsPage(1);
     } catch (error) {
       console.error("Error while fetching records:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchRecordsPage(pageNo: number) {
+    this.isLoading = true;
     try {
       const response = await lastValueFrom(this.recordService.getRecords(this.token, this.lockId, pageNo, 100))
       const typedResponse = response as RecordResponse;
@@ -305,6 +333,8 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching records page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   updatePasscodeUsage() {
@@ -807,6 +837,7 @@ export class LockComponent implements OnInit {
     let gatewaysOfLockFetched = false;
     let gatewaysOfAccountFetched = false;
     //Traer Gateways
+    this.isLoading = true;
     try {
       await this.gatewayService.getGatewayListOfLock(this.token, this.lockId);
       this.gatewayService.data$.subscribe((data) => {
@@ -820,8 +851,12 @@ export class LockComponent implements OnInit {
         }
         else { console.log("Data not yet available.") }
       })
+    } catch (error) { 
+      console.error("Error while fetching the gateways of the lock:", error); 
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
-    catch (error) { console.error("Error while fetching the gateways of the lock:", error); }
+    this.isLoading = true;
     try {
       await this.gatewayService.getGatewaysAccount(this.token);
       this.gatewayService.data2$.subscribe((data) => {
@@ -835,15 +870,18 @@ export class LockComponent implements OnInit {
         }
         else { console.log("Data not yet available.") }
       })
+    } catch (error) { 
+      console.error("Error while fetching the gatewaysof the account:", error); 
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
-    catch (error) { console.error("Error while fetching the gatewaysof the account:", error); }
     this.popupService.gateway = true;
-
   }
   async HoraDispositivo() {
     if (this.gateway === '1') {
       this.gatewayService.token = this.token;
       this.gatewayService.lockID = this.lockId;
+      this.isLoading = true;
       try {
         await this.gatewayService.getLockTime(this.token, this.lockId);
         this.gatewayService.data$.subscribe((data) => {
@@ -851,7 +889,11 @@ export class LockComponent implements OnInit {
             this.popupService.currentTime = data.date;
           }
         })
-      } catch (error) { console.error("Error while fetching lock's time:", error) }
+      } catch (error) { 
+        console.error("Error while fetching lock's time:", error) 
+      } finally {
+        this.isLoading = false; // Set isLoading to false when data fetching is complete
+      }
       this.popupService.mostrarHora = true;
     } else {
       this.popupService.needGateway = true;
@@ -862,6 +904,7 @@ export class LockComponent implements OnInit {
       this.passageModeService.token = this.token
       this.passageModeService.lockID = this.lockId;
       //TRAER CONFIGURACION DE MODO DE PASO
+      this.isLoading = true;
       try {
         await this.passageModeService.getPassageModeConfig(this.token, this.lockId);
         this.passageModeService.data$.subscribe((data) => {
@@ -870,8 +913,11 @@ export class LockComponent implements OnInit {
             console.log(this.passageModeService.passageModeConfig)
           }
         })
+      } catch (error) { 
+        console.error("Error while fetching passage mode configurations:", error) 
+      } finally {
+        this.isLoading = false; // Set isLoading to false when data fetching is complete
       }
-      catch (error) { console.error("Error while fetching passage mode configurations:", error) }
       this.router.navigate(["users", this.username, "lock", this.lockId, "passageMode"]);
     } else {
       this.popupService.needGateway = true;
