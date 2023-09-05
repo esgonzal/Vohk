@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { EkeyResponse, sendEkeyResponse } from '../Interfaces/Elements';
+import { EkeyResponse, operationResponse, sendEkeyResponse } from '../Interfaces/Elements';
 import { LockData, LockListResponse } from '../Interfaces/Lock';
 import { RecipientList } from '../Interfaces/RecipientList';
 import emailjs from 'emailjs-com';
@@ -93,7 +93,7 @@ export class EkeyServiceService {
     }
     return this.http.post<sendEkeyResponse>(url, body.toString(), options);
   }
-  async deleteEkey(token: string, keyID: number) {
+  deleteEkey(token: string, keyID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/delete'
     let header = new HttpHeaders({
@@ -105,16 +105,9 @@ export class EkeyServiceService {
     body.set('accessToken', token);
     body.set('keyId', keyID.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while deleting a Ekey:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async freezeEkey(token: string, keyID: number) {
+  freezeEkey(token: string, keyID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/freeze'
     let header = new HttpHeaders({
@@ -126,16 +119,9 @@ export class EkeyServiceService {
     body.set('accessToken', token);
     body.set('keyId', keyID.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while freezing a Ekey:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async unfreezeEkey(token: string, keyID: number) {
+  unfreezeEkey(token: string, keyID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/unfreeze'
     let header = new HttpHeaders({
@@ -147,16 +133,9 @@ export class EkeyServiceService {
     body.set('accessToken', token);
     body.set('keyId', keyID.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while unfreezing a Ekey:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async modifyEkey(token: string, ekeyID: number, newName?: string, remoteEnable?: string) {
+  modifyEkey(token: string, ekeyID: number, newName?: string, remoteEnable?: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/update'
     let header = new HttpHeaders({
@@ -174,16 +153,9 @@ export class EkeyServiceService {
     if (remoteEnable !== undefined) {
       body.set('remoteEnable', remoteEnable);
     }
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while modifying a Ekey:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async changePeriod(token: string, ekeyID: number, newStartDate: string, newEndDate: string) {
+  changePeriod(token: string, ekeyID: number, newStartDate: string, newEndDate: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/changePeriod'
     let header = new HttpHeaders({
@@ -197,14 +169,7 @@ export class EkeyServiceService {
     body.set('startDate', newStartDate);
     body.set('endDate', newEndDate);
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while changing the validity period of the fingerprint:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
   async AuthorizeEkey(token: string, lockID: number, keyID: number) {
     let fecha = this.lockService.timestamp()

@@ -82,7 +82,6 @@ export class PasscodeComponent {
     if (!datos.passcodePwd) {
       if (datos.startDate) {
         //PERIODIC PASSCODE
-        console.log(datos)
         let newStartDay = moment(datos.startDate).valueOf()
         let newEndDay = moment(datos.endDate).valueOf()
         let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()

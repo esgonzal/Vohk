@@ -13,6 +13,9 @@ import { LockServiceService } from '../services/lock-service.service';
 import { GroupService } from '../services/group.service';
 import { LockData } from '../Interfaces/Lock';
 import { UserServiceService } from '../services/user-service.service';
+import { lastValueFrom } from 'rxjs';
+import { operationResponse } from '../Interfaces/Elements';
+import { ResetPasswordResponse } from '../Interfaces/User';
 
 @Component({
   selector: 'app-pop-up',
@@ -82,31 +85,38 @@ export class PopUpComponent implements OnInit {
     this.router.navigate(['/login']);
   }
   async delete() {
+    let response;
     if (this.popupService.delete) {
       switch (this.popupService.elementType) {
         case 'passcode':
-          await this.passcodeService.deletePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
+          response = await lastValueFrom(this.passcodeService.deletePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID)) as operationResponse;
           break;
         case 'ekey':
-          await this.ekeyService.deleteEkey(this.popupService.token, this.popupService.elementID);
+          response = await lastValueFrom(this.ekeyService.deleteEkey(this.popupService.token, this.popupService.elementID)) as operationResponse;
           break;
         case 'card':
-          await this.cardService.deleteCard(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
+          response = await lastValueFrom(this.cardService.deleteCard(this.popupService.token, this.popupService.lockID, this.popupService.elementID)) as operationResponse;
           break;
         case 'fingerprint':
-          await this.fingerprintService.deleteFingerprint(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
+          response = await lastValueFrom(this.fingerprintService.deleteFingerprint(this.popupService.token, this.popupService.lockID, this.popupService.elementID)) as operationResponse;
           break;
         case 'grupo':
-          await this.groupService.deleteGroup(this.popupService.token, this.popupService.elementID.toString());
+          response = await lastValueFrom(this.groupService.deleteGroup(this.popupService.token, this.popupService.elementID.toString())) as operationResponse;
           break;
         default:
           console.error('Invalid element type for deletion:', this.popupService.elementID);
           break;
       }
     }
-    this.popupService.delete = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
+    //console.log(response)
+    if (response?.errcode === 0) {
+      this.popupService.delete = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+      console.log(this.popupService.elementType, "borrada exitosamente")
+    } else {
+      this.error = "La acción eliminar no pudo ser completada, intente nuevamente mas tarde."
+    }
   }
   async autorizar() {
     await this.ekeyService.AuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
@@ -131,16 +141,28 @@ export class PopUpComponent implements OnInit {
     this.popupService.desautorizarFalso = false;
   }
   async congelar() {
-    await this.ekeyService.freezeEkey(this.popupService.token, this.popupService.elementID);
-    this.popupService.congelar = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
+    let response = await lastValueFrom(this.ekeyService.freezeEkey(this.popupService.token, this.popupService.elementID)) as operationResponse;
+    //console.log(response)
+    if (response.errcode === 0) {
+      this.popupService.congelar = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+      console.log("eKey congelada exitosamente")
+    } else {
+      this.error = "La acción congelar no pudo ser completada, intente nuevamente mas tarde."
+    }
   }
   async descongelar() {
-    await this.ekeyService.unfreezeEkey(this.popupService.token, this.popupService.elementID);
-    this.popupService.descongelar = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
+    let response = await lastValueFrom(this.ekeyService.unfreezeEkey(this.popupService.token, this.popupService.elementID));
+    //console.log(response)
+    if (response.errcode === 0) {
+      this.popupService.descongelar = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+      console.log("eKey descongelada exitosamente")
+    } else {
+      this.error = "La acción descongelar no pudo ser completada, intente nuevamente mas tarde."
+    }
   }
   transformarRemoteEnable(Slider: boolean) {
     if (Slider) {
@@ -151,35 +173,46 @@ export class PopUpComponent implements OnInit {
   }
   async cambiarNombre(datos: Formulario) {
     this.error = '';
+    let response;
     if (!datos.name) {
       this.error = "Por favor ingrese un nombre"
     } else {
       if (this.popupService.cambiarNombre) {
         switch (this.popupService.elementType) {
           case 'ekey':
-            await this.ekeyService.modifyEkey(this.popupService.token, this.popupService.elementID, datos.name, this.transformarRemoteEnable(datos.ekeyRemoteEnable));
+            response = await lastValueFrom(this.ekeyService.modifyEkey(this.popupService.token, this.popupService.elementID, datos.name, this.transformarRemoteEnable(datos.ekeyRemoteEnable))) as operationResponse;
             break;
           case 'card':
-            await this.cardService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
+            response = await lastValueFrom(this.cardService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name)) as operationResponse;
             break;
           case 'fingerprint':
-            await this.fingerprintService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name);
+            response = await lastValueFrom(this.fingerprintService.changeName(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name)) as operationResponse;
             break;
           case 'grupo':
-            await this.groupService.renameGroup(this.popupService.token, this.popupService.elementID.toString(), datos.name);
+            response = await lastValueFrom(this.groupService.renameGroup(this.popupService.token, this.popupService.elementID.toString(), datos.name)) as operationResponse;
             break;
           default:
             console.error('Invalid element type for deletion:', this.popupService.elementID);
             break;
         }
       }
-      this.popupService.cambiarNombre = false;
-      const username = localStorage.getItem('user')
-      this.router.navigate(['/users', username]);
+      console.log(response)
+      if (response?.errcode === 0) {
+        this.popupService.cambiarNombre = false;
+        const username = localStorage.getItem('user')
+        this.router.navigate(['/users', username]);
+        console.log("Se ha cambiado el nombre de", this.popupService.elementType, "exitosamente")
+      }
+      if (response?.errcode === -3) {
+        this.error = "El nombre ingresado es muy largo"
+      } else {
+        this.error = "La acción cambiar nombre no pudo ser completada, intente nuevamente mas tarde."
+      }
     }
   }
   async cambiarPeriodo(datos: Formulario) {
     this.error = '';
+    let response;
     if (!datos.startDate || !datos.startHour || !datos.endDate || !datos.endHour) {
       this.error = "Por favor ingrese los datos requeridos"
     } else {
@@ -190,45 +223,65 @@ export class PopUpComponent implements OnInit {
       if (moment(newEndDate).isAfter(moment(newStartDate))) {
         switch (this.popupService.elementType) {
           case 'ekey':
-            await this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, newStartDate.toString(), newEndDate.toString());
+            response = await lastValueFrom(this.ekeyService.changePeriod(this.popupService.token, this.popupService.elementID, newStartDate.toString(), newEndDate.toString())) as operationResponse;
             break;
           case 'card':
-            await this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, newStartDate.toString(), newEndDate.toString());
+            response = await lastValueFrom(this.cardService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, newStartDate.toString(), newEndDate.toString())) as operationResponse;
             break;
           case 'fingerprint':
-            await this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, newStartDate.toString(), newEndDate.toString());
+            response = await lastValueFrom(this.fingerprintService.changePeriod(this.popupService.token, this.popupService.lockID, this.popupService.elementID, newStartDate.toString(), newEndDate.toString())) as operationResponse;
             break;
           default:
             console.error('Invalid element type for deletion:', this.popupService.elementID);
             break;
         }
-        this.popupService.cambiarPeriodo = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
+        //console.log(response)
+        if (response?.errcode === 0) {
+          this.popupService.cambiarPeriodo = false;
+          const username = localStorage.getItem('user')
+          this.router.navigate(['/users', username]);
+        } else {
+          this.error = "La acción cambiar periodo no pudo ser completada, intente nuevamente mas tarde"
+        }
       } else {
         this.error = 'La fecha de término no puede ser antes que la fecha de inicio';
       }
     }
   }
   async editarPasscode(datos: Formulario) {
+    let response;
+    let newStartDate;
+    let newEndDate;
     this.error = '';
-    if (!datos.startDate || !datos.startHour || !datos.endDate || !datos.endHour) {
-      this.error = "Por favor ingrese los datos requeridos"
-    } else {
+    if (datos.startDate && datos.startHour) {
       let newStartDay = moment(datos.startDate).valueOf()
+      newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+    }
+    if (datos.endDate && datos.endHour) {
       let newEndDay = moment(datos.endDate).valueOf()
-      let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
-      let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
-      if (moment(newEndDate).isAfter(moment(newStartDate))) {
-        if (this.popupService.editarPasscode) {
-          await this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, newStartDate.toString(), newEndDate.toString());
-        }
-        this.popupService.editarPasscode = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
-      } else {
-        this.error = 'La fecha de término no puede ser antes que la fecha de inicio';
-      }
+      newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+    }
+    if (this.popupService.passcode.keyboardPwdType === 1 || this.popupService.passcode.keyboardPwdType === 2 || this.popupService.passcode.keyboardPwdType === 4) {
+      response = await lastValueFrom(this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd)) as operationResponse;
+    }
+    if (this.popupService.passcode.keyboardPwdType === 3) {
+      response = await lastValueFrom(this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, newStartDate?.toString(), newEndDate?.toString())) as operationResponse
+    }
+    //console.log(response)
+    if (response?.errcode === 0) {
+      this.popupService.editarPasscode = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+      console.log("passcode editada correctamente");
+    }
+    if (response?.errcode === -3008) {
+      this.error = "No se puede editar una passcode que no haya sido usada antes";
+    }
+    if (response?.errcode === -3007) {
+      this.error = "Por favor ingresa un código diferente";
+    }
+    if (response?.errcode === -3006) {
+      this.error = "El código debe tener entre 3 y 9 digitos";//TTLock dice entre 6-9
     }
   }
   encontrarRed(gatewayID: number) {
@@ -278,10 +331,16 @@ export class PopUpComponent implements OnInit {
     if (this.autoLockToggle) {
       segundos = this.transformarAsegundos(this.selectedType)
     }
-    await this.lockService.setAutoLock(this.popupService.token, this.popupService.lockID, segundos);
-    this.popupService.cerradoAutomatico = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
+    let response = await lastValueFrom(this.lockService.setAutoLock(this.popupService.token, this.popupService.lockID, segundos)) as operationResponse;
+    console.log(response);
+    if (response.errcode === 0) {
+      this.popupService.cerradoAutomatico = false;
+      const username = localStorage.getItem('user')
+      this.router.navigate(['/users', username]);
+    } else {
+      this.error = "No se pudo completar la acción, intente nuevamente más tarde"
+    }
+
   }
   formatearHora() {
     return moment(this.popupService.currentTime).format("DD/MM/YYYY HH:mm:ss")
@@ -291,10 +350,15 @@ export class PopUpComponent implements OnInit {
     if (!datos.name) {
       this.error = "Por favor ingrese el dato requerido"
     } else {
-      await this.groupService.addGroup(this.popupService.token, datos.name);
-      this.popupService.newGroup = false;
+      let response = await lastValueFrom(this.groupService.addGroup(this.popupService.token, datos.name)) as operationResponse;
+      //console.log(response)
+      if(response.errcode === 0){
+        this.popupService.newGroup = false;
       const username = localStorage.getItem('user')
       this.router.navigate(['/users', username]);
+      } else {
+        this.error = "No se pudo completar la acción, intente nuevamente más tarde";
+      }
     }
   }
   openAddLockGroup() {
@@ -376,10 +440,15 @@ export class PopUpComponent implements OnInit {
         const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (passwordPattern.test(this.newPassword)) {
           if (this.newPassword === this.confirmPassword) {
-            await this.userService.ResetPassword(localStorage.getItem('user') ?? '', this.newPassword)
-            localStorage.setItem('password', this.newPassword)
+            let response = await lastValueFrom(this.userService.ResetPassword(localStorage.getItem('user') ?? '', this.newPassword)) as ResetPasswordResponse;
+            //console.log(response)
+            if(response.errcode === 0) {
+              localStorage.setItem('password', this.newPassword)
             this.popupService.resetPassword = false;
             this.router.navigate(['/users', localStorage.getItem('user') ?? '']);
+            } else {
+              this.error = "No se pudo completar la acción, intente nuevamente más tarde";
+            }
           } else {
             this.error = 'No coincide la contraseña. Por favor intente de nuevo'
           }

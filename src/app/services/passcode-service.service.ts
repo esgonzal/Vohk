@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
-import { PasscodeResponse } from '../Interfaces/Elements';
+import { PasscodeResponse, operationResponse } from '../Interfaces/Elements';
 import { LockServiceService } from './lock-service.service';
 import emailjs from 'emailjs-com';
 
@@ -89,7 +89,7 @@ export class PasscodeServiceService {
       this.dataSubject.next(null);
     }
   }
-  async deletePasscode(token: string, lockID: number, keyboardPwdId: number) {
+  deletePasscode(token: string, lockID: number, keyboardPwdId: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/delete'
     let header = new HttpHeaders({
@@ -103,16 +103,9 @@ export class PasscodeServiceService {
     body.set('keyboardPwdId', keyboardPwdId.toString());
     body.set('deleteType', '2');
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while deleting a passcode:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async changePasscode(token: string, lockID: number, keyboardPwdId: number, newName?: string, newPwd?: string, newStartDate?: string, newEndDate?: string) {
+  changePasscode(token: string, lockID: number, keyboardPwdId: number, newName?: string, newPwd?: string, newStartDate?: string, newEndDate?: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/keyboardPwd/change'
     let header = new HttpHeaders({
@@ -130,14 +123,7 @@ export class PasscodeServiceService {
     if (newPwd !== undefined) { body.set('newKeyboardPwd', newPwd); }
     if (newStartDate !== undefined) { body.set('startDate', newStartDate); }
     if (newEndDate !== undefined) { body.set('endDate', newEndDate); }
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while editing a passcode:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
   sendEmail_PermanentPasscode(recipientEmail: string, code: string) {//Template para passcode permanente
     //esteban.vohk+4@gmail.com

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import 'moment-timezone';
+import { operationResponse } from '../Interfaces/Elements';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +94,7 @@ export class LockServiceService {
       throw new Error("Lock alias update failed.");
     }
   }
-  async setAutoLock(token: string, lockId: number, seconds: number) {
+  setAutoLock(token: string, lockId: number, seconds: number): Observable<operationResponse> {
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/setAutoLockTime'
     let header = new HttpHeaders({
@@ -107,13 +108,7 @@ export class LockServiceService {
     body.set('seconds', seconds.toString());
     body.set('type', '2')
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response)
-    } catch (error) {
-      console.error("Error while setting auto lock time of a lock:", error);
-      throw new Error("setting new auto lock time failed.");
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
   async transferLock(token: string, receiverUsername: string, lockIdList: string) {
     let fecha = this.timestamp()

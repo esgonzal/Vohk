@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { Group, GroupResponse } from '../Interfaces/Group';
 import { LockData } from '../Interfaces/Lock';
+import { operationResponse } from '../Interfaces/Elements';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class GroupService {
     body.set('date', fecha.toString());
     return this.http.post<GroupResponse>(url, body.toString(), options);
   }
-  async addGroup(token: string, name: string) {
+  addGroup(token: string, name: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/group/add'
     let header = new HttpHeaders({
@@ -52,16 +53,9 @@ export class GroupService {
     body.set('accessToken', token);
     body.set('name', name);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options))
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while adding a new group:", error)
-      this.dataSubject.next(null);
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async deleteGroup(token: string, groupID: string) {
+  deleteGroup(token: string, groupID: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/group/delete'
     let header = new HttpHeaders({
@@ -73,16 +67,9 @@ export class GroupService {
     body.set('accessToken', token);
     body.set('groupId', groupID);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options))
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while deleting a group:", error)
-      this.dataSubject.next(null);
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async renameGroup(token: string, groupID: string, newName: string) {
+  renameGroup(token: string, groupID: string, newName: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/group/update'
     let header = new HttpHeaders({
@@ -95,14 +82,7 @@ export class GroupService {
     body.set('groupId', groupID);
     body.set('name', newName);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options))
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while renaming a group:", error)
-      this.dataSubject.next(null);
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
   async setGroupofLock(token: string, lockID: string, groupID: string) {
     let fecha = this.lockService.timestamp()

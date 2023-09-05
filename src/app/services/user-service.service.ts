@@ -13,8 +13,6 @@ export class UserServiceService {
   nombre_usuario: string;
   clave_usuario: string;
   loggedIn = false;
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
 
   constructor(private http: HttpClient, private lockService: LockServiceService) { }
 

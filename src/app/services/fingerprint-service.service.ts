@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { FingerprintResponse } from '../Interfaces/Elements';
+import { FingerprintResponse, operationResponse } from '../Interfaces/Elements';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class FingerprintServiceService {
     body.set('date', fecha);
     return this.http.post<FingerprintResponse>(url, body.toString(), options);
   }
-  async deleteFingerprint(token: string, lockID: number, fingerprintID: number) {
+  deleteFingerprint(token: string, lockID: number, fingerprintID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/fingerprint/delete'
     let header = new HttpHeaders({
@@ -44,16 +44,9 @@ export class FingerprintServiceService {
     body.set('fingerprintId', fingerprintID.toString());
     body.set('deleteType', "2");
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
-      console.log(response)
-    } catch (error) {
-      console.error("Error while deleting the fingerprint:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async changeName(token: string, lockID: number, fingerprintID: number, newName: string) {
+  changeName(token: string, lockID: number, fingerprintID: number, newName: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/fingerprint/rename'
     let header = new HttpHeaders({
@@ -67,16 +60,9 @@ export class FingerprintServiceService {
     body.set('fingerprintId', fingerprintID.toString());
     body.set('fingerprintName', newName);
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response); // Emit the response to dataSubject
-      console.log(response)
-    } catch (error) {
-      console.error("Error while renaming the fingerprint:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async changePeriod(token: string, lockID: number, fingerprintID: number, newStartDate: string, newEndDate: string) {
+  changePeriod(token: string, lockID: number, fingerprintID: number, newStartDate: string, newEndDate: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/fingerprint/changePeriod'
     let header = new HttpHeaders({
@@ -92,13 +78,6 @@ export class FingerprintServiceService {
     body.set('endDate', newEndDate);
     body.set('changeType', '2');
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while changing the validity period of the fingerprint:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
 }

@@ -123,3 +123,8 @@ export interface sendEkeyResponse {
     description: string;
     keyId: number;
 }
+export interface operationResponse {
+    errcode: number;
+    errmsg: string;
+    description: string;
+}

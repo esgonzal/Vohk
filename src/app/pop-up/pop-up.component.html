@@ -15,6 +15,7 @@
     </div>
     <div id="content">
         ¿Está seguro que desea eliminar esta {{popupService.elementType}}?
+        <p class="error">{{error}}</p>
     </div>
     <div id="actions">
         <button class="cancel" (click)="popupService.delete = false">No</button>
@@ -191,13 +192,13 @@
                             ngModel />
                     </span>
                 </div>
-                <div *ngIf="popupService.passcode.keyboardPwdType != 2" class="linea">
+                <div *ngIf="popupService.passcode.keyboardPwdType === 3" class="linea">
                     Periodo de inicio
                     <span class="input-container">
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="startDatePicker" name="startDate" placeholder="YYYY-MM-DD"
-                                required="required" ngModel>
+                                ngModel (dateChange)="startTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -205,18 +206,18 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Hora</mat-label>
                             <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm"
-                                required="required" [format]="24" ngModel>
+                                [format]="24" ngModel>
                         </mat-form-field>
                         <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                     </span>
                 </div>
-                <div *ngIf="popupService.passcode.keyboardPwdType != 2" class="linea">
+                <div *ngIf="popupService.passcode.keyboardPwdType === 3" class="linea">
                     Periodo de finalización
                     <span class="input-container">
                         <mat-form-field appearance="fill">
                             <mat-label>Fecha</mat-label>
                             <input matInput [matDatepicker]="endDatePicker" name="endDate" placeholder="YYYY-MM-DD"
-                                required="required" ngModel>
+                                ngModel (dateChange)="endTimePicker.open()">
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -224,11 +225,36 @@
                         <mat-form-field appearance="fill">
                             <mat-label>Hora</mat-label>
                             <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm"
-                                required="required" [format]="24" ngModel>
+                                [format]="24" ngModel>
                         </mat-form-field>
                         <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
                     </span>
                 </div>
+                <div *ngIf="popupService.passcode.keyboardPwdType !== 1 && popupService.passcode.keyboardPwdType !== 2 && popupService.passcode.keyboardPwdType !== 3 && popupService.passcode.keyboardPwdType !== 4"
+                    class="linea">
+                    Hora de inicio
+                    <span class="input-container">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Hora</mat-label>
+                            <input matInput [ngxTimepicker]="startTimePicker" name="startHour" placeholder="HH:mm"
+                                [format]="24" ngModel>
+                        </mat-form-field>
+                        <ngx-material-timepicker #startTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+                    </span>
+                </div>
+                <div *ngIf="popupService.passcode.keyboardPwdType !== 1 && popupService.passcode.keyboardPwdType !== 2 && popupService.passcode.keyboardPwdType !== 3 && popupService.passcode.keyboardPwdType !== 4"
+                    class="linea">
+                    Hora de finalización
+                    <span class="input-container">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Hora</mat-label>
+                            <input matInput [ngxTimepicker]="endTimePicker" name="endHour" placeholder="HH:mm"
+                                [format]="24" ngModel>
+                        </mat-form-field>
+                        <ngx-material-timepicker #endTimePicker [hoursOnly]="true"></ngx-material-timepicker>
+                    </span>
+                </div>
+                <p class="error">{{error}}</p>
                 <div id="actions">
                     <button class="cancel" (click)="popupService.editarPasscode= false">Volver</button>
                     <button type="submit">Guardar</button>
@@ -342,6 +368,7 @@
             </span>
         </div>
     </div>
+    <p class="error">{{error}}</p>
     <div id="actions">
         <button (click)="popupService.cerradoAutomatico = false">Cancelar</button>
         <button (click)="cambiarAutoLock()">Ok</button>

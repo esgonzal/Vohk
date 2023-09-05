@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { CardResponse } from '../Interfaces/Elements';
+import { CardResponse, operationResponse } from '../Interfaces/Elements';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class CardServiceService {
     body.set('date', fecha);
     return this.http.post<CardResponse>(url, body.toString(), options);
   }
-  async changeName(token: string, lockID: number, cardID: number, newName: string) {
+  changeName(token: string, lockID: number, cardID: number, newName: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/rename'
     let header = new HttpHeaders({
@@ -47,16 +47,9 @@ export class CardServiceService {
     body.set('cardId', cardID.toString());
     body.set('cardName', newName);
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while changing the card name:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async deleteCard(token: string, lockID: number, cardID: number) {
+  deleteCard(token: string, lockID: number, cardID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/delete'
     let header = new HttpHeaders({
@@ -70,16 +63,9 @@ export class CardServiceService {
     body.set('cardId', cardID.toString());
     body.set('deleteType', "2");
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response);
-    } catch (error) {
-      console.error("Error while deleting the card:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async changePeriod(token: string, lockID: number, cardID: number, newStartDate: string, newEndDate: string) {
+  changePeriod(token: string, lockID: number, cardID: number, newStartDate: string, newEndDate: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/identityCard/changePeriod'
     let header = new HttpHeaders({
@@ -95,13 +81,6 @@ export class CardServiceService {
     body.set('endDate', newEndDate);
     body.set('changeType', '2');
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while changing the validity period of a card:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
 }
