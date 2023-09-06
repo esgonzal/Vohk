@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { PopUpService } from '../services/pop-up.service';
+import { PopUpService } from '../../services/pop-up.service';
 
 @Component({
   selector: 'app-perfil',

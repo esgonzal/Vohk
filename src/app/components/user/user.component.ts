@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LockData, LockListResponse } from '../Interfaces/Lock';
-import { EkeyServiceService } from '../services/ekey-service.service';
+import { LockData, LockListResponse } from '../../Interfaces/Lock';
+import { EkeyServiceService } from '../../services/ekey-service.service';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
-import { PopUpService } from '../services/pop-up.service';
-import { GroupService } from '../services/group.service';
+import { PopUpService } from '../../services/pop-up.service';
+import { GroupService } from '../../services/group.service';
 import { Subscription, lastValueFrom } from 'rxjs';
-import { Group, GroupResponse } from '../Interfaces/Group';
+import { Group, GroupResponse } from '../../Interfaces/Group';
 
 @Component({
   selector: 'app-user',
@@ -131,27 +131,34 @@ export class UserComponent implements OnInit {
     return lockCount;
   }
   async getAllLocks() {
-    let pageNo = 1;
-    const pageSize = 100;
-    while (true) {
-      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, 0));
-      const locksTypedResponse = locksResponse as LockListResponse;
-      if (locksTypedResponse?.list) {
-        this.allLocks.push(...locksTypedResponse.list)
-        this.locksWithoutGroup.push(...locksTypedResponse.list.filter(lock => !lock.groupId))
-        if (locksTypedResponse.pages > pageNo) {
-          pageNo++;
+    this.isLoading = true;
+    try {
+      let pageNo = 1;
+      const pageSize = 100;
+      while (true) {
+        const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, 0));
+        const locksTypedResponse = locksResponse as LockListResponse;
+        if (locksTypedResponse?.list) {
+          this.allLocks.push(...locksTypedResponse.list)
+          this.locksWithoutGroup.push(...locksTypedResponse.list.filter(lock => !lock.groupId))
+          if (locksTypedResponse.pages > pageNo) {
+            pageNo++;
+          } else {
+            break; // No more pages to fetch
+          }
         } else {
-          break; // No more pages to fetch
+          break; // No more locks to fetch
         }
-      } else {
-        break; // No more locks to fetch
       }
+      this.ekeyService.currentLocks = this.allLocks.filter(
+        lock => lock.userType === '110301' || (lock.userType === '110301' && lock.keyRight === 1)
+      );
+      this.groupService.locksWithoutGroup = this.locksWithoutGroup;
+    } catch (error) {
+      console.error("Error while fetching all locks:", error);
+    } finally {
+      this.isLoading = false;
     }
-    this.ekeyService.currentLocks = this.allLocks.filter(
-      lock => lock.userType === '110301' || (lock.userType === '110301' && lock.keyRight === 1)
-    );
-    this.groupService.locksWithoutGroup = this.locksWithoutGroup;
   }
   async getLocksWithoutGroup() {
     let pageNo = 1;

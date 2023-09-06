@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { User, UserRegisterResponse } from '../Interfaces/User';
-import { UserServiceService } from '../services/user-service.service';
-import { PopUpService } from '../services/pop-up.service';
+import { User, UserRegisterResponse } from '../../Interfaces/User';
+import { UserServiceService } from '../../services/user-service.service';
+import { PopUpService } from '../../services/pop-up.service';
 import { lastValueFrom } from 'rxjs';
 
 @Component({

@@ -1,21 +1,22 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { PopUpService } from '../services/pop-up.service';
-import { PasscodeServiceService } from '../services/passcode-service.service';
-import { EkeyServiceService } from '../services/ekey-service.service';
-import { CardServiceService } from '../services/card-service.service';
-import { FingerprintServiceService } from '../services/fingerprint-service.service';
+import { PopUpService } from '../../services/pop-up.service';
+import { PasscodeServiceService } from '../../services/passcode-service.service';
+import { EkeyServiceService } from '../../services/ekey-service.service';
+import { CardServiceService } from '../../services/card-service.service';
+import { FingerprintServiceService } from '../../services/fingerprint-service.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Formulario } from '../Interfaces/Formulario';
+import { Formulario } from '../../Interfaces/Formulario';
 import moment from 'moment';
-import { GatewayAccount } from '../Interfaces/Gateway';
-import { LockServiceService } from '../services/lock-service.service';
-import { GroupService } from '../services/group.service';
-import { LockData } from '../Interfaces/Lock';
-import { UserServiceService } from '../services/user-service.service';
+import { GatewayAccount } from '../../Interfaces/Gateway';
+import { LockServiceService } from '../../services/lock-service.service';
+import { GroupService } from '../../services/group.service';
+import { LockData } from '../../Interfaces/Lock';
+import { UserServiceService } from '../../services/user-service.service';
 import { lastValueFrom } from 'rxjs';
-import { operationResponse } from '../Interfaces/Elements';
-import { ResetPasswordResponse } from '../Interfaces/User';
+import { operationResponse } from '../../Interfaces/Elements';
+import { ResetPasswordResponse } from '../../Interfaces/User';
+import { addGroupResponse } from '../../Interfaces/Group';
 
 @Component({
   selector: 'app-pop-up',
@@ -319,7 +320,7 @@ export class PopUpComponent implements OnInit {
         this.error = "Por favor ingresa un código diferente";
       }
       if (response?.errcode === -3006) {
-        this.error = "El código debe tener entre 3 y 9 digitos";//TTLock dice entre 6-9
+        this.error = "El código debe tener entre 4 y 9 digitos";//TTLock dice entre 6-9
       }
     } catch (error) {
       console.error("Error while editing a passcode:", error);
@@ -401,12 +402,14 @@ export class PopUpComponent implements OnInit {
       if (!datos.name) {
         this.error = "Por favor ingrese el dato requerido"
       } else {
-        let response = await lastValueFrom(this.groupService.addGroup(this.popupService.token, datos.name)) as operationResponse;
-        //console.log(response)
-        if (response.errcode === 0) {
+        let response = await lastValueFrom(this.groupService.addGroup(this.popupService.token, datos.name)) as addGroupResponse;
+        //console.log("Respuesta de crear grupo:",response)
+        if (response.groupId) {
           this.popupService.newGroup = false;
           const username = localStorage.getItem('user')
           this.router.navigate(['/users', username]);
+        } else if(response.errcode === -3) {
+          this.error = "El nombre ingresado es muy largo";
         } else {
           this.error = "No se pudo completar la acción, intente nuevamente más tarde";
         }

@@ -1,17 +1,21 @@
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './sharepage/navbar/navbar.component';
-import { LoginComponent } from './pages/login.component';
-import { RegisterComponent } from './pages/register.component';
-import { UserComponent } from './user/user.component';
-import { LockComponent } from './lock/lock.component';
-import { PasscodeComponent } from './passcode/passcode.component';
-import { EkeyComponent } from './ekey/ekey.component';
-import { PopUpComponent } from './pop-up/pop-up.component';
-import { PassageModeComponent } from './passage-mode/passage-mode.component';
-import { TransferLockComponent } from './transfer-lock/transfer-lock.component';
-import { HomeComponent } from './home/home.component';
-import { PerfilComponent } from './perfil/perfil.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { UserComponent } from './components/user/user.component';
+import { LockComponent } from './components/lock/lock.component';
+import { PasscodeComponent } from './components/passcode/passcode.component';
+import { EkeyComponent } from './components/ekey/ekey.component';
+import { PopUpComponent } from './components/pop-up/pop-up.component';
+import { PassageModeComponent } from './components/passage-mode/passage-mode.component';
+import { TransferLockComponent } from './components/transfer-lock/transfer-lock.component';
+import { HomeComponent } from './components/home/home.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
+import { MultipleEkeyComponent } from './components/multiple-ekey/multiple-ekey.component';
+import { LoaderComponent } from './components/loader/loader.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { GrupoCerradurasComponent } from './components/grupo-cerraduras/grupo-cerraduras.component';
 
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from "@angular/common/http";
@@ -40,12 +44,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { GrupoCerradurasComponent } from './grupo-cerraduras/grupo-cerraduras.component';
 
 import { GroupService } from './services/group.service';
-import { MultipleEkeyComponent } from './multiple-ekey/multiple-ekey.component';
-import { LoaderComponent } from './loader/loader.component';
+
 
 @NgModule({
   declarations: [

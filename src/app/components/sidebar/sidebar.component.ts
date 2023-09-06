@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { GroupService } from '../services/group.service';
+import { GroupService } from '../../services/group.service';
 import { Router } from '@angular/router';
-import { Group } from '../Interfaces/Group';
+import { Group } from '../../Interfaces/Group';
 import { Observable } from 'rxjs';
 
 @Component({

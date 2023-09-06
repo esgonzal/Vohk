@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { PassageModeService } from '../services/passage-mode.service';
-import { PassageMode } from '../Interfaces/PassageMode';
+import { PassageModeService } from '../../services/passage-mode.service';
+import { PassageMode } from '../../Interfaces/PassageMode';
 import { Router } from '@angular/router';
 
 @Component({

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import moment from 'moment';
-import { Formulario } from '../Interfaces/Formulario';
-import { EkeyServiceService } from '../services/ekey-service.service';
-import { RecipientList } from '../Interfaces/RecipientList';
-import { PopUpService } from '../services/pop-up.service';
+import { Formulario } from '../../Interfaces/Formulario';
+import { EkeyServiceService } from '../../services/ekey-service.service';
+import { RecipientList } from '../../Interfaces/RecipientList';
+import { PopUpService } from '../../services/pop-up.service';
 
 @Component({
   selector: 'app-multiple-ekey',

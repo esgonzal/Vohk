@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { LockServiceService } from '../services/lock-service.service';
+import { LockServiceService } from '../../services/lock-service.service';
 import { Router } from '@angular/router';
-import { operationResponse } from '../Interfaces/Elements';
+import { operationResponse } from '../../Interfaces/Elements';
 import { lastValueFrom } from 'rxjs';
 
 @Component({

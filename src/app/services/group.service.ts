@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LockServiceService } from './lock-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
-import { Group, GroupResponse } from '../Interfaces/Group';
+import { Group, GroupResponse, addGroupResponse } from '../Interfaces/Group';
 import { LockData } from '../Interfaces/Lock';
 import { operationResponse } from '../Interfaces/Elements';
 
@@ -41,7 +41,7 @@ export class GroupService {
     body.set('date', fecha.toString());
     return this.http.post<GroupResponse>(url, body.toString(), options);
   }
-  addGroup(token: string, name: string): Observable<operationResponse> {
+  addGroup(token: string, name: string): Observable<addGroupResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/group/add'
     let header = new HttpHeaders({
@@ -53,7 +53,7 @@ export class GroupService {
     body.set('accessToken', token);
     body.set('name', name);
     body.set('date', fecha.toString());
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    return this.http.post<addGroupResponse>(url, body.toString(), options);
   }
   deleteGroup(token: string, groupID: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
