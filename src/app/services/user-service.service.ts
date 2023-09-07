@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { GetAccessTokenResponse, ResetPasswordResponse, UserRegisterResponse } from '../Interfaces/User';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import emailjs from 'emailjs-com';
 
 
 @Injectable({
@@ -161,6 +162,17 @@ export class UserServiceService {
     this.http.post(url, body.toString(), options).subscribe((response: any) => {
       console.log(response)
     });
+  }
+  sendEmail_NewUser(recipientEmail: string, password: string) {//Template para passcode recurrente
+    //esteban.vohk+6@gmail.com
+    emailjs.send('contact_service', 'NewUser', {
+      to_email: recipientEmail,
+      subject: 'Bienvenido a la plataforma VOHK',
+      username: recipientEmail,
+      password: password,
+    }, 'bdNkCTZsViZUFZCL9')
+      .then((response) => { console.log('Email sent successfully:', response); })
+      .catch((error) => { console.error('Error sending email:', error); });
   }
 
 }

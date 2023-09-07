@@ -4,7 +4,7 @@
         Gracias por registrarse en nuestra plataforma
     </div>
     <div id="content">
-        {{ popupService.welcomingMessage }}
+        <div [innerHTML]="popupService.welcomingMessage"></div>
     </div>
     <div id="actions">
         <button (click)="navigateToLogin()">Iniciar Sesión</button>
