@@ -18,18 +18,29 @@ export class LoginComponent {
 
   constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) { }
 
-  async login(data: User) {
-    let encode = this.userService.customBase64Encode(data.username);
-    let response;
+  validarInputs(data: User) {
     if (data.username == '' && data.password == '') {
       this.loginError = 'Debe ingresar un nombre de usuario y contraseña '
-    } else if (data.username == '') {
-      this.loginError = 'Debe ingresar un nombre de usuario '
-    } else if (data.password == '') {
-      this.loginError = 'Debe ingresar una contraseña '
+      return false;
     } else {
+      if (data.username == '') {
+        this.loginError = 'Debe ingresar un nombre de usuario '
+        return false;
+      } else {
+        if (data.password == '') {
+          this.loginError = 'Debe ingresar una contraseña '
+          return false;
+        } else {
+          return true;
+        }
+      }
+    }
+  }
+  async login(data: User) {
+    let response;
+    if (this.validarInputs(data)) {
       response = await lastValueFrom(this.userService.getAccessToken(data.username, data.password)) as GetAccessTokenResponse;
-      console.log("Primer intento(cuenta TTLock)",response)
+      console.log("Primer intento(cuenta TTLock)", response)
       if (response.access_token) {
         this.access_token = response.access_token
         localStorage.setItem('logged', '1')
@@ -38,8 +49,9 @@ export class LoginComponent {
         localStorage.setItem('token', this.access_token);
         this.router.navigate(['/users/', data.username]);
       } else {
+        let encode = this.userService.customBase64Encode(data.username);
         response = await lastValueFrom(this.userService.getAccessToken('bhaaa_'.concat(encode), data.password)) as GetAccessTokenResponse;
-        console.log("Segundo intento(cuenta PC)",response)
+        console.log("Segundo intento(cuenta VOHK)", response)
         if (response.access_token) {
           this.access_token = response.access_token
           localStorage.setItem('logged', '1')

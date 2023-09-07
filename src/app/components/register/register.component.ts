@@ -86,7 +86,6 @@ export class RegisterComponent {
           this.registerError = 'Debe ingresar un correo electrónico o un número con prefijo telefónico (+XX)';
         }
       }
-
     }
   }
 }
