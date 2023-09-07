@@ -219,7 +219,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeyPermanent', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey permanente ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       ekey_name: keyName
@@ -232,7 +232,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeyPeriodic', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey temporal ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       ekey_name: keyName,
@@ -247,7 +247,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeyOneTime', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey de un uso ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       ekey_name: keyName
@@ -260,7 +260,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeySolicitante', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey cíclica ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       ekey_name: keyName,
@@ -276,7 +276,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeyPermanentNewUser', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey permanente ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       password: password,
@@ -290,7 +290,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeyPeriodicNewUser', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey temporal ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       password: password,
@@ -306,7 +306,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeyOneTimeNewUser', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey de un uso ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       password: password,
@@ -320,7 +320,7 @@ export class EkeyServiceService {
     emailjs.send('contact_service', 'SendEkeySolicitanteNewUs', {
       to_email: recipientEmail,
       from_name: this.username,
-      subject: 'Una eKey ha sido compartida contigo',
+      subject: 'Una eKey cíclica ha sido compartida contigo',
       to_name: recipientEmail,
       lock_alias: this.lockAlias,
       password: password,

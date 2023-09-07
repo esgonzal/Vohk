@@ -17,6 +17,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { UserServiceService } from 'src/app/services/user-service.service';
 
 
 @Component({
@@ -84,7 +85,8 @@ export class LockComponent implements OnInit {
     private recordService: RecordServiceService,
     private gatewayService: GatewayService,
     private passageModeService: PassageModeService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private userService: UserServiceService
   ) { }
 
   featureList = [
@@ -180,7 +182,7 @@ export class LockComponent implements OnInit {
     this.recordsFiltrados = this.records.filter(record => record.username === this.username);
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.username);
     //console.log("Los detalles del lock: ", this.lockDetails)
-    //console.log("eKeys: ", this.ekeys)
+    console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
@@ -353,6 +355,14 @@ export class LockComponent implements OnInit {
       return 'Administrador Secundario'
     } else {
       return 'Usuario'
+    }
+  }
+  decodeNombre(username: string){
+    let nombre_dividido = username.split("_");
+    if(nombre_dividido[0] = 'bhaaa') {
+      return this.userService.customBase64Decode(nombre_dividido[1])
+    } else {
+      return username;
     }
   }
   periodoValidez(start: number, end: number) {
