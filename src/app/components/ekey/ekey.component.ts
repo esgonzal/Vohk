@@ -8,6 +8,7 @@ import { sendEkeyResponse } from '../../Interfaces/Elements';
 import { lastValueFrom } from 'rxjs';
 import { UserServiceService } from '../../services/user-service.service';
 import { LockServiceService } from '../../services/lock-service.service';
+import { UserRegisterResponse } from 'src/app/Interfaces/User';
 
 @Component({
   selector: 'app-ekey',
@@ -120,7 +121,65 @@ export class EkeyComponent {
     this.isLoading = true;
     try {
       if (datos.ekeyType === '1') {
-        ///////////PERMANENTE/////////////////////////////////
+        ///////////PERMANENTE////////////////////////////////
+        // 1 - Primero manda eKey. Dependiendo de la respuesta, se sabrá si es cuenta TTLock o cuenta VOHK
+        // 2 - Si es cuenta TTLock(la eKey se mandó), hay que notificar por correo si el destinatario es email, por wsp si el destinatario es número
+        // 3 - Si no es cuenta TTLock(la eKey no se mandó), hay 2 opciones: Es cuenta VOHK o es una cuenta que no existe
+        // 4 - Se intenta registrar al destinatario. Dependiendo de la respuesta, se sabrá si es cuenta VOHK o cuenta que no existe
+        // 5 - Si es cuenta VOHK (no se pudo registrar el destinatario porque ya existe alguien con ese nombre), hay que mandar la eKey a cuenta VOHK, notificar por correo
+        //     si el destinatario es email, por wsp si el destinatario es número
+        // 6 - Si es cuenta que no existe(se registró el destinatario), hay que mandar la eKey a cuenta nueva VOHK, notificar por correo si el destinatario es email, 
+        //     por wsp si el destinatario es número
+        let sendEkeyResponse = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1)) as sendEkeyResponse;
+        console.log("Primer intento(cuenta TTLock)", sendEkeyResponse)
+        if (sendEkeyResponse.errcode === 0) {//Si existe una cuenta TTLock con el nombre ingresado
+          console.log("Es una cuenta que ya existe creada en TTLock, estoy compartiendo eKey con recieverName=", datos.recieverName)
+          if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
+            this.ekeyService.sendEmail_permanentEkey(datos.recieverName, datos.name)
+          } else {//la cuenta es numero de celular
+            console.log("mandar mensaje de wsp")
+          }
+          localStorage.setItem(datos.recieverName, "1");
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        }
+        else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta PC
+          let encode = this.userService.customBase64Encode(datos.recieverName)
+          let new_password = this.generateRandomPassword();
+          let userRegisterResponse = await lastValueFrom(this.userService.UserRegister(encode, new_password)) as UserRegisterResponse;
+          console.log("Segundo intento(cuenta PC)", userRegisterResponse)
+          if (userRegisterResponse.username) {//La cuenta no existía, se crea ahora
+            console.log("Se creó una cuenta nueva con nombre=", 'bhaaa_'.concat(encode), "y contraseña=", new_password)
+            sendEkeyResponse = await (lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, 'bhaaa_'.concat(encode), datos.name, "0", "0", 1))) as sendEkeyResponse;
+            if (sendEkeyResponse.errcode === 0) {//Se envia correctamente la ekey a la cuenta nueva
+              if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
+                this.ekeyService.sendEmail_permanentEkey_newAccount(datos.recieverName, datos.name, new_password)
+              } else {//la cuenta es numero de celular
+                console.log("mandar mensaje de wsp")
+              }
+              localStorage.setItem(datos.recieverName, "1");
+              this.router.navigate(["users", this.username, "lock", this.lockId]);
+            } else {//La ekey no se pudo envío 
+              console.log("Error:",sendEkeyResponse)
+            }
+          }
+          else if (userRegisterResponse.errcode === 30003) {//Es una cuenta existente creada en el PC
+            console.log("La cuenta ya existía, pero no fue creada en TTLock, fue creada en el PC")
+            sendEkeyResponse = await (lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, 'bhaaa_'.concat(encode), datos.name, "0", "0", 1))) as sendEkeyResponse;
+            if(sendEkeyResponse.errcode === 0){//Se envia correctamente la ekey a la cuenta de PC
+              if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
+                this.ekeyService.sendEmail_permanentEkey(datos.recieverName, datos.name)
+              } else {//la cuenta es numero de celular
+                console.log("mandar mensaje de wsp")
+              }
+              localStorage.setItem(datos.recieverName, "1");
+              this.router.navigate(["users", this.username, "lock", this.lockId]);
+            } else {//La ekey no se pudo envío 
+              console.log("Error:",sendEkeyResponse)
+            }
+          }
+        }
+
+        /*
         const response = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1));
         const typedResponse = response as sendEkeyResponse;
         if (typedResponse.errcode === 0) {//La ekey fue recibida correctamente
@@ -143,11 +202,66 @@ export class EkeyComponent {
           }
           console.log("error:", typedResponse);
         }
+        */
         ///////////AQUI TERMINA EKEY PERMANENTE///////////////////////////////////////////////////////
       }
       else if (datos.ekeyType === '2') {
-  
+
         ///////////PERIODICA//////////////////////////////////////////////////////////////////
+        let newStartDay = moment(datos.startDate).valueOf()
+        let newEndDay = moment(datos.endDate).valueOf()
+        let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+        let newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+        let sendEkeyResponse = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 1)) as sendEkeyResponse;
+        console.log("Primer intento(cuenta TTLock)", sendEkeyResponse)
+        if (sendEkeyResponse.errcode === 0) {//Si existe una cuenta TTLock con el nombre ingresado
+          console.log("Es una cuenta que ya existe creada en TTLock, estoy compartiendo eKey con recieverName=", datos.recieverName)
+          if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
+            this.ekeyService.sendEmail_permanentEkey(datos.recieverName, datos.name)
+          } else {//la cuenta es numero de celular
+            console.log("mandar mensaje de wsp")
+          }
+          localStorage.setItem(datos.recieverName, "1");
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        }
+        else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta PC
+          let encode = this.userService.customBase64Encode(datos.recieverName)
+          let new_password = this.generateRandomPassword();
+          let userRegisterResponse = await lastValueFrom(this.userService.UserRegister(encode, new_password)) as UserRegisterResponse;
+          console.log("Segundo intento(cuenta PC)", userRegisterResponse)
+          if (userRegisterResponse.username) {//La cuenta no existía, se crea ahora
+            console.log("Se creó una cuenta nueva con nombre=", 'bhaaa_'.concat(encode), "y contraseña=", new_password)
+            sendEkeyResponse = await (lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, 'bhaaa_'.concat(encode), datos.name, newStartDate.toString(), newEndDate.toString(), 1))) as sendEkeyResponse;
+            if (sendEkeyResponse.errcode === 0) {//Se envia correctamente la ekey a la cuenta nueva
+              if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
+                this.ekeyService.sendEmail_periodicEkey_newAccount(datos.recieverName, datos.name, moment(newStartDate).format("YYYY/MM/DD HH:mm"), moment(newEndDate).format("YYYY/MM/DD HH:mm"), new_password)
+              } else {//la cuenta es numero de celular
+                console.log("mandar mensaje de wsp")
+              }
+              localStorage.setItem(datos.recieverName, "1");
+              this.router.navigate(["users", this.username, "lock", this.lockId]);
+            } else {//La ekey no se pudo envío 
+              console.log("Error:",sendEkeyResponse)
+            }
+          }
+          else if (userRegisterResponse.errcode === 30003) {//Es una cuenta existente creada en el PC
+            console.log("La cuenta ya existía, pero no fue creada en TTLock, fue creada en el PC")
+            sendEkeyResponse = await (lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, 'bhaaa_'.concat(encode), datos.name, newStartDate.toString(), newEndDate.toString(), 1))) as sendEkeyResponse;
+            if(sendEkeyResponse.errcode === 0){//Se envia correctamente la ekey a la cuenta de PC
+              if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
+                this.ekeyService.sendEmail_periodicEkey(datos.recieverName, datos.name, moment(newStartDate).format("YYYY/MM/DD HH:mm"), moment(newEndDate).format("YYYY/MM/DD HH:mm"))
+              } else {//la cuenta es numero de celular
+                console.log("mandar mensaje de wsp")
+              }
+              localStorage.setItem(datos.recieverName, "1");
+              this.router.navigate(["users", this.username, "lock", this.lockId]);
+            } else {//La ekey no se pudo envío 
+              console.log("Error:",sendEkeyResponse)
+            }
+          }
+        }
+
+        /*
         let newStartDay = moment(datos.startDate).valueOf()
         let newEndDay = moment(datos.endDate).valueOf()
         let newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
@@ -174,11 +288,12 @@ export class EkeyComponent {
           }
           console.log("error:", typedResponse);
         }
+        */
         ///////////AQUI TERMINA EKEY PERIODICA//////////////////////////////////////////////////////////////////
-  
+
       }
       else if (datos.ekeyType === '3') {
-  
+
         ///////////DE UN USO/////////////////////////////////////////////////////////////////////////////
         const response = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1", 1));
         const typedResponse = response as sendEkeyResponse;
@@ -203,10 +318,10 @@ export class EkeyComponent {
           console.log("error:", typedResponse);
         }
         ///////////AQUI TERMINA EKEY DE UN USO//////////////////////////////////////////////////////////////////
-  
+
       }
       else if (datos.ekeyType === '4') {
-  
+
         ///////////SOLICITANTE////////////////////////////////////////////
         let newStartDay = moment(datos.startDate).valueOf()
         let newEndDay = moment(datos.endDate).valueOf()
@@ -239,7 +354,7 @@ export class EkeyComponent {
           console.log("error:", typedResponse);
         }
         ///////////AQUI TERMINA EKEY SOLICITANTE////////////////////////////////////////////
-  
+
       }
     } catch (error) {
       console.error("Error while creating Ekey:", error);

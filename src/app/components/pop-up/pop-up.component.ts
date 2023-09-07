@@ -512,8 +512,8 @@ export class PopUpComponent implements OnInit {
           const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
           if (passwordPattern.test(this.newPassword)) {
             if (this.newPassword === this.confirmPassword) {
-              let response = await lastValueFrom(this.userService.ResetPassword(localStorage.getItem('user') ?? '', this.newPassword)) as ResetPasswordResponse;
-              //console.log(response)
+              let response = await lastValueFrom(this.userService.ResetPassword("bhaaa_".concat(this.userService.customBase64Encode(localStorage.getItem('user') ?? '')), this.newPassword)) as ResetPasswordResponse;
+              console.log(response)
               if (response.errcode === 0) {
                 localStorage.setItem('password', this.newPassword)
                 this.popupService.resetPassword = false;

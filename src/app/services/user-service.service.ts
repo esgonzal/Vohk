@@ -4,6 +4,8 @@ import { Md5 } from 'ts-md5';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { GetAccessTokenResponse, ResetPasswordResponse, UserRegisterResponse } from '../Interfaces/User';
+import { PhoneNumberUtil } from 'google-libphonenumber';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +15,79 @@ export class UserServiceService {
   nombre_usuario: string;
   clave_usuario: string;
   loggedIn = false;
+  private phoneNumberUtil: PhoneNumberUtil;
 
-  constructor(private http: HttpClient, private lockService: LockServiceService) { }
+  constructor(private http: HttpClient, private lockService: LockServiceService) { 
+    this.phoneNumberUtil = PhoneNumberUtil.getInstance();
+  }
 
-  public getMD5(clave: string) { 
-    return Md5.hashStr(clave); 
+  getMD5(clave: string) {
+    return Md5.hashStr(clave);
+  }
+  customBase64Encode(input: string) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    let output = '';
+    let padding = 0;
+    let position = 0;
+    for (let i = 0; i < input.length; i++) {
+      padding = (padding << 8) | input.charCodeAt(i);
+      position += 8;
+
+      while (position >= 6) {
+        const index = (padding >> (position - 6)) & 0x3f;
+        output += chars.charAt(index);
+        position -= 6;
+      }
+    }
+    if (position > 0) {
+      const index = (padding << (6 - position)) & 0x3f;
+      output += chars.charAt(index);
+    }
+    return output;
+  }
+  customBase64Decode(encoded: string): string {
+    const base64Chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const base64Lookup: { [key: string]: number } = {};
+    for (let i = 0; i < base64Chars.length; i++) {
+      base64Lookup[base64Chars.charAt(i)] = i;
+    }
+    let decoded = '';
+    let buffer = 0;
+    let numBits = 0;
+    for (let i = 0; i < encoded.length; i++) {
+      const char = encoded.charAt(i);
+      const value = base64Lookup[char];
+      if (value === undefined) {
+        // Invalid character in the encoded string
+        throw new Error('Invalid character in encoded string');
+      }
+      buffer = (buffer << 6) | value;
+      numBits += 6;
+      if (numBits >= 8) {
+        decoded += String.fromCharCode((buffer >> (numBits - 8)) & 0xff);
+        buffer &= (1 << (numBits - 8)) - 1;
+        numBits -= 8;
+      }
+    }
+    return decoded;
   }
   isValidEmail(email: string): boolean {//Verifica si el nombre del destinatario es un email o no
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailPattern.test(email);
+  }
+  isValidPhone(phone: string): { isValid: boolean, country?: string } {
+    try {
+      const phoneNumber = this.phoneNumberUtil.parse(phone);
+      if (this.phoneNumberUtil.isValidNumber(phoneNumber)) {
+        const country = this.phoneNumberUtil.getRegionCodeForNumber(phoneNumber);
+        return { isValid: true, country };
+      } else {
+        return { isValid: false };
+      }
+    } catch (error) {
+      return { isValid: false }; // Parsing error, not a valid phone number
+    }
   }
   async isEmailNew(email: string) {//Verifica si el email de la cuenta tiene la contraseña de defecto.
     const response = await lastValueFrom(this.getAccessToken(email, 'il.com'));
@@ -96,5 +162,5 @@ export class UserServiceService {
       console.log(response)
     });
   }
-  
+
 }

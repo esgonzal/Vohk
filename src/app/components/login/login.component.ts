@@ -19,6 +19,8 @@ export class LoginComponent {
   constructor(private router: Router, public userService: UserServiceService, private http: HttpClient) { }
 
   async login(data: User) {
+    let encode = this.userService.customBase64Encode(data.username);
+    let response;
     if (data.username == '' && data.password == '') {
       this.loginError = 'Debe ingresar un nombre de usuario y contraseña '
     } else if (data.username == '') {
@@ -26,17 +28,28 @@ export class LoginComponent {
     } else if (data.password == '') {
       this.loginError = 'Debe ingresar una contraseña '
     } else {
-      const response = await lastValueFrom(this.userService.getAccessToken(data.username, data.password));
-      const typedResponse = response as GetAccessTokenResponse;
-      if (typedResponse.access_token) {
-        this.access_token = typedResponse.access_token
+      response = await lastValueFrom(this.userService.getAccessToken(data.username, data.password)) as GetAccessTokenResponse;
+      console.log("Primer intento(cuenta TTLock)",response)
+      if (response.access_token) {
+        this.access_token = response.access_token
         localStorage.setItem('logged', '1')
         localStorage.setItem('user', data.username)
         localStorage.setItem('password', data.password);
         localStorage.setItem('token', this.access_token);
         this.router.navigate(['/users/', data.username]);
       } else {
-        this.loginError = "Nombre de usuario y/o contraseña inválidos";
+        response = await lastValueFrom(this.userService.getAccessToken('bhaaa_'.concat(encode), data.password)) as GetAccessTokenResponse;
+        console.log("Segundo intento(cuenta PC)",response)
+        if (response.access_token) {
+          this.access_token = response.access_token
+          localStorage.setItem('logged', '1')
+          localStorage.setItem('user', data.username)
+          localStorage.setItem('password', data.password);
+          localStorage.setItem('token', this.access_token);
+          this.router.navigate(['/users/', data.username]);
+        } else {
+          this.loginError = "Nombre de usuario y/o contraseña inválidos";
+        }
       }
     }
   }
