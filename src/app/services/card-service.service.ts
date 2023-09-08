@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { CardResponse, operationResponse } from '../Interfaces/Elements';
+import { CardResponse, operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'

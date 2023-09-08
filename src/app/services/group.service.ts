@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { LockServiceService } from './lock-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
-import { Group, GroupResponse, addGroupResponse } from '../Interfaces/Group';
+import { Group } from '../Interfaces/Group';
 import { LockData } from '../Interfaces/Lock';
-import { operationResponse } from '../Interfaces/Elements';
+import { operationResponse, GroupResponse, addGroupResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'

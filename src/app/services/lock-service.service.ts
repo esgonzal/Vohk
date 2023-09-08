@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import 'moment-timezone';
-import { operationResponse } from '../Interfaces/Elements';
+import { operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'

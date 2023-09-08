@@ -14,9 +14,7 @@ import { GroupService } from '../../services/group.service';
 import { LockData } from '../../Interfaces/Lock';
 import { UserServiceService } from '../../services/user-service.service';
 import { lastValueFrom } from 'rxjs';
-import { operationResponse } from '../../Interfaces/Elements';
-import { ResetPasswordResponse } from '../../Interfaces/User';
-import { addGroupResponse } from '../../Interfaces/Group';
+import { operationResponse, ResetPasswordResponse, addGroupResponse } from '../../Interfaces/API_responses';
 
 @Component({
   selector: 'app-pop-up',

@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { GetAccessTokenResponse, User, UserRegisterResponse } from '../../Interfaces/User';
+import { User } from '../../Interfaces/User';
 import { UserServiceService } from '../../services/user-service.service';
 import { PopUpService } from '../../services/pop-up.service';
 import { lastValueFrom } from 'rxjs';
+import { GetAccessTokenResponse, UserRegisterResponse } from '../../Interfaces/API_responses';
 
 @Component({
   selector: 'app-register',

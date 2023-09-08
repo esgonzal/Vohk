@@ -8,8 +8,7 @@ import { PopUpService } from '../../services/pop-up.service';
 import { LockServiceService } from 'src/app/services/lock-service.service';
 import { lastValueFrom } from 'rxjs';
 import { UserServiceService } from 'src/app/services/user-service.service';
-import { sendEkeyResponse } from 'src/app/Interfaces/Elements';
-import { UserRegisterResponse } from 'src/app/Interfaces/User';
+import { sendEkeyResponse, UserRegisterResponse } from 'src/app/Interfaces/API_responses';
 
 @Component({
   selector: 'app-multiple-ekey',

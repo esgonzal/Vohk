@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { UserServiceService } from '../../services/user-service.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { GetAccessTokenResponse, User } from '../../Interfaces/User';
+import { User } from '../../Interfaces/User';
 import { lastValueFrom } from 'rxjs';
+import { GetAccessTokenResponse } from '../../Interfaces/API_responses'
 
 @Component({
   selector: 'app-login',

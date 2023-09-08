@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { EkeyResponse, operationResponse, sendEkeyResponse } from '../Interfaces/Elements';
-import { LockData, LockListResponse } from '../Interfaces/Lock';
+import { EkeyResponse, operationResponse, sendEkeyResponse, LockListResponse } from '../Interfaces/API_responses';
+import { LockData } from '../Interfaces/Lock';
 import { RecipientList } from '../Interfaces/RecipientList';
 import emailjs from 'emailjs-com';
 

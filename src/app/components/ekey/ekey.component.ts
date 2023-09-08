@@ -3,12 +3,10 @@ import { EkeyServiceService } from '../../services/ekey-service.service';
 import { Router } from '@angular/router';
 import { Formulario } from '../../Interfaces/Formulario';
 import moment from 'moment';
-
-import { sendEkeyResponse } from '../../Interfaces/Elements';
+import { UserRegisterResponse, sendEkeyResponse } from '../../Interfaces/API_responses'
 import { lastValueFrom } from 'rxjs';
 import { UserServiceService } from '../../services/user-service.service';
 import { LockServiceService } from '../../services/lock-service.service';
-import { UserRegisterResponse } from 'src/app/Interfaces/User';
 
 @Component({
   selector: 'app-ekey',

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import moment from 'moment';
 import { LockServiceService } from '../../services/lock-service.service';
 import { PopUpService } from '../../services/pop-up.service';
-import { createPasscodeResponse } from '../../Interfaces/Elements';
+import { createPasscodeResponse } from '../../Interfaces/API_responses';
 import { lastValueFrom } from 'rxjs';
 
 @Component({

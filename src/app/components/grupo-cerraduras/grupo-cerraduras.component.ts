@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { GroupService } from '../../services/group.service';
 import { PopUpService } from '../../services/pop-up.service';
-import { Group, GroupResponse } from '../../Interfaces/Group';
+import { Group } from '../../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
 import { EkeyServiceService } from 'src/app/services/ekey-service.service';
-import { LockData, LockListResponse } from 'src/app/Interfaces/Lock';
+import { LockData } from 'src/app/Interfaces/Lock';
+import { GroupResponse, LockListResponse } from '../../Interfaces/API_responses'
 
 @Component({
   selector: 'app-grupo-cerraduras',

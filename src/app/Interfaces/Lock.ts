@@ -79,10 +79,3 @@ export interface LockDetails {
   timezoneRawOffset: string;
   wirelessKeypadFeatureValue: string;
 }
-export interface LockListResponse {
-  list: LockData[];
-  pageNo: number;
-  pageSize: number;
-  pages: number;
-  total: number;
-}

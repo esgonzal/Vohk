@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import { LockData, LockDetails } from '../../Interfaces/Lock';
-import { Ekey, Passcode, Card, Fingerprint, Record, RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse } from '../../Interfaces/Elements';
+import { Ekey, Passcode, Card, Fingerprint, Record } from '../../Interfaces/Elements';
 import { LockServiceService } from '../../services/lock-service.service';
 import { EkeyServiceService } from '../../services/ekey-service.service';
 import { PasscodeServiceService } from '../../services/passcode-service.service';
@@ -18,6 +18,7 @@ import { Group } from '../../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
+import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse } from '../../Interfaces/API_responses';
 
 
 @Component({

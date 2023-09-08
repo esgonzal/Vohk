@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LockData, LockListResponse } from '../../Interfaces/Lock';
+import { LockData,  } from '../../Interfaces/Lock';
 import { EkeyServiceService } from '../../services/ekey-service.service';
 import { faBatteryFull, faBatteryThreeQuarters, faBatteryHalf, faBatteryQuarter, faBatteryEmpty, faGear, faWifi } from '@fortawesome/free-solid-svg-icons'
-import moment from 'moment';
 import { PopUpService } from '../../services/pop-up.service';
 import { GroupService } from '../../services/group.service';
-import { Subscription, lastValueFrom } from 'rxjs';
-import { Group, GroupResponse } from '../../Interfaces/Group';
+import { Subscription } from 'rxjs';
+import { Group,  } from '../../Interfaces/Group';
+import { LockListResponse, GroupResponse } from '../../Interfaces/API_responses'
+import moment from 'moment';
+import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 
 @Component({
   selector: 'app-user',

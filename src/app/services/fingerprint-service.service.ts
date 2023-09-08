@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { FingerprintResponse, operationResponse } from '../Interfaces/Elements';
+import { FingerprintResponse, operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'

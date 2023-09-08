@@ -26,13 +26,6 @@ export interface Ekey {
     //lockMac: string;
     //noKeyPwd: string;
 }
-export interface EkeyResponse {
-    list: Ekey[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number
-}
 export interface Passcode {
     endDate: string;
     sendDate: string;
@@ -50,13 +43,6 @@ export interface Passcode {
     status: number;
     hasBeenUsed: boolean;
 }
-export interface PasscodeResponse {
-    list: Passcode[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number
-}
 export interface Card {
     cardId: number;
     lockId: number;
@@ -67,13 +53,6 @@ export interface Card {
     endDate: string;
     createDate: string;
     senderUsername: string;
-}
-export interface CardResponse {
-    list: Card[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number
 }
 export interface Fingerprint {
     fingerprintId: number;
@@ -92,13 +71,6 @@ export interface recurringPeriodFingerprint {
     startTime: string;
     endTime: string;
 }
-export interface FingerprintResponse {
-    list: Fingerprint[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number
-}
 export interface Record {
     recordId: string;
     lockId: number;
@@ -109,29 +81,4 @@ export interface Record {
     lockDate: string;
     serverDate: string;
     keyboardPwd: string;
-}
-export interface RecordResponse {
-    list: Record[];
-    pageNo: number;
-    pageSize: number;
-    pages: number;
-    total: number
-}
-export interface sendEkeyResponse {
-    errcode: number;
-    errmsg: string;
-    description: string;
-    keyId: number;
-}
-export interface createPasscodeResponse {
-    errcode: number;
-    errmsg: string;
-    description: string;
-    keyboardPwdId: number;
-    keyboardPwd: string;
-}
-export interface operationResponse {
-    errcode: number;
-    errmsg: string;
-    description: string;
 }

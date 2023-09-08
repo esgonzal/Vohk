@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LockServiceService } from './lock-service.service';
-import { RecordResponse } from '../Interfaces/Elements';
+import { RecordResponse } from '../Interfaces/API_responses';
 import { Observable } from 'rxjs';
 
 @Injectable({
