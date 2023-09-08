@@ -98,7 +98,10 @@ export class PasscodeComponent {
         else {
           if (datos.startHour) {
             //RECURRING PASSCODE
-            response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, this.lockService.transformarHora(datos.startHour), datos.name, this.lockService.transformarHora(datos.endHour))) as createPasscodeResponse;
+            let hoy = moment({hour:0, minute:0}).valueOf()
+            let newStartDate = moment(hoy).add(this.lockService.transformarHora(datos.startHour)).valueOf()
+            let newEndDate = moment(hoy).add(this.lockService.transformarHora(datos.endHour)).valueOf()
+            response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, datos.passcodeType, newStartDate.toString(), datos.name, newEndDate.toString())) as createPasscodeResponse;
           }
           else {
             //PERMANENT PASSCODE

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PasscodeResponse, createPasscodeResponse, operationResponse } from '../Interfaces/Elements';
 import { LockServiceService } from './lock-service.service';
 import emailjs from 'emailjs-com';
