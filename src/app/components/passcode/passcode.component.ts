@@ -84,6 +84,7 @@ export class PasscodeComponent {
   async crearpasscode(datos: Formulario) {
     let response;
     this.isLoading = true;
+    console.log(datos)
     try {
       if (!datos.passcodePwd) {
         if (datos.startDate) {
@@ -123,10 +124,11 @@ export class PasscodeComponent {
           this.popupService.needGateway = true;
         }
       }
-      console.log(response)
       if (response?.keyboardPwdId) {
         this.router.navigate(["users", this.username, "lock", this.lockId]);
         console.log("Se creó la passcode con exito")
+      } else {
+        console.log("ERROR:", response)
       }
     } catch (error) {
       console.error("Error while creating Passcode:", error);
@@ -163,12 +165,24 @@ export class PasscodeComponent {
       }
     }
   }
-  validarPasscodeSimple(datos: Formulario) {
-    let startDate = moment().valueOf()
-    let endDate = moment().add(this.howManyHours, "hours").valueOf()
-    this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())
-    this.passcodeService.passcodesimple = false;
-    this.router.navigate(["users", this.username, "lock", this.lockId]);
+  async validarPasscodeSimple(datos: Formulario) {
+    let response;
+    this.isLoading = true;
+    try {
+      let startDate = moment().valueOf()
+      let endDate = moment().add(this.howManyHours, "hours").valueOf()
+      response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())) as createPasscodeResponse;
+      if (response.keyboardPwdId) {
+        this.passcodeService.passcodesimple = false;
+        this.router.navigate(["users", this.username, "lock", this.lockId]);
+      } else {
+        console.log("Algo salió mal", response)
+      }
+    } catch (error) {
+      console.error("Error while creating a simple passcode:", error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
 
