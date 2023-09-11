@@ -115,6 +115,9 @@ export class PopUpComponent implements OnInit {
         this.popupService.delete = false;
         const username = localStorage.getItem('user')
         this.router.navigate(['/users', username]);
+        if(this.popupService.elementType === 'ekey') {
+          localStorage.removeItem(this.popupService.ekeyUsername)
+        }
         console.log(this.popupService.elementType, "borrada exitosamente")
       } else {
         this.error = "La acción eliminar no pudo ser completada, intente nuevamente mas tarde."

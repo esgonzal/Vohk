@@ -27,6 +27,17 @@
   gap: 10px;
 }
 
+.multipleButton{
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-bottom: 40px;
+}
+
+.multipleButton button{
+  background-color: #f9c114;
+}
+
 .linea {
   display: flex;
   flex-direction: column;

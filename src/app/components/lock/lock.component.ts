@@ -364,7 +364,7 @@ export class LockComponent implements OnInit {
   }
   decodeNombre(username: string){
     let nombre_dividido = username.split("_");
-    if(nombre_dividido[0] = 'bhaaa') {
+    if(nombre_dividido[0] === 'bhaaa') {
       return this.userService.customBase64Decode(nombre_dividido[1])
     } else {
       return username;
@@ -965,11 +965,12 @@ export class LockComponent implements OnInit {
     this.popupService.elementType = user;
     this.popupService.descongelar = true;
   }
-  borrarEkey(ekeyID: number) {
+  borrarEkey(ekeyID: number, ekeyUsername: string) {
     this.popupService.token = this.token;
     this.popupService.lockID = this.lockId;
     this.popupService.elementType = 'ekey';
     this.popupService.elementID = ekeyID;
+    this.popupService.ekeyUsername = ekeyUsername;
     this.popupService.delete = true;
   }
   cambiarNombreEkey(ekeyID: number) {
@@ -1007,12 +1008,12 @@ export class LockComponent implements OnInit {
     this.popupService.elementType = user;
     this.popupService.desautorizar = true;
   }
-  AutorizarFalso(ekey: Ekey) {
-    this.popupService.elementType = ekey.username;
+  AutorizarFalso(ekeyUsername: string) {
+    this.popupService.elementType = ekeyUsername;
     this.popupService.autorizarFalso = true;
   }
-  DesautorizarFalso(ekey: Ekey) {
-    this.popupService.elementType = ekey.username;
+  DesautorizarFalso(ekeyUsername: string) {
+    this.popupService.elementType = ekeyUsername;
     this.popupService.desautorizarFalso = true;
   }
   getVariable(nombre: string) {

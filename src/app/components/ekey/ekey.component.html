@@ -9,11 +9,11 @@
         </ol>
     </nav>
     <div class="resto">
-        <div>
-            <button (click)="toMultipleEkeys()">Enviar multiple Ekeys</button>
-        </div>
         <div class="form-area">
             <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva eKey</h2>
+            <div class="multipleButton">
+                <button (click)="toMultipleEkeys()">Generar multiples Ekeys</button>
+            </div>
             <form #formInput="ngForm" (ngSubmit)="botonGenerarEkey(formInput.value)" class="common-form">
                 <div class="linea">
                     <span class="input-container">

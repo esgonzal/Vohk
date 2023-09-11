@@ -103,6 +103,8 @@ export class EkeyComponent {
       this.error = "Por favor elija un tipo de eKey";
     } else if ((datos.ekeyType === '2' || datos.ekeyType === '4') && (!datos.startDate || !datos.endDate || !datos.startHour || !datos.endHour)) {
       this.error = "Por favor rellene los datos de fecha y/o hora";
+    } else if (!this.userService.isValidEmail(datos.recieverName) && !this.userService.isValidPhone(datos.recieverName).isValid) {
+      this.error = 'El usuario ingresado debe ser un email o número de telefono'
     }
     return this.error === '';
   }
@@ -129,7 +131,7 @@ export class EkeyComponent {
       if (datos.ekeyType === '1') {
         ///////////PERMANENTE////////////////////////////////
         let sendEkeyResponse = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1)) as sendEkeyResponse;
-        console.log("Primer intento(cuenta TTLock)", sendEkeyResponse)
+        console.log("Primer intento(cuenta TTLock) de",datos.recieverName, sendEkeyResponse)
         if (sendEkeyResponse.errcode === 0) {//Si existe una cuenta TTLock con el nombre ingresado
           console.log("Es una cuenta que ya existe creada en TTLock, estoy compartiendo eKey con recieverName=", datos.recieverName)
           if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo

@@ -44,6 +44,7 @@ export class PopUpService {
   lockID: number;
   elementType: string;
   elementID: number;
+  ekeyUsername: string;
   passcode: Passcode;
   group: Group;
   locksWithoutGroup: LockData[];

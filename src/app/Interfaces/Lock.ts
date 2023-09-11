@@ -8,7 +8,6 @@ export interface MoreLockData {
   showAdminKbpwdFlag: boolean
 }
 export interface LockData {
-  //Estos datos se reciben de getLockListAccount. bindDate y electricQuantityUpdateDate Son los únicos no compartidos con getEkeysofAccount
   //bindDate: number;
   date: number;
   electricQuantity: number;
@@ -29,7 +28,7 @@ export interface LockData {
   wirelessKeypadFeatureValue: string;
   groupId: number;
   groupName: string;
-  //Estos datos se reciben de getEkeysofAccount
+
   deletePwd: string;
   endDate: string;
   keyId: number;

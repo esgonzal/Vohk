@@ -18,13 +18,6 @@ export interface Ekey {
     endDay: string;
     weekDays: string;
     remoteEnable: number;
-    //Recibidos de ekeyService.getEkeysofAccount
-    //lockData: string;
-    //usertype: string;
-    //lockName: string;
-    //lockAlias: string;
-    //lockMac: string;
-    //noKeyPwd: string;
 }
 export interface Passcode {
     endDate: string;
