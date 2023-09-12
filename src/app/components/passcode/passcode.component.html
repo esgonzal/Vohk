@@ -5,22 +5,22 @@
             <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
             <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId]">Informacion sobre la
                     Cerradura</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Generar passcode</li>
+            <li class="breadcrumb-item active" aria-current="page">Generar código</li>
         </ol>
     </nav>
     <div class="resto" *ngIf="this.passcodeService.passcodesimple===false">
         <div class="form-area">
-            <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva Passcode</h2>
+            <h2 style="margin-bottom: 50px;">Ingrese los datos para generar un nuevo código</h2>
             <form #formInput="ngForm" (ngSubmit)="validarNuevaPass(formInput.value)" class="common-form">
                 <div class="linea">
                     <span class="input-container">
-                        Nombre de la Passcode
+                        Nombre del Código
                         <input type="text" class="form-input" name="name" placeholder="..." ngModel />
                     </span>
                 </div>
                 <div class="linea">
                     <span class="input-container">
-                        Tipo de contraseña
+                        Tipo de Código
                         <select #types name="passcodeType" (change)="onSelected(types.value)" ngModel
                             style="width: 202px; height: 35px;">
                             <option default value="">No seleccionado</option>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="linea" *ngIf="selectedType === 'Custom_Permanent' || selectedType === 'Custom_Period' ">
                     <span class="input-container">
-                        Contraseña de la Passcode
+                        Contraseña del Código
                         <input type="number" class="form-input" name="passcodePwd" placeholder="***" required="required"
                             ngModel />
                     </span>

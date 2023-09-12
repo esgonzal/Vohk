@@ -1,20 +1,23 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+
 import { PopUpService } from '../../services/pop-up.service';
 import { PasscodeServiceService } from '../../services/passcode-service.service';
 import { EkeyServiceService } from '../../services/ekey-service.service';
 import { CardServiceService } from '../../services/card-service.service';
 import { FingerprintServiceService } from '../../services/fingerprint-service.service';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { Formulario } from '../../Interfaces/Formulario';
-import moment from 'moment';
-import { GatewayAccount } from '../../Interfaces/Gateway';
+import { UserServiceService } from '../../services/user-service.service';
 import { LockServiceService } from '../../services/lock-service.service';
 import { GroupService } from '../../services/group.service';
-import { LockData } from '../../Interfaces/Lock';
-import { UserServiceService } from '../../services/user-service.service';
-import { lastValueFrom } from 'rxjs';
+
+import { GatewayAccount } from '../../Interfaces/Gateway';
+import { Formulario } from '../../Interfaces/Formulario';
 import { operationResponse, ResetPasswordResponse, addGroupResponse } from '../../Interfaces/API_responses';
+import { LockData } from '../../Interfaces/Lock';
+
+import { lastValueFrom } from 'rxjs';
+import moment from 'moment';
 
 @Component({
   selector: 'app-pop-up',

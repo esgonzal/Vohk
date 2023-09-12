@@ -5,19 +5,19 @@
             <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
             <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId]">Informacion sobre la
                     Cerradura</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Generar eKey</li>
+            <li class="breadcrumb-item active" aria-current="page">Generar Usuario</li>
         </ol>
     </nav>
     <div class="resto">
         <div class="form-area">
-            <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva eKey</h2>
+            <h2 style="margin-bottom: 50px;">Ingrese los datos para generar a un nuevo Usuario</h2>
             <div class="multipleButton">
-                <button (click)="toMultipleEkeys()">Generar multiples Ekeys</button>
+                <button (click)="toMultipleEkeys()">Generar múltiples Usuarios</button>
             </div>
             <form #formInput="ngForm" (ngSubmit)="botonGenerarEkey(formInput.value)" class="common-form">
                 <div class="linea">
                     <span class="input-container">
-                        Nombre del Destinatario*
+                        Nombre del Destinatario
                         <input type="text" class="form-input" name="recieverName" placeholder="..." ngModel />
                     </span>
                 </div>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="linea">
                     <span class="input-container">
-                        Tipo de eKey*
+                        Tipo de eKey
                         <select #types name="ekeyType" (change)="onSelected(types.value)" ngModel
                             style="width: 202px; height: 35px;">
                             <option default value="">No seleccionado</option>

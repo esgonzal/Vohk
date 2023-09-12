@@ -4,18 +4,18 @@
                 <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
                 <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId]">Informacion sobre la
                         Cerradura</a></li>
-                <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId, 'ekey']">Generar Ekey</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Generar multiples eKey</li>
+                <li class="breadcrumb-item"><a [routerLink]="['/users', username, 'lock', lockId, 'ekey']">Generar Usuario</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Generar múltiples Usuarios</li>
             </ol>
         </nav>
         <div class="resto">
             <div class="form-area">
-                <h2 style="margin-bottom: 50px;">Ingrese los datos para generar una nueva eKey</h2>
+                <h2 style="margin-bottom: 50px;">Ingrese los datos para generar Usuarios</h2>
                 <form #formInput="ngForm" class="common-form">
                     <div class="linea">
                         <span class="input-container">
-                            Cerradura*
-                            <button (click)="popupService.selectLocksForMultipleEkeys=true">Agregar Cerradura</button>
+                            Cerradura
+                            <button (click)="popupService.selectLocksForMultipleEkeys=true">Seleccionar Cerradura</button>
                         </span>
                     </div>
                     <div class="linea">
@@ -26,7 +26,7 @@
                     </div>
                     <div class="linea">
                         <span class="input-container">
-                            Tipo de eKey*
+                            Tipo de eKey
                             <select #types name="ekeyType" (change)="onSelected(types.value)" ngModel
                                 style="width: 202px; height: 35px;">
                                 <option default value="">No seleccionado</option>

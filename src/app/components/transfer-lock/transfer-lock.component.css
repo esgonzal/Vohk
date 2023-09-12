@@ -53,3 +53,7 @@ button {
   cursor: pointer;
   width: 50%;
 }
+
+.error {
+  color: red;
+}

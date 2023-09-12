@@ -35,7 +35,8 @@ export class PopUpService {
   addRecipientsForMultipleEkeys = false; //La accion de agregar receptores para enviar multiples ekeys se hace en un pop up
   resetPassword = false;                 //La accion de cambiar contraseña de un usuario se hace en un pop up
   sharePasscode = false;                 //La accion de compartir código se hace en un pop up
-  wrongAccountType= false;               //Para cambiar la contraseña, se necesita que la cuenta sea creada dentro del sistema
+  wrongAccountType = false;              //Para cambiar la contraseña, se necesita que la cuenta sea creada dentro del sistema
+  transferLockWarning = false;           //Antes de transferir la cerradura a otra cuenta, se muestra un popup para confirmar
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;
@@ -51,6 +52,7 @@ export class PopUpService {
   locksWithoutGroup: LockData[];
   selectedLockIds_forMultipleEkeys: number[] = [];
   recipients: RecipientList[] = [];
+  transferLockReciever: string;
 
   toggleLockSelection(lockId: number) {
     const index = this.selectedLockIds_forMultipleEkeys.indexOf(lockId);

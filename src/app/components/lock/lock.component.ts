@@ -183,8 +183,8 @@ export class LockComponent implements OnInit {
     this.recordsFiltrados = this.records.filter(record => record.username === this.username);
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.encodeNombre(this.username));
     //console.log("Los detalles del lock: ", this.lockDetails)
-    //console.log("eKeys: ", this.ekeys)
-    console.log("Passcodes: ", this.passcodes)
+    console.log("eKeys: ", this.ekeys)
+    //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
     //console.log("Records: ", this.records)
