@@ -64,10 +64,10 @@
           </span>
         </button>
       </div>
-      <div class="-button" *ngIf="getAccountType() === 'Vohk'">
+      <div class="-button">
         <button (click)="resetPassword()">Cambiar</button>
       </div>
     </div>
   </div>
 </div>
-<app-pop-up *ngIf="this.popupService.resetPassword" style="z-index: 10;"></app-pop-up>
+<app-pop-up *ngIf="this.popupService.resetPassword || this.popupService.wrongAccountType" style="z-index: 10;"></app-pop-up>

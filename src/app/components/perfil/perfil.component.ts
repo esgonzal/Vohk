@@ -24,7 +24,11 @@ export class PerfilComponent {
     return '*'.repeat(password.length);
   }
   resetPassword(){
-    this.popupService.resetPassword = true;
+    if(this.getAccountType() === 'Vohk') {
+      this.popupService.resetPassword = true;
+    } else {
+      this.popupService.wrongAccountType = true;
+    }
   }
   getAccountType(){
     return localStorage.getItem('Account');

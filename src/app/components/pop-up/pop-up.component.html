@@ -616,3 +616,14 @@
     <div id="actions">
     </div>
 </div>
+<div id="container" *ngIf="popupService.wrongAccountType">
+    <div id="header">
+        Función no permitida
+    </div>
+    <div id="content">
+        Tu cuenta es antigua, por lo que el cambio de contraseña solo puede hacerse usando la aplicación de celular.
+    </div>
+    <div id="actions">
+        <button (click)="popupService.wrongAccountType = false">Ok</button>
+    </div>
+</div>
