@@ -26,5 +26,8 @@ export class PerfilComponent {
   resetPassword(){
     this.popupService.resetPassword = true;
   }
+  getAccountType(){
+    return localStorage.getItem('Account');
+  }
   
 }

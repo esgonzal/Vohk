@@ -40,6 +40,7 @@ export class NavbarComponent {
     localStorage.removeItem('gateway');
     localStorage.removeItem('logged');
     localStorage.removeItem('features');
+    localStorage.removeItem('Account');
     this.router.navigate(['home']);
   }
 }

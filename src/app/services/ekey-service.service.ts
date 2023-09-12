@@ -224,7 +224,7 @@ export class EkeyServiceService {
       lock_alias: this.lockAlias,
       ekey_name: keyName
     }, 'IHg0KzBkt_UoFb1yg')
-      .then((response) => { console.log('Email sent successfully to',recipientEmail, response); })
+      .then((response) => { console.log('Email sent successfully to', response); })
       .catch((error) => { console.error('Error sending email:', error); });
   }
   async sendEmail_periodicEkey(recipientEmail: string, keyName: string, start: string, end: string) {//Template para eKey periodica a una cuenta existente

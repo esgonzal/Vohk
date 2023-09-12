@@ -64,7 +64,7 @@
           </span>
         </button>
       </div>
-      <div class="-button">
+      <div class="-button" *ngIf="getAccountType() === 'Vohk'">
         <button (click)="resetPassword()">Cambiar</button>
       </div>
     </div>

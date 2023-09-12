@@ -48,6 +48,7 @@ export class LoginComponent {
         localStorage.setItem('user', data.username)
         localStorage.setItem('password', data.password);
         localStorage.setItem('token', this.access_token);
+        localStorage.setItem('Account', 'TTLock')
         this.router.navigate(['/users/', data.username]);
       } else {
         let encode = this.userService.customBase64Encode(data.username);
@@ -59,6 +60,7 @@ export class LoginComponent {
           localStorage.setItem('user', data.username)
           localStorage.setItem('password', data.password);
           localStorage.setItem('token', this.access_token);
+          localStorage.setItem('Account', 'Vohk')
           this.router.navigate(['/users/', data.username]);
         } else {
           this.loginError = "Nombre de usuario y/o contraseña inválidos";
