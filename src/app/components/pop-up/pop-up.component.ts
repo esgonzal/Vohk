@@ -115,7 +115,7 @@ export class PopUpComponent implements OnInit {
         this.popupService.delete = false;
         const username = localStorage.getItem('user')
         this.router.navigate(['/users', username]);
-        if(this.popupService.elementType === 'ekey') {
+        if (this.popupService.elementType === 'ekey') {
           localStorage.removeItem(this.popupService.ekeyUsername)
         }
         console.log(this.popupService.elementType, "borrada exitosamente")
@@ -293,19 +293,21 @@ export class PopUpComponent implements OnInit {
     this.error = '';
     this.isLoading = true;
     try {
-      if (datos.startDate && datos.startHour) {
-        let newStartDay = moment(datos.startDate).valueOf()
-        newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
-      }
-      if (datos.endDate && datos.endHour) {
-        let newEndDay = moment(datos.endDate).valueOf()
-        newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
-      }
       if (this.popupService.passcode.keyboardPwdType === 1 || this.popupService.passcode.keyboardPwdType === 2 || this.popupService.passcode.keyboardPwdType === 4) {
         response = await lastValueFrom(this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd)) as operationResponse;
       }
       if (this.popupService.passcode.keyboardPwdType === 3) {
-        response = await lastValueFrom(this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, newStartDate?.toString(), newEndDate?.toString())) as operationResponse
+        let newStartDay = moment(datos.startDate).valueOf()
+        let newEndDay = moment(datos.endDate).valueOf()
+        newStartDate = moment(newStartDay).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+        newEndDate = moment(newEndDay).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+        response = await lastValueFrom(this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, newStartDate.toString(), newEndDate.toString())) as operationResponse
+      }
+      if (this.popupService.passcode.keyboardPwdType === 5 || this.popupService.passcode.keyboardPwdType === 6 || this.popupService.passcode.keyboardPwdType === 7 || this.popupService.passcode.keyboardPwdType === 8 || this.popupService.passcode.keyboardPwdType === 9 || this.popupService.passcode.keyboardPwdType === 10 || this.popupService.passcode.keyboardPwdType === 11 || this.popupService.passcode.keyboardPwdType === 12 || this.popupService.passcode.keyboardPwdType === 13 || this.popupService.passcode.keyboardPwdType === 14) {
+        let today = moment({ hour: 0, minute: 0 }).valueOf()
+        let newStartDate = moment(today).add(this.lockService.transformarHora(datos.startHour), "milliseconds").valueOf()
+        let newEndDate = moment(today).add(this.lockService.transformarHora(datos.endHour), "milliseconds").valueOf()
+        response = await lastValueFrom(this.passcodeService.changePasscode(this.popupService.token, this.popupService.lockID, this.popupService.elementID, datos.name, datos.passcodePwd, newStartDate.toString(), newEndDate.toString()))
       }
       //console.log(response)
       if (response?.errcode === 0) {
@@ -409,7 +411,7 @@ export class PopUpComponent implements OnInit {
           this.popupService.newGroup = false;
           const username = localStorage.getItem('user')
           this.router.navigate(['/users', username]);
-        } else if(response.errcode === -3) {
+        } else if (response.errcode === -3) {
           this.error = "El nombre ingresado es muy largo";
         } else {
           this.error = "No se pudo completar la acción, intente nuevamente más tarde";
@@ -568,6 +570,6 @@ export class PopUpComponent implements OnInit {
       console.error("Error while sending email to share a passcode:", error);
     } finally {
       this.isLoading = false;
-    } 
+    }
   }
 }
