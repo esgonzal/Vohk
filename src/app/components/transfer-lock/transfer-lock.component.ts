@@ -22,19 +22,21 @@ export class TransferLockComponent {
   isLoading: boolean;
 
   async transferir() {
+    // 1 - Primero se intenta asumiendo que la cuenta receptora es TTLock. Si funciona, todo perfecto
+    // 2 - Si no funciona, se intenta asumiendo que la cuenta receptora es VOHK. Si no funciona quiere decir que la cuenta no existe.
     this.isLoading = true;
     try {
       let lockID = localStorage.getItem('lockID') ?? ''
       let lockIDList: string = "[".concat(lockID).concat("]");
       let response = await lastValueFrom(this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)) as operationResponse;
-      if (response.errcode === 0) {
+      if (response.errcode === 0) {//Es cuenta TTLock
         this.router.navigate(["users", localStorage.getItem('user') ?? '']);
         console.log("La cerradura se transfirió a la cuenta TTLock exitosamente")
-        localStorage.setItem(this.recieverUsername, '0')
+        this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
       } else if (response.errcode === -1002) {
         let encode = this.userService.customBase64Encode(this.recieverUsername);
         response = await lastValueFrom(this.lockService.transferLock(this.lockService.token, 'bhaaa_'.concat(encode), lockIDList)) as operationResponse;
-        if (response.errcode == 0) {
+        if (response.errcode == 0) {//Es cuenta VOHK
           this.router.navigate(["users", localStorage.getItem('user') ?? '']);
           console.log("La cerradura se transfirió a la cuenta VOHK exitosamente")
           this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
