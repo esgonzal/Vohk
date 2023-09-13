@@ -51,11 +51,11 @@
                   <button mat-menu-item (click)="HoraDispositivo()">
                     <span>Hora del Dispositivo</span>
                   </button>
-                  <button mat-menu-item *ngIf="simpleRight!=='1' && lockService.checkFeature(featureValue, 22)"
+                  <button mat-menu-item *ngIf="rol(username) !== 'Usuario' && lockService.checkFeature(featureValue, 22)"
                     (click)="PassageMode()">
                     <span>Modo de Paso</span>
                   </button>
-                  <button mat-menu-item *ngIf="simpleRight!=='1' && lockService.checkFeature(featureValue, 4)"
+                  <button mat-menu-item *ngIf="rol(username) !== 'Usuario' && lockService.checkFeature(featureValue, 4)"
                     (click)="AutoLock()">
                     <span>Cierre Automático</span>
                   </button>
@@ -74,10 +74,10 @@
               <div *ngIf="userType==='110301'">
                 Administrador Principal
               </div>
-              <div *ngIf="userType==='110302' && simpleRight!=='1'">
+              <div *ngIf="userType==='110302' && rol(username) === 'Administrador Secundario'">
                 Administrador Secundario // {{periodoValidez(Number(startDateDeUser),Number(endDateDeUser))}}
               </div>
-              <div *ngIf="userType==='110302' && simpleRight==='1'">
+              <div *ngIf="userType==='110302' && rol(username) === 'Usuario'">
                 Usuario // {{periodoValidez(Number(startDateDeUser),Number(endDateDeUser))}}
               </div>
             </div>
@@ -102,7 +102,7 @@
         <div>
           <div class="tablist">
             <mat-tab-group backgroundColor="primary" color="warn">
-              <div *ngIf="simpleRight!=='1'">
+              <div *ngIf="!(userService.isInAccessList(username, lockId))">
                 <mat-tab label="Usuarios">
                   <div class="contenido">
                     <div class="button-container">
@@ -178,10 +178,10 @@
                             <button *ngIf="userType==='110301' && ekey.keyRight===1" mat-button class="mat-primary"
                               (click)="Desautorizar(ekey.keyId, ekey.username)">Desautorizar</button>
                             -->
-                            <button *ngIf="userType==='110301' && getVariable(decodeNombre(ekey.username))!=='0'" mat-button
+                            <button *ngIf="userType==='110301' && userService.isInAccessList(decodeNombre(ekey.username), lockId)" mat-button
                               class="mat-primary" (click)="AutorizarFalso(decodeNombre(ekey.username))">Autorizar</button>
 
-                            <button *ngIf="userType==='110301' && getVariable(decodeNombre(ekey.username))!=='1'" mat-button
+                            <button *ngIf="userType==='110301' && !userService.isInAccessList(decodeNombre(ekey.username), lockId)" mat-button
                               class="mat-primary" (click)="DesautorizarFalso(decodeNombre(ekey.username))">Desautorizar</button>
                           </td>
                         </ng-container>
@@ -408,7 +408,7 @@
                   </div>
                 </mat-tab>
               </div>
-              <div *ngIf="simpleRight==='1'">
+              <div *ngIf="(userService.isInAccessList(username, lockId))">
                 <mat-tab label="Códigos" *ngIf="lockService.checkFeature(featureValue, 0)">
                   <div class="contenido">
                     <div class="button-container">

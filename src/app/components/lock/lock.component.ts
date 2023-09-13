@@ -53,7 +53,6 @@ export class LockComponent implements OnInit {
   fullName = localStorage.getItem('user') ?? '';
   gateway = localStorage.getItem('gateway') ?? '';
   featureValue = localStorage.getItem('features') ?? '';
-  simpleRight = localStorage.getItem(this.username) ?? '';
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -87,7 +86,7 @@ export class LockComponent implements OnInit {
     private gatewayService: GatewayService,
     private passageModeService: PassageModeService,
     private sanitizer: DomSanitizer,
-    private userService: UserServiceService
+    public userService: UserServiceService
   ) { }
 
   featureList = [
@@ -183,7 +182,7 @@ export class LockComponent implements OnInit {
     this.recordsFiltrados = this.records.filter(record => record.username === this.username);
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.encodeNombre(this.username));
     //console.log("Los detalles del lock: ", this.lockDetails)
-    console.log("eKeys: ", this.ekeys)
+    //console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
@@ -351,11 +350,10 @@ export class LockComponent implements OnInit {
     return Number(palabra)
   }
   rol(username: string) {
-    let simpleRight = localStorage.getItem(username);
-    if (simpleRight === '0') {
-      return 'Administrador Secundario'
-    } else {
+    if (this.userService.isInAccessList(username, this.lockId)) {
       return 'Usuario'
+    } else {
+      return 'Administrador Secundario'
     }
   }
   encodeNombre(username: string){
@@ -1010,10 +1008,12 @@ export class LockComponent implements OnInit {
   }
   AutorizarFalso(ekeyUsername: string) {
     this.popupService.elementType = ekeyUsername;
+    this.popupService.lockID = this.lockId;
     this.popupService.autorizarFalso = true;
   }
   DesautorizarFalso(ekeyUsername: string) {
     this.popupService.elementType = ekeyUsername;
+    this.popupService.lockID = this.lockId;
     this.popupService.desautorizarFalso = true;
   }
   getVariable(nombre: string) {

@@ -138,8 +138,8 @@ export class PopUpComponent implements OnInit {
     this.router.navigate(['/users', username]);
   }
   autorizarFalso() {
-    console.log("Se cambio el simpleRight de", this.popupService.elementType, "a 0")
-    localStorage.setItem(this.popupService.elementType, "0")
+    console.log("Se quita",this.popupService.lockID,"del repertorio limitado de", this.popupService.elementType)
+    this.userService.removeLockFromAccessList(this.popupService.elementType, this.popupService.lockID)
     this.popupService.autorizarFalso = false;
   }
   async desautorizar() {
@@ -149,8 +149,8 @@ export class PopUpComponent implements OnInit {
     this.router.navigate(['/users', username]);
   }
   desautorizarFalso() {
-    console.log("Se cambio el simpleRight de", this.popupService.elementType, "a 1")
-    localStorage.setItem(this.popupService.elementType, "1")
+    console.log("Se agrega",this.popupService.lockID,"al repertorio limitado de", this.popupService.elementType)
+    this.userService.addLockToAccessList(this.popupService.elementType, this.popupService.lockID);
     this.popupService.desautorizarFalso = false;
   }
   async congelar() {
