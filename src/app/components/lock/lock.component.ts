@@ -356,13 +356,13 @@ export class LockComponent implements OnInit {
       return 'Administrador Secundario'
     }
   }
-  encodeNombre(username: string){
+  encodeNombre(username: string) {
     let prefijo = 'bhaaa_'
     return prefijo.concat(this.userService.customBase64Encode(username))
   }
-  decodeNombre(username: string){
+  decodeNombre(username: string) {
     let nombre_dividido = username.split("_");
-    if(nombre_dividido[0] === 'bhaaa') {
+    if (nombre_dividido[0] === 'bhaaa') {
       return this.userService.customBase64Decode(nombre_dividido[1])
     } else {
       return username;
@@ -864,8 +864,8 @@ export class LockComponent implements OnInit {
         }
         else { console.log("Data not yet available.") }
       })
-    } catch (error) { 
-      console.error("Error while fetching the gateways of the lock:", error); 
+    } catch (error) {
+      console.error("Error while fetching the gateways of the lock:", error);
     } finally {
       this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
@@ -883,8 +883,8 @@ export class LockComponent implements OnInit {
         }
         else { console.log("Data not yet available.") }
       })
-    } catch (error) { 
-      console.error("Error while fetching the gatewaysof the account:", error); 
+    } catch (error) {
+      console.error("Error while fetching the gatewaysof the account:", error);
     } finally {
       this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
@@ -902,8 +902,8 @@ export class LockComponent implements OnInit {
             this.popupService.currentTime = data.date;
           }
         })
-      } catch (error) { 
-        console.error("Error while fetching lock's time:", error) 
+      } catch (error) {
+        console.error("Error while fetching lock's time:", error)
       } finally {
         this.isLoading = false; // Set isLoading to false when data fetching is complete
       }
@@ -926,8 +926,8 @@ export class LockComponent implements OnInit {
             console.log(this.passageModeService.passageModeConfig)
           }
         })
-      } catch (error) { 
-        console.error("Error while fetching passage mode configurations:", error) 
+      } catch (error) {
+        console.error("Error while fetching passage mode configurations:", error)
       } finally {
         this.isLoading = false; // Set isLoading to false when data fetching is complete
       }

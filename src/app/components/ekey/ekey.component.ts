@@ -139,7 +139,7 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          localStorage.setItem(datos.recieverName, "1");
+          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
           this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
@@ -156,7 +156,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -171,7 +171,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -219,7 +219,7 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          localStorage.setItem(datos.recieverName, "1");
+          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
           this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta PC
@@ -236,7 +236,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -251,7 +251,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -295,7 +295,7 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          localStorage.setItem(datos.recieverName, "1");
+          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
           this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
@@ -312,7 +312,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -327,7 +327,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -379,7 +379,7 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          localStorage.setItem(datos.recieverName, "1");
+          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
           this.router.navigate(["users", this.username, "lock", this.lockId]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
@@ -396,7 +396,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
@@ -411,7 +411,7 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              localStorage.setItem(datos.recieverName, "1");
+              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
               this.router.navigate(["users", this.username, "lock", this.lockId]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)

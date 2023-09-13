@@ -37,7 +37,7 @@ export class TransferLockComponent {
         if (response.errcode == 0) {
           this.router.navigate(["users", localStorage.getItem('user') ?? '']);
           console.log("La cerradura se transfirió a la cuenta VOHK exitosamente")
-          localStorage.setItem(this.recieverUsername, '0')
+          this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
         } else if (response.errcode === -1002) {
           this.error = 'El receptor ingresado no tiene una cuenta registrada.'
         } else {

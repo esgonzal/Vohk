@@ -119,7 +119,7 @@ export class PopUpComponent implements OnInit {
         const username = localStorage.getItem('user')
         this.router.navigate(['/users', username]);
         if (this.popupService.elementType === 'ekey') {
-          localStorage.removeItem(this.popupService.ekeyUsername)
+          this.userService.removeLockFromAccessList(this.popupService.ekeyUsername, this.popupService.lockID)
         }
         console.log(this.popupService.elementType, "borrada exitosamente")
       } else {
