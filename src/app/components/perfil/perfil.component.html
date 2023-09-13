@@ -11,10 +11,10 @@
         Nombre de Usuario
       </div>
       <div class="content">
-        
+        {{username}}
       </div>
       <div class="-button">
-        <button>Editar</button>
+        <button (click)="cambiarNombre()">Editar</button>
       </div>
     </div>
     <div class="linea">
@@ -22,7 +22,7 @@
         País / region
       </div>
       <div class="content">
-        Chile
+        {{country}}
       </div>
       <div class="-button">
 
@@ -33,10 +33,10 @@
         Account
       </div>
       <div class="content">
-        {{username}}
+        {{account}}
       </div>
       <div class="-button">
-        <button>Editar</button>
+        
       </div>
     </div>
     <div class="linea">
@@ -44,10 +44,21 @@
         Email
       </div>
       <div class="content">
-
+        {{email}}
       </div>
       <div class="-button">
-        <button>Enlazar</button>
+        <button *ngIf="!email">Enlazar</button>
+      </div>
+    </div>
+    <div class="linea">
+      <div class="titulo">
+        Teléfono
+      </div>
+      <div class="content">
+        {{phone}}
+      </div>
+      <div class="-button">
+        <button *ngIf="!phone">Enlazar</button>
       </div>
     </div>
     <div class="linea">
@@ -70,4 +81,4 @@
     </div>
   </div>
 </div>
-<app-pop-up *ngIf="this.popupService.resetPassword || this.popupService.wrongAccountType" style="z-index: 10;"></app-pop-up>
+<app-pop-up *ngIf="this.popupService.resetPassword || this.popupService.wrongAccountType || this.popupService.changeNickname" style="z-index: 10;"></app-pop-up>

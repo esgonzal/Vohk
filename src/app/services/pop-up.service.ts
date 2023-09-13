@@ -37,6 +37,7 @@ export class PopUpService {
   sharePasscode = false;                 //La accion de compartir código se hace en un pop up
   wrongAccountType = false;              //Para cambiar la contraseña, se necesita que la cuenta sea creada dentro del sistema
   transferLockWarning = false;           //Antes de transferir la cerradura a otra cuenta, se muestra un popup para confirmar
+  changeNickname = false;
   gatewaysOfLock: GatewayLock[]
   gatewaysOfAccount: GatewayAccount[]
   detalles: LockDetails;

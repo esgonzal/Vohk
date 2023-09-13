@@ -185,15 +185,12 @@ export class UserServiceService {
     // Store the updated list back in localStorage as a JSON string
     localStorage.setItem(username, JSON.stringify(accessList));
   }
-  // Function to check if a user has access to a lock
   isInAccessList(username: string, lockId: number):boolean {
     // Retrieve the user's access list
     const accessList = JSON.parse(localStorage.getItem(username) || '[]');
     // Check if the lock ID is in the access list
-    console.log(username,"tiene a",lockId,"en su access list?:",accessList.includes(lockId))
     return accessList.includes(lockId);
   }
-  // Function to remove a lock from a user's access list
   removeLockFromAccessList(username: string, lockId: number) {
     // Retrieve the current access list or create an empty array
     const accessList = JSON.parse(localStorage.getItem(username) || '[]');

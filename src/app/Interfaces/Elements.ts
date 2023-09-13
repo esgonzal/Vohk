@@ -28,11 +28,11 @@ export interface Passcode {
     lockId: number;
     keyboardPwdVersion: number;
     isCustom: number;
-    keyboardPwdName: string; // Optional property
+    keyboardPwdName: string; 
     keyboardPwd: string;
     startDate: string;
-    senderUsername?: string; // Optional property
-    receiverUsername?: string; // Optional property
+    senderUsername: string; 
+    receiverUsername: string; 
     status: number;
     hasBeenUsed: boolean;
 }

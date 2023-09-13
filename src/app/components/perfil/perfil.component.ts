@@ -9,13 +9,17 @@ import { PopUpService } from '../../services/pop-up.service';
 })
 export class PerfilComponent {
 
+  constructor(public popupService: PopUpService){}
+
   faEye = faEye;
   faEyeSlash = faEyeSlash;
-  username = localStorage.getItem('user') ?? ''
+  username = localStorage.getItem('nickname') ?? ''
+  account = localStorage.getItem('user') ?? ''
   password = localStorage.getItem('password') ?? ''
+  email = localStorage.getItem('email') ?? ''
+  country = localStorage.getItem('country') ?? ''
+  phone = localStorage.getItem('phone') ?? ''
   showPassword = false;
-
-  constructor(public popupService: PopUpService){}
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -32,6 +36,9 @@ export class PerfilComponent {
   }
   getAccountType(){
     return localStorage.getItem('Account');
+  }
+  cambiarNombre(){
+    this.popupService.changeNickname = true;
   }
   
 }

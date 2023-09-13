@@ -46,6 +46,7 @@ export class LoginComponent {
         this.access_token = response.access_token
         localStorage.setItem('logged', '1')
         localStorage.setItem('user', data.username)
+        localStorage.setItem('nickname', data.username)
         localStorage.setItem('password', data.password);
         localStorage.setItem('token', this.access_token);
         localStorage.setItem('Account', 'TTLock')
@@ -55,12 +56,21 @@ export class LoginComponent {
         response = await lastValueFrom(this.userService.getAccessToken('bhaaa_'.concat(encode), data.password)) as GetAccessTokenResponse;
         console.log("Segundo intento(cuenta VOHK)", response)
         if (response.access_token) {
+          let country = 
           this.access_token = response.access_token
           localStorage.setItem('logged', '1')
           localStorage.setItem('user', data.username)
+          localStorage.setItem('nickname', data.username)
           localStorage.setItem('password', data.password);
           localStorage.setItem('token', this.access_token);
           localStorage.setItem('Account', 'Vohk')
+          if(this.userService.isValidEmail(data.username)) { 
+            localStorage.setItem('email', data.username);
+          }
+          if(this.userService.isValidPhone(data.username).isValid) {
+            localStorage.setItem('phone', data.username)
+            localStorage.setItem('country', this.userService.isValidPhone(data.username).country ?? '')
+          }
           this.router.navigate(['/users/', data.username]);
         } else {
           this.loginError = "Nombre de usuario y/o contraseña inválidos";

@@ -12,7 +12,7 @@ export class NavbarComponent {
   constructor(private router: Router, public userService: UserServiceService) { }
 
   returnNombre() {
-    return localStorage.getItem('user') ?? '';
+    return localStorage.getItem('nickname') ?? '';
   }
   returnLogged() {
     return localStorage.getItem('logged') ?? '';
@@ -27,6 +27,7 @@ export class NavbarComponent {
   }
   cerrarSesion() {
     localStorage.removeItem('user');
+    localStorage.removeItem('nickname');
     localStorage.removeItem('password');
     localStorage.removeItem('token');
     localStorage.removeItem('keyRight');
@@ -41,6 +42,9 @@ export class NavbarComponent {
     localStorage.removeItem('logged');
     localStorage.removeItem('features');
     localStorage.removeItem('Account');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('country');
     this.router.navigate(['home']);
   }
 }

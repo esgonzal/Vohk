@@ -116,12 +116,11 @@ export class PopUpComponent implements OnInit {
       //console.log(response)
       if (response?.errcode === 0) {
         this.popupService.delete = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
         if (this.popupService.elementType === 'ekey') {
           this.userService.removeLockFromAccessList(this.popupService.ekeyUsername, this.popupService.lockID)
         }
         console.log(this.popupService.elementType, "borrada exitosamente")
+        window.location.reload(); 
       } else {
         this.error = "La acción eliminar no pudo ser completada, intente nuevamente mas tarde."
       }
@@ -134,22 +133,20 @@ export class PopUpComponent implements OnInit {
   async autorizar() {
     await this.ekeyService.AuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
     this.popupService.autorizar = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
+    window.location.reload();
   }
   autorizarFalso() {
-    console.log("Se quita",this.popupService.lockID,"del repertorio limitado de", this.popupService.elementType)
+    console.log("Se quita", this.popupService.lockID, "del repertorio limitado de", this.popupService.elementType)
     this.userService.removeLockFromAccessList(this.popupService.elementType, this.popupService.lockID)
     this.popupService.autorizarFalso = false;
   }
   async desautorizar() {
     await this.ekeyService.cancelAuthorizeEkey(this.popupService.token, this.popupService.lockID, this.popupService.elementID);
     this.popupService.desautorizar = false;
-    const username = localStorage.getItem('user')
-    this.router.navigate(['/users', username]);
+    window.location.reload();
   }
   desautorizarFalso() {
-    console.log("Se agrega",this.popupService.lockID,"al repertorio limitado de", this.popupService.elementType)
+    console.log("Se agrega", this.popupService.lockID, "al repertorio limitado de", this.popupService.elementType)
     this.userService.addLockToAccessList(this.popupService.elementType, this.popupService.lockID);
     this.popupService.desautorizarFalso = false;
   }
@@ -160,9 +157,8 @@ export class PopUpComponent implements OnInit {
       //console.log(response)
       if (response.errcode === 0) {
         this.popupService.congelar = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
         console.log("eKey congelada exitosamente")
+        window.location.reload();
       } else {
         this.error = "La acción congelar no pudo ser completada, intente nuevamente mas tarde."
       }
@@ -179,8 +175,7 @@ export class PopUpComponent implements OnInit {
       //console.log(response)
       if (response.errcode === 0) {
         this.popupService.descongelar = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
+        window.location.reload();
         console.log("eKey descongelada exitosamente")
       } else {
         this.error = "La acción descongelar no pudo ser completada, intente nuevamente mas tarde."
@@ -228,8 +223,7 @@ export class PopUpComponent implements OnInit {
         console.log(response)
         if (response?.errcode === 0) {
           this.popupService.cambiarNombre = false;
-          const username = localStorage.getItem('user')
-          this.router.navigate(['/users', username]);
+          window.location.reload();
           console.log("Se ha cambiado el nombre de", this.popupService.elementType, "exitosamente")
         }
         if (response?.errcode === -3) {
@@ -274,8 +268,7 @@ export class PopUpComponent implements OnInit {
           //console.log(response)
           if (response?.errcode === 0) {
             this.popupService.cambiarPeriodo = false;
-            const username = localStorage.getItem('user')
-            this.router.navigate(['/users', username]);
+            window.location.reload();
           } else {
             this.error = "La acción cambiar periodo no pudo ser completada, intente nuevamente mas tarde"
           }
@@ -315,8 +308,7 @@ export class PopUpComponent implements OnInit {
       //console.log(response)
       if (response?.errcode === 0) {
         this.popupService.editarPasscode = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
+        window.location.reload();
         console.log("passcode editada correctamente");
       }
       if (response?.errcode === -3008) {
@@ -387,8 +379,7 @@ export class PopUpComponent implements OnInit {
       console.log(response);
       if (response.errcode === 0) {
         this.popupService.cerradoAutomatico = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
+        window.location.reload();
       } else {
         this.error = "No se pudo completar la acción, intente nuevamente más tarde"
       }
@@ -412,8 +403,7 @@ export class PopUpComponent implements OnInit {
         //console.log("Respuesta de crear grupo:",response)
         if (response.groupId) {
           this.popupService.newGroup = false;
-          const username = localStorage.getItem('user')
-          this.router.navigate(['/users', username]);
+          window.location.reload();
         } else if (response.errcode === -3) {
           this.error = "El nombre ingresado es muy largo";
         } else {
@@ -463,8 +453,7 @@ export class PopUpComponent implements OnInit {
           await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), "0")
         }
         this.popupService.removeLockGROUP = false;
-        const username = localStorage.getItem('user')
-        this.router.navigate(['/users', username]);
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error while removing locks from a group:", error);
@@ -482,8 +471,7 @@ export class PopUpComponent implements OnInit {
           await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), this.popupService.group.groupId.toString());
         }
         this.popupService.addLockGROUP = false;
-        const username = localStorage.getItem('user');
-        this.router.navigate(['/users', username]);
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error while adding locks from a group:", error);
@@ -504,10 +492,21 @@ export class PopUpComponent implements OnInit {
   removeRecipientPair(index: number) {
     this.popupService.recipients.splice(index, 1);
   }
-  onSubmit() {
+  confirmRecipients() {
     console.log(this.popupService.recipients)
-    this.ekeyService.recipients = this.popupService.recipients;
-    this.popupService.addRecipientsForMultipleEkeys = false;
+    if (!this.error) {
+      this.ekeyService.recipients = this.popupService.recipients;
+      this.popupService.addRecipientsForMultipleEkeys = false;
+    }
+  }
+  validateEmailPhone(username: string) {
+    if (!this.userService.isValidEmail(username) && !this.userService.isValidPhone(username).isValid) {
+      this.error = 'El destinatario debe ser un email o un numero de teléfono';
+      return false;
+    } else {
+      this.error = '';
+      return true;
+    }
   }
   async resetPassword() {
     this.error = ''
@@ -519,13 +518,13 @@ export class PopUpComponent implements OnInit {
           if (passwordPattern.test(this.newPassword)) {
             if (this.newPassword === this.confirmPassword) {
               let response = await lastValueFrom(this.userService.ResetPassword("bhaaa_".concat(this.userService.customBase64Encode(localStorage.getItem('user') ?? '')), this.newPassword)) as ResetPasswordResponse;
-              console.log(response)
               if (response.errcode === 0) {
                 localStorage.setItem('password', this.newPassword)
                 this.popupService.resetPassword = false;
-                this.router.navigate(['/users', localStorage.getItem('user') ?? '']);
+                window.location.reload();
               } else {
                 this.error = "No se pudo completar la acción, intente nuevamente más tarde";
+                console.log(response)
               }
             } else {
               this.error = 'No coincide la contraseña. Por favor intente de nuevo'
@@ -534,7 +533,7 @@ export class PopUpComponent implements OnInit {
             this.error = 'Tu contraseña debe tener entre 8-20 caracteres e incluir al menos un número, letra y símbolo'
           }
         } else {
-          this.error = 'Contraseña inválida'
+          this.error = 'Contraseña actual inválida'
         }
       } else {
         this.error = 'Por favor, introduzca una contraseña'
@@ -573,6 +572,15 @@ export class PopUpComponent implements OnInit {
       console.error("Error while sending email to share a passcode:", error);
     } finally {
       this.isLoading = false;
+    }
+  }
+  changeNickname(datos: Formulario) {
+    if (!datos.name) {
+      this.error = 'Ingrese un nombre'
+    } else {
+      localStorage.setItem('nickname', datos.name)
+      this.popupService.changeNickname = false;
+      window.location.reload(); 
     }
   }
 }

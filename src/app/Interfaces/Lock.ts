@@ -41,7 +41,6 @@ export interface LockData {
   userType: string;
 }
 export interface LockDetails {
-  //Estos datos vienen de LockDetails. Solo se muestran los únicos
   adminPwd: string;
   aesKeyStr: string;
   autoLockTime: number;
