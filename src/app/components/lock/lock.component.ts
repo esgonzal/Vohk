@@ -1011,8 +1011,8 @@ export class LockComponent implements OnInit {
     this.popupService.cambiarPeriodo = true;
   }
   crearEkey() {
-    this.passcodeService.lockAlias = this.Alias;
     this.ekeyService.token = this.token;
+    this.ekeyService.username = this.username;
     this.ekeyService.lockID = this.lockId;
     this.ekeyService.endDateUser = this.endDateDeUser;
     this.router.navigate(["users", this.username, "lock", this.lockId, "ekey"]);
@@ -1048,8 +1048,11 @@ export class LockComponent implements OnInit {
   crearPasscode() {
     this.passcodeService.lockAlias = this.Alias;
     this.passcodeService.token = this.token;
+    this.passcodeService.username = this.username;
     this.passcodeService.lockID = this.lockId;
     this.passcodeService.endDateUser = this.endDateDeUser;
+    this.passcodeService.gateway = Number(this.gateway)
+    this.passcodeService.featureValue = this.featureValue;
     this.router.navigate(["users", this.username, "lock", this.lockId, "passcode"]);
   }
   cambiarPasscode(passcode: Passcode) {

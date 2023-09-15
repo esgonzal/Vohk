@@ -15,9 +15,12 @@ import { LockServiceService } from '../../services/lock-service.service';
 })
 export class EkeyComponent {
 
-  constructor(private router: Router, public ekeyService: EkeyServiceService, private userService: UserServiceService, private lockService: LockServiceService) { }
-  username = localStorage.getItem('user') ?? ''
-  lockId: number = Number(localStorage.getItem('lockID') ?? '')
+  constructor(private router: Router, public ekeyService: EkeyServiceService, private userService: UserServiceService, private lockService: LockServiceService) {
+    if(!this.ekeyService.username || !this.ekeyService.token || !this.ekeyService.lockID || !this.ekeyService.endDateUser) {
+      this.router.navigate(['users', localStorage.getItem('user'), 'lock', localStorage.getItem('lockID')])
+    }
+   }
+  
   isLoading: boolean = false;
   error = "";
   selectedType = '';
@@ -32,7 +35,7 @@ export class EkeyComponent {
   ];
 
   toMultipleEkeys() {//Navega al componente multiple-ekey
-    this.router.navigate(['users', this.username, 'lock', this.lockId, 'ekey', 'multiple'])
+    this.router.navigate(['users', this.ekeyService.username, 'lock', this.ekeyService.lockID, 'ekey', 'multiple'])
   }
   onSelected(value: string): void {//Guarda el tipo de eKey seleccionado
     this.selectedType = value
@@ -139,8 +142,8 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
+          this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+          this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -156,8 +159,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -171,8 +174,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -219,8 +222,8 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
+          this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+          this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta PC
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -236,8 +239,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -251,8 +254,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -295,8 +298,8 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
+          this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+          this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -312,8 +315,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -327,8 +330,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -379,8 +382,8 @@ export class EkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
+          this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+          this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -396,8 +399,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -411,8 +414,8 @@ export class EkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, this.lockId)
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.userService.addLockToAccessList(datos.recieverName, this.ekeyService.lockID)
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }

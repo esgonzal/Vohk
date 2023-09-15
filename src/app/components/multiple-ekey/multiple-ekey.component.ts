@@ -25,8 +25,6 @@ export class MultipleEkeyComponent {
     private lockService: LockServiceService,
     private userService: UserServiceService) { }
 
-  username = localStorage.getItem('user') ?? ''
-  lockId: number = Number(localStorage.getItem('lockID') ?? '')
   isLoading: boolean = false;
   error = "";
   selectedType = '';
@@ -413,7 +411,7 @@ export class MultipleEkeyComponent {
           if (this.validarFechaInicio(datos.startDate, datos.startHour, datos.endDate, datos.endHour, datos.ekeyType)) {
             if (this.validaFechaUsuario(datos.endDate, datos.endHour, datos.ekeyType)) {
               await this.crearEkey(datos, lockID);
-              this.router.navigate(["users", this.username, "lock", this.lockId]);
+              this.router.navigate(["users", this.ekeyService.username, "lock", this.ekeyService.lockID]);
             }
           }
         }

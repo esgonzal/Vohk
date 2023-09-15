@@ -11,7 +11,11 @@ import { operationResponse } from 'src/app/Interfaces/API_responses';
   styleUrls: ['./passage-mode.component.css']
 })
 export class PassageModeComponent implements OnInit {
-  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) { }
+  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) {
+    if(!this.passageModeService.passageModeConfig) {
+      this.router.navigate(['users', this.username, 'lock', this.lockId])
+    }
+   }
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   isPassageModeToggleOn: boolean = false;
@@ -32,9 +36,6 @@ export class PassageModeComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateValues()
-    if(!this.passageModeService.passageModeConfig) {
-      this.router.navigate(['users', this.username, 'lock', this.lockId])
-    }
   }
   updateValues() {
     this.isPassageModeToggleOn = this.passageModeService.passageModeConfig?.passageMode === 1;

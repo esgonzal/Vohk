@@ -10,11 +10,13 @@ import emailjs from 'emailjs-com';
 })
 export class PasscodeServiceService {
 
-  username = localStorage.getItem('user') ?? ''
-  lockAlias = localStorage.getItem('Alias') ?? ''
+  username: string;
+  lockAlias: string;
   token: string;
   lockID: number;
   endDateUser: string;
+  featureValue: string
+  gateway: number;
   passcodesimple = false;
 
   constructor(private lockService: LockServiceService, private http: HttpClient) { }

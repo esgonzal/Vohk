@@ -13,13 +13,14 @@ import { lastValueFrom } from 'rxjs';
   templateUrl: './passcode.component.html',
   styleUrls: ['./passcode.component.css'],
 })
-export class PasscodeComponent {
+export class PasscodeComponent{
 
-  constructor(public passcodeService: PasscodeServiceService, public lockService: LockServiceService, private router: Router, public popupService: PopUpService) { }
-  username = localStorage.getItem('user') ?? ''
-  lockId: number = Number(localStorage.getItem('lockID') ?? '')
-  gateway = localStorage.getItem('gateway') ?? ''
-  featureValue = localStorage.getItem('features') ?? '';
+  constructor(public passcodeService: PasscodeServiceService, public lockService: LockServiceService, private router: Router, public popupService: PopUpService) {
+    if(!this.passcodeService.token || !this.passcodeService.username || !this.passcodeService.lockID || !this.passcodeService.endDateUser || !this.passcodeService.featureValue) {
+      this.router.navigate(['users', localStorage.getItem('user'), 'lock', localStorage.getItem('lockID')])
+    }
+   }
+
   isLoading: boolean = false;
   howManyHours = '';
   error = '';
@@ -110,7 +111,7 @@ export class PasscodeComponent {
         }
       }
       else {
-        if (this.gateway === '1') {
+        if (this.passcodeService.gateway === 1) {
           if (datos.startDate) {
             //CUSTOM PERIOD PASSCODE
             let newStartDay = moment(datos.startDate).valueOf()
@@ -128,7 +129,7 @@ export class PasscodeComponent {
         }
       }
       if (response?.keyboardPwdId) {
-        this.router.navigate(["users", this.username, "lock", this.lockId]);
+        this.router.navigate(["users", this.passcodeService.username, "lock", this.passcodeService.lockID]);
         console.log("Se creó la passcode con exito")
       } else {
         console.log("ERROR:", response)
@@ -178,7 +179,7 @@ export class PasscodeComponent {
       console.log(response)
       if (response.keyboardPwdId) {
         this.passcodeService.passcodesimple = false;
-        this.router.navigate(["users", this.username, "lock", this.lockId]);
+        this.router.navigate(["users", this.passcodeService.username, "lock", this.passcodeService.lockID]);
       } else {
         console.log("Algo salió mal", response)
       }
