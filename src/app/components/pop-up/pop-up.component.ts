@@ -13,11 +13,12 @@ import { GroupService } from '../../services/group.service';
 
 import { GatewayAccount } from '../../Interfaces/Gateway';
 import { Formulario } from '../../Interfaces/Formulario';
-import { operationResponse, ResetPasswordResponse, addGroupResponse } from '../../Interfaces/API_responses';
+import { operationResponse, ResetPasswordResponse, addGroupResponse, GetLockTimeResponse } from '../../Interfaces/API_responses';
 import { LockData } from '../../Interfaces/Lock';
 
 import { lastValueFrom } from 'rxjs';
 import moment from 'moment';
+import { GatewayService } from 'src/app/services/gateway.service';
 
 @Component({
   selector: 'app-pop-up',
@@ -52,7 +53,8 @@ export class PopUpComponent implements OnInit {
     private fingerprintService: FingerprintServiceService,
     private groupService: GroupService,
     private cdr: ChangeDetectorRef,
-    private userService: UserServiceService
+    private userService: UserServiceService,
+    private gatewayService: GatewayService
   ) { }
 
   ngOnInit(): void {
@@ -581,6 +583,21 @@ export class PopUpComponent implements OnInit {
       localStorage.setItem('nickname', datos.name)
       this.popupService.changeNickname = false;
       window.location.reload(); 
+    }
+  }
+  async ajustarHora(){
+    this.isLoading = true;
+    try {
+      let response = await lastValueFrom(this.gatewayService.adjustLockTime(this.gatewayService.token, this.gatewayService.lockID)) as GetLockTimeResponse
+      if(response.date) {
+        console.log("Hora ajustada")
+      } else {
+        console.log(response)
+      }
+    } catch (error) {
+      console.error("Error while adjusting the time of a lock:", error);
+    } finally {
+      this.isLoading = false;
     }
   }
 }

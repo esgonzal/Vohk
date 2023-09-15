@@ -92,7 +92,7 @@ export class GatewayService {
     body.set('date', fecha);
     return this.http.post<GetLockTimeResponse>(url, body.toString(), options);
   }
-  async adjustLockTime(token: string, lockId: number) {
+  adjustLockTime(token: string, lockId: number): Observable<GetLockTimeResponse> {
     let fecha = this.lockService.timestamp();
     let url = 'https://euapi.ttlock.com/v3/lock/updateDate'
     let header = new HttpHeaders({
@@ -104,13 +104,6 @@ export class GatewayService {
     body.set('accessToken', token);
     body.set('lockId', lockId.toString())
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while getting the time of the lock:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<GetLockTimeResponse>(url, body.toString(), options)
   }
 }
