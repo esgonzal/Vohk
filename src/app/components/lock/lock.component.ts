@@ -19,6 +19,7 @@ import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse } from '../../Interfaces/API_responses';
+import { PassageMode } from 'src/app/Interfaces/PassageMode';
 
 
 @Component({
@@ -944,19 +945,18 @@ export class LockComponent implements OnInit {
       //TRAER CONFIGURACION DE MODO DE PASO
       this.isLoading = true;
       try {
-        await this.passageModeService.getPassageModeConfig(this.token, this.lockId);
-        this.passageModeService.data$.subscribe((data) => {
-          if (data) {
-            this.passageModeService.passageModeConfig = data
-            console.log(this.passageModeService.passageModeConfig)
-          }
-        })
+        let response = await lastValueFrom(this.passageModeService.getPassageModeConfig(this.token, this.lockId)) as PassageMode;
+        if (response.passageMode) {
+          this.passageModeService.passageModeConfig = response;
+          this.router.navigate(["users", this.username, "lock", this.lockId, "passageMode"]);
+        } else {
+          console.log(response)
+        }
       } catch (error) {
         console.error("Error while fetching passage mode configurations:", error)
       } finally {
         this.isLoading = false; // Set isLoading to false when data fetching is complete
       }
-      this.router.navigate(["users", this.username, "lock", this.lockId, "passageMode"]);
     } else {
       this.popupService.needGateway = true;
       console.log("Necesita estar conectado a un gateway para usar esta función")

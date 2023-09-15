@@ -174,7 +174,6 @@ export class UserServiceService {
       .then((response) => { console.log('Email sent successfully:', response); })
       .catch((error) => { console.error('Error sending email:', error); });
   }
-
   addLockToAccessList(username: string, lockId: number) {
     // Retrieve the current access list or create an empty array
     const accessList = JSON.parse(localStorage.getItem(username) || '[]');

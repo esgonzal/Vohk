@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PassageModeService } from '../../services/passage-mode.service';
 import { PassageMode } from '../../Interfaces/PassageMode';
 import { Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
+import { operationResponse } from 'src/app/Interfaces/API_responses';
 
 @Component({
   selector: 'app-passage-mode',
@@ -26,6 +28,7 @@ export class PassageModeComponent implements OnInit {
   startHour: string = '';
   endHour: string = '';
   error: string = '';
+  isLoading:boolean = false;
 
   ngOnInit(): void {
     this.updateValues()
@@ -82,6 +85,7 @@ export class PassageModeComponent implements OnInit {
       this.error = 'Si quiere activar el Modo de Paso, debe seleccionar al menos un día'
     }
     else {
+      this.isLoading = true;
       const Config: PassageMode = {
         "autoUnlock": 1,
         "endDate": this.transformarHora(this.endHour),
@@ -91,10 +95,17 @@ export class PassageModeComponent implements OnInit {
         "weekDays": selectedDayNumbers
       }
       try {
-        await this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)
-        this.router.navigate(["users", this.username, "lock", this.lockId]);
+        let response = await lastValueFrom(this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)) as operationResponse
+        if (response.errcode === 0) {
+          console.log("Modo de Paso configurado correctamente")
+          this.router.navigate(["users", this.username, "lock", this.lockId]);
+        } else {
+          console.log(response)
+        }
       } catch (error) {
         console.error("Error while setting passage mode:", error);
+      } finally {
+        this.isLoading = false;
       }
     }
   }

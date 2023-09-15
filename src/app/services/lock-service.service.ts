@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import moment from 'moment';
 import 'moment-timezone';
 import { LockListResponse, operationResponse } from '../Interfaces/API_responses';

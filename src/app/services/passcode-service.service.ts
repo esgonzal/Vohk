@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { PasscodeResponse, createPasscodeResponse, operationResponse } from '../Interfaces/API_responses';
 import { LockServiceService } from './lock-service.service';
 import emailjs from 'emailjs-com';
@@ -10,8 +10,6 @@ import emailjs from 'emailjs-com';
 })
 export class PasscodeServiceService {
 
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
   username = localStorage.getItem('user') ?? ''
   lockAlias = localStorage.getItem('Alias') ?? ''
   token: string;

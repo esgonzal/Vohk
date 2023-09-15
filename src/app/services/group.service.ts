@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LockServiceService } from './lock-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from '../Interfaces/Group';
 import { LockData } from '../Interfaces/Lock';
 import { operationResponse, GroupResponse, addGroupResponse } from '../Interfaces/API_responses';

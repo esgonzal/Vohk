@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
 import { PassageMode } from '../Interfaces/PassageMode';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
+import { Observable } from 'rxjs'
+import { operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PassageModeService {
 
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
   token: string;
   lockID: number;
   passageModeConfig: PassageMode;
 
   constructor(private http: HttpClient, private lockService: LockServiceService) { }
 
-  async getPassageModeConfig(token: string, lockId: number) {
+  getPassageModeConfig(token: string, lockId: number): Observable<PassageMode>{
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/getPassageModeConfig'
     let header = new HttpHeaders({
@@ -29,16 +28,9 @@ export class PassageModeService {
     body.set('accessToken', token);
     body.set('lockId', lockId.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while fetching passage mode configurations:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<PassageMode>(url, body.toString(), options);
   }
-  async setPassageMode(token: string, lockId: number, Config: PassageMode) {
+  setPassageMode(token: string, lockId: number, Config: PassageMode): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/configPassageMode'
     let header = new HttpHeaders({
@@ -56,13 +48,6 @@ export class PassageModeService {
     body.set('weekDays', JSON.stringify(Config.weekDays));
     body.set('type', '2');
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while setting passage mode configurations:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
 }
