@@ -23,7 +23,11 @@ export class MultipleEkeyComponent {
     public ekeyService: EkeyServiceService,
     public popupService: PopUpService,
     private lockService: LockServiceService,
-    private userService: UserServiceService) { }
+    private userService: UserServiceService) {
+      if (ekeyService.currentLocks.length === 0) {
+        this.router.navigate(['users', localStorage.getItem('user'), 'lock', localStorage.getItem('lockID')])
+      }
+     }
 
   isLoading: boolean = false;
   error = "";

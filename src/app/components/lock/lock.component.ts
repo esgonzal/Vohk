@@ -18,8 +18,9 @@ import { Group } from '../../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
-import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse } from '../../Interfaces/API_responses';
+import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse, LockListResponse, GroupResponse } from '../../Interfaces/API_responses';
 import { PassageMode } from 'src/app/Interfaces/PassageMode';
+import { GroupService } from 'src/app/services/group.service';
 
 
 @Component({
@@ -62,6 +63,9 @@ export class LockComponent implements OnInit {
   records: Record[] = []
   recordsFiltrados: Record[] = []
   passcodesFiltradas: Passcode[] = []
+  allLocks: LockData[] = [];
+  locks: LockData[] = [];
+  locksWithoutGroup: LockData[] = [];
   groups: Group[] = []
   ////////////////////////////////////////////////////////////
   ekeysDataSource: MatTableDataSource<Ekey>;
@@ -87,7 +91,8 @@ export class LockComponent implements OnInit {
     private gatewayService: GatewayService,
     private passageModeService: PassageModeService,
     private sanitizer: DomSanitizer,
-    public userService: UserServiceService
+    public userService: UserServiceService,
+    private groupService: GroupService
   ) { }
 
   featureList = [
@@ -155,17 +160,21 @@ export class LockComponent implements OnInit {
   ];
 
   async ngOnInit() {
-    //Traer LockDetails
+    await this.getAllLocks();
+    await this.fetchGroups();
+    //await this.getLocksWithoutGroup();
+    this.groupService.selectedGroupSubject.subscribe(async selectedGroup => {
+      if (selectedGroup) {
+        await this.fetchLocks(selectedGroup.groupId);
+        //console.log("All Locks",this.allLocks)
+        //console.log("Locks without group",this.locksWithoutGroup)
+      }
+    });
     await this.fetchLockDetails();
-    //Traer ekeys
     await this.fetchEkeys();
-    //Traer passcodes
     await this.fetchPasscodes();
-    //Traer cards
     await this.fetchCards();
-    //Traer fingerprints
     await this.fetchFingerprints();
-    //Traer records
     await this.fetchRecords();
     this.updatePasscodeUsage()
     this.ekeysDataSource = new MatTableDataSource(this.ekeys);
@@ -186,6 +195,110 @@ export class LockComponent implements OnInit {
       if (isSupported) {
         //console.log(`${feature.bit} - ${feature.feature} - ${isSupported}`);
       }
+    }
+  }
+  async getAllLocks() {
+    this.isLoading = true;
+    try {
+      let pageNo = 1;
+      const pageSize = 100;
+      while (true) {
+        const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, 0));
+        const locksTypedResponse = locksResponse as LockListResponse;
+        if (locksTypedResponse?.list) {
+          this.allLocks.push(...locksTypedResponse.list)
+          this.locksWithoutGroup.push(...locksTypedResponse.list.filter(lock => !lock.groupId))
+          if (locksTypedResponse.pages > pageNo) {
+            pageNo++;
+          } else {
+            break; // No more pages to fetch
+          }
+        } else {
+          break; // No more locks to fetch
+        }
+      }
+      this.ekeyService.currentLocks = this.allLocks.filter(
+        lock => lock.userType === '110301' || (lock.userType === '110301' && lock.keyRight === 1)
+      );
+      this.groupService.locksWithoutGroup = this.locksWithoutGroup;
+    } catch (error) {
+      console.error("Error while fetching all locks:", error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+  async fetchGroups() {
+    this.isLoading = true;
+    try {
+      const response = await lastValueFrom(this.groupService.getGroupofAccount(this.token));
+      const typedResponse = response as GroupResponse;
+      if (typedResponse?.list) {
+        this.groups = typedResponse.list;
+        // Fetch locks and calculate lock counts for each group
+        for (const group of this.groups) {
+          group.lockCount = await this.calculateLockCountForGroup(group);
+        }
+      } else {
+        console.log("Groups not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching groups:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
+    }
+    this.groupService.groups = this.groups;
+  }
+  async calculateLockCountForGroup(group: Group): Promise<number> {
+    let lockCount = 0;
+    let pageNo = 1;
+    const pageSize = 100;
+    group.locks = [];
+    while (true) {
+      const locksResponse = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, pageSize, group.groupId));
+      const locksTypedResponse = locksResponse as LockListResponse;
+      if (locksTypedResponse?.list && locksTypedResponse.list.length > 0) {
+        lockCount += locksTypedResponse.list.length;
+        group.locks.push(...locksTypedResponse.list);
+        if (locksTypedResponse.pages > pageNo) {
+          pageNo++;
+        } else {
+          break; // No more pages to fetch
+        }
+      } else {
+        break; // No more locks to fetch
+      }
+    }
+    return lockCount;
+  }
+  async fetchLocks(groupId: number) {
+    this.isLoading = true;
+    try {
+      await this.fetchLocksPage(1, groupId);
+    } catch (error) {
+      console.error("Error while fetching Locks: ", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
+    }
+    //console.log("Locks actuales", this.locks)
+  }
+  async fetchLocksPage(pageNo: number, groupId?: number) {
+    this.locks = [];
+    this.isLoading = true;
+    try {
+      const response = await lastValueFrom(this.ekeyService.getEkeysofAccount(this.token, pageNo, 100, groupId));
+      const typedResponse = response as LockListResponse;
+      if (typedResponse?.list) {
+        this.locks.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchLocksPage(pageNo + 1, groupId);
+        }
+      } else {
+        console.log("Locks not yet available")
+      }
+    } catch (error) {
+      console.error("Error while fetching locks page:", error)
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
   }
   async fetchEkeys() {
