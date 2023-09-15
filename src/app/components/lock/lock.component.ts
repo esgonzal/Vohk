@@ -13,6 +13,7 @@ import { RecordServiceService } from '../../services/record-service.service';
 import { PopUpService } from '../../services/pop-up.service';
 import { GatewayService } from '../../services/gateway.service';
 import { PassageModeService } from '../../services/passage-mode.service';
+import { GroupService } from 'src/app/services/group.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
@@ -20,8 +21,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse, LockListResponse, GroupResponse } from '../../Interfaces/API_responses';
 import { PassageMode } from 'src/app/Interfaces/PassageMode';
-import { GroupService } from 'src/app/services/group.service';
-
 
 @Component({
   selector: 'app-lock',
@@ -182,14 +181,14 @@ export class LockComponent implements OnInit {
     this.cardsDataSource = new MatTableDataSource(this.cards);
     this.fingerprintsDataSource = new MatTableDataSource(this.fingerprints);
     this.recordsDataSource = new MatTableDataSource(this.records);
-    this.recordsFiltrados = this.records.filter(record => record.username === this.username);
+    this.recordsFiltrados = this.records.filter(record => record.username === this.encodeNombre(this.username));
     this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.encodeNombre(this.username));
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
-    //console.log("Records: ", this.records)
+    console.log("Records: ", this.records)
     for (const feature of this.featureList) {
       const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
       if (isSupported) {
@@ -816,11 +815,14 @@ export class LockComponent implements OnInit {
       case 10:
         return 'unlock with passcode with delete function, passcode before it will all be deleted';
       case 11:
-        return 'unlock by passcode failed—passcode expired';
+        var retorno = 'Abrir con código de acceso—'.concat(operador)
+        return retorno;
       case 12:
-        return 'unlock by passcode failed—run out of memory';
+        var retorno = 'Abrir con código de acceso—'.concat(operador)
+        return retorno;
       case 13:
-        return 'unlock by passcode failed—passcode is in blacklist';
+        var retorno = 'Abrir con código de acceso—'.concat(operador)
+        return retorno;
       case 14:
         return 'lock power on';
       case 15:
@@ -844,7 +846,7 @@ export class LockComponent implements OnInit {
       case 24:
         return 'clear fingerprints';
       case 25:
-        return 'unlock by card failed—card expired';
+        return 'Abrir con Tarjeta RF';
       case 26:
         return 'Cerrar con Aplicación';
       case 27:
@@ -1263,4 +1265,3 @@ export class LockComponent implements OnInit {
     this.popupService.cambiarPeriodo = true;
   }
 }
-
