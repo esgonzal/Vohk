@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { FingerprintResponse, operationResponse } from '../Interfaces/API_responses';
 
@@ -8,9 +8,6 @@ import { FingerprintResponse, operationResponse } from '../Interfaces/API_respon
   providedIn: 'root'
 })
 export class FingerprintServiceService {
-
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
 
   constructor(private http: HttpClient, private lockService: LockServiceService) { }
 

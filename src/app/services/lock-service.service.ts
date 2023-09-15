@@ -3,15 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import 'moment-timezone';
-import { operationResponse } from '../Interfaces/API_responses';
+import { LockListResponse, operationResponse } from '../Interfaces/API_responses';
+import { LockDetails } from '../Interfaces/Lock';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LockServiceService {
 
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
   token: string;
   lockID: number;
 
@@ -31,7 +30,7 @@ export class LockServiceService {
     const reversedBinary = binaryValue.split('').reverse().join('');
     return reversedBinary[bit] === '1';
   }
-  async getLockListAccount(token: string) {
+  getLockListAccount(token: string): Observable<LockListResponse> {
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/list'
     let header = new HttpHeaders({
@@ -44,15 +43,9 @@ export class LockServiceService {
     body.set('pageNo', '1');
     body.set('pageSize', '20');
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-    } catch (error) {
-      console.error("Error while fetching lock list of the account:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<LockListResponse>(url, body.toString(), options)
   }
-  async getLockDetails(token: string, lockId: number) {
+  getLockDetails(token: string, lockId: number): Observable<LockDetails> {
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/detail'
     let header = new HttpHeaders({
@@ -64,15 +57,9 @@ export class LockServiceService {
     body.set('accessToken', token);
     body.set('lockId', lockId.toString());
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-    } catch (error) {
-      console.error("Error while fetching lock details:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<LockDetails>(url, body.toString(), options);
   }
-  async changeLockName(token: string, lockId: number, newLockAlias: string) {
+  changeLockName(token: string, lockId: number, newLockAlias: string) {
     let fecha = this.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/rename'
     let header = new HttpHeaders({
@@ -85,14 +72,7 @@ export class LockServiceService {
     body.set('lockId', lockId.toString());
     body.set('lockAlias', newLockAlias);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      console.log(response)
-    } catch (error) {
-      console.error("Error while changing name of a lock:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-      throw new Error("Lock alias update failed.");
-    }
+    return this.http.post(url, body.toString(), options);
   }
   setAutoLock(token: string, lockId: number, seconds: number): Observable<operationResponse> {
     let fecha = this.timestamp()

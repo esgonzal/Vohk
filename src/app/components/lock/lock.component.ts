@@ -155,14 +155,7 @@ export class LockComponent implements OnInit {
 
   async ngOnInit() {
     //Traer LockDetails
-    try {
-      await this.lockService.getLockDetails(this.token, this.lockId);
-      this.lockService.data$.subscribe((data) => {
-        if (data) { this.lockDetails = data }
-        else { console.log("Data not yet available.") }
-      })
-    }
-    catch (error) { console.error("Error while fetching the Lock details:", error); }
+    await this.fetchLockDetails();
     //Traer ekeys
     await this.fetchEkeys();
     //Traer passcodes
@@ -380,6 +373,21 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching gateways of a lock:", error)
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
+    }
+  }
+  async fetchLockDetails() {
+    this.isLoading = true;
+    try {
+      const response = await lastValueFrom(this.lockService.getLockDetails(this.token, this.lockId)) as LockDetails
+      if (response.lockId) {
+        this.lockDetails = response;
+      } else {
+        console.log(response)
+      }
+    } catch (error) {
+      console.error("Error while fetching details of a lock:", error)
     } finally {
       this.isLoading = false; // Set isLoading to false when data fetching is complete
     }

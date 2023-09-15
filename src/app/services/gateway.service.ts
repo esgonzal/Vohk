@@ -1,19 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
-import { GatewayAccount } from '../Interfaces/Gateway';
 import { GatewayAccountResponse, GatewayLockResponse, GetLockTimeResponse, operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GatewayService {
-
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
-  private dataSubject2 = new BehaviorSubject<any>(null);
-  data2$ = this.dataSubject2.asObservable();
 
   token: string;
   lockID: number;

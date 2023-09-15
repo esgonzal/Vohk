@@ -122,7 +122,7 @@ export class PopUpComponent implements OnInit {
           this.userService.removeLockFromAccessList(this.popupService.ekeyUsername, this.popupService.lockID)
         }
         console.log(this.popupService.elementType, "borrada exitosamente")
-        window.location.reload(); 
+        window.location.reload();
       } else {
         this.error = "La acción eliminar no pudo ser completada, intente nuevamente mas tarde."
       }
@@ -452,7 +452,12 @@ export class PopUpComponent implements OnInit {
         console.log("Seleccione al menos una cerradura para remover");
       } else {
         for (const lockId of this.selectedLockIds) {
-          await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), "0")
+          let response = await lastValueFrom(this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), "0")) as operationResponse;
+          if (response.errcode === 0) {
+            console.log("Se removió la cerradura exitosamente")
+          } else {
+            console.log(response)
+          }
         }
         this.popupService.removeLockGROUP = false;
         window.location.reload();
@@ -470,7 +475,12 @@ export class PopUpComponent implements OnInit {
         console.log("Seleccione al menos una cerradura para añadir");
       } else {
         for (const lockId of this.selectedLockIds) {
-          await this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), this.popupService.group.groupId.toString());
+          let response = await lastValueFrom(this.groupService.setGroupofLock(this.popupService.token, lockId.toString(), this.popupService.group.groupId.toString())) as operationResponse;
+          if (response.errcode === 0) {
+            console.log("Se removió la cerradura exitosamente")
+          } else {
+            console.log(response)
+          }
         }
         this.popupService.addLockGROUP = false;
         window.location.reload();
@@ -582,14 +592,14 @@ export class PopUpComponent implements OnInit {
     } else {
       localStorage.setItem('nickname', datos.name)
       this.popupService.changeNickname = false;
-      window.location.reload(); 
+      window.location.reload();
     }
   }
-  async ajustarHora(){
+  async ajustarHora() {
     this.isLoading = true;
     try {
       let response = await lastValueFrom(this.gatewayService.adjustLockTime(this.gatewayService.token, this.gatewayService.lockID)) as GetLockTimeResponse
-      if(response.date) {
+      if (response.date) {
         console.log("Hora ajustada")
       } else {
         console.log(response)

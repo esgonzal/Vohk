@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { CardResponse, operationResponse } from '../Interfaces/API_responses';
 
@@ -9,8 +9,6 @@ import { CardResponse, operationResponse } from '../Interfaces/API_responses';
 })
 export class CardServiceService {
 
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
   token: string;
   lockID: number;
   cardID: number;

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { EkeyResponse, operationResponse, sendEkeyResponse, LockListResponse } from '../Interfaces/API_responses';
 import { LockData } from '../Interfaces/Lock';
@@ -11,11 +11,6 @@ import emailjs from 'emailjs-com';
   providedIn: 'root'
 })
 export class EkeyServiceService {
-
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
-  private dataSubject2 = new BehaviorSubject<any>(null);
-  data2$ = this.dataSubject2.asObservable();
 
   token: string;
   username = localStorage.getItem('user') ?? ''
@@ -170,7 +165,7 @@ export class EkeyServiceService {
     body.set('date', fecha);
     return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async AuthorizeEkey(token: string, lockID: number, keyID: number) {
+  AuthorizeEkey(token: string, lockID: number, keyID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/authorize'
     let header = new HttpHeaders({
@@ -183,16 +178,9 @@ export class EkeyServiceService {
     body.set('lockId', lockID.toString());
     body.set('keyId', keyID.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while authorizing a Ekey:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async cancelAuthorizeEkey(token: string, lockID: number, keyID: number) {
+  cancelAuthorizeEkey(token: string, lockID: number, keyID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/key/unauthorize'
     let header = new HttpHeaders({
@@ -205,14 +193,7 @@ export class EkeyServiceService {
     body.set('lockId', lockID.toString());
     body.set('keyId', keyID.toString());
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while authorizing a Ekey:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
   async sendEmail_permanentEkey(recipientEmail: string, keyName: string) {//Template para eKey permanente a una cuenta existente
     //esteban.vohk@gmail.com

@@ -13,8 +13,6 @@ export class GroupService {
 
   DEFAULT_GROUP: Group = { groupId: 0, groupName: 'Todos', lockCount: 0, locks: [] };
 
-  private dataSubject = new BehaviorSubject<any>(null);
-  data$ = this.dataSubject.asObservable();
   public selectedGroupSubject = new BehaviorSubject<Group>(this.DEFAULT_GROUP);
   selectedGroup$ = this.selectedGroupSubject.asObservable();
 
@@ -84,7 +82,7 @@ export class GroupService {
     body.set('date', fecha.toString());
     return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async setGroupofLock(token: string, lockID: string, groupID: string) {
+  setGroupofLock(token: string, lockID: string, groupID: string): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/setGroup'
     let header = new HttpHeaders({
@@ -97,13 +95,6 @@ export class GroupService {
     body.set('lockId', lockID);
     body.set('groupId', groupID);
     body.set('date', fecha.toString());
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options))
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while setting a group for a lock:", error)
-      this.dataSubject.next(null);
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
 }
