@@ -32,6 +32,9 @@ export class PassageModeComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateValues()
+    if(!this.passageModeService.passageModeConfig) {
+      this.router.navigate(['users', this.username, 'lock', this.lockId])
+    }
   }
   updateValues() {
     this.isPassageModeToggleOn = this.passageModeService.passageModeConfig?.passageMode === 1;
