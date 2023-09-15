@@ -425,7 +425,7 @@ export class MultipleEkeyComponent {
       this.error = "Seleccione al menos 1 cerradura";
     }
     else if (this.ekeyService.recipients.length === 0) {
-      this.error = "Agregue al menos 1 receptor";
+      this.error = "Agregue al menos 1 destinatario";
     }
     else {
       for (let i = 0; i < this.ekeyService.selectedLocks.length; i++) {

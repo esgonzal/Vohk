@@ -175,6 +175,7 @@ export class PasscodeComponent {
       let startDate = moment().valueOf()
       let endDate = moment().add(this.howManyHours, "hours").valueOf()
       response = await lastValueFrom(this.passcodeService.generatePasscode(this.passcodeService.token, this.passcodeService.lockID, '3', startDate.toString(), datos.name, endDate.toString())) as createPasscodeResponse;
+      console.log(response)
       if (response.keyboardPwdId) {
         this.passcodeService.passcodesimple = false;
         this.router.navigate(["users", this.username, "lock", this.lockId]);

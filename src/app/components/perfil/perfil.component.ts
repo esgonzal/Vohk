@@ -40,5 +40,4 @@ export class PerfilComponent {
   cambiarNombre(){
     this.popupService.changeNickname = true;
   }
-  
 }

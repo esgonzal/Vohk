@@ -15,10 +15,11 @@ import { GatewayService } from '../../services/gateway.service';
 import { PassageModeService } from '../../services/passage-mode.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../../Interfaces/Group';
-import { lastValueFrom } from 'rxjs';
+import { last, lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
-import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse } from '../../Interfaces/API_responses';
+import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse } from '../../Interfaces/API_responses';
+import { GatewayAccount, GatewayLock } from 'src/app/Interfaces/Gateway';
 
 
 @Component({
@@ -335,6 +336,51 @@ export class LockComponent implements OnInit {
       }
     } catch (error) {
       console.error("Error while fetching records page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
+    }
+  }
+  async fetchGatewaysAccount() {
+    this.isLoading = true;
+    try {
+      await this.fetchGatewaysAccountPage(1);
+    } catch (error) {
+      console.error("Error while fetching gateways of an account:", error)
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
+    }
+  }
+  async fetchGatewaysAccountPage(pageNo: number) {
+    this.isLoading = true;
+    try {
+      const response = await lastValueFrom(this.gatewayService.getGatewaysAccount(this.token, pageNo, 100))
+      const typedResponse = response as GatewayAccountResponse;
+      if (typedResponse?.list) {
+        this.popupService.gatewaysOfAccount.push(...typedResponse.list);
+        if (typedResponse.pages > pageNo) {
+          await this.fetchGatewaysAccountPage(pageNo + 1)
+        }
+      } else {
+        console.log("Gateways not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching gateways page:", error);
+    } finally {
+      this.isLoading = false; // Set isLoading to false when data fetching is complete
+    }
+  }
+  async fetchGatewaysLock() {
+    this.isLoading = true;
+    try {
+      const response = await lastValueFrom(this.gatewayService.getGatewayListOfLock(this.token, this.lockId));
+      const typedResponse = response as GatewayLockResponse;
+      if (typedResponse.list) {
+        this.popupService.gatewaysOfLock.push(...typedResponse.list)
+      } else {
+        console.log("Gateways of the lock not yet available");
+      }
+    } catch (error) {
+      console.error("Error while fetching gateways of a lock:", error)
     } finally {
       this.isLoading = false; // Set isLoading to false when data fetching is complete
     }
@@ -847,47 +893,9 @@ export class LockComponent implements OnInit {
     this.router.navigate(["users", this.username, "lock", this.lockId, "transferLock"]);
   }
   async Gateway() {
-    let gatewaysOfLockFetched = false;
-    let gatewaysOfAccountFetched = false;
     //Traer Gateways
-    this.isLoading = true;
-    try {
-      await this.gatewayService.getGatewayListOfLock(this.token, this.lockId);
-      this.gatewayService.data$.subscribe((data) => {
-        if (data.list) {
-          this.popupService.gatewaysOfLock = data.list
-          gatewaysOfLockFetched = true;
-
-          if (gatewaysOfLockFetched && gatewaysOfAccountFetched) {
-            this.popupService.gateway = true;
-          }
-        }
-        else { console.log("Data not yet available.") }
-      })
-    } catch (error) {
-      console.error("Error while fetching the gateways of the lock:", error);
-    } finally {
-      this.isLoading = false; // Set isLoading to false when data fetching is complete
-    }
-    this.isLoading = true;
-    try {
-      await this.gatewayService.getGatewaysAccount(this.token);
-      this.gatewayService.data2$.subscribe((data) => {
-        if (data.list) {
-          this.popupService.gatewaysOfAccount = data.list
-          gatewaysOfAccountFetched = true;
-
-          if (gatewaysOfLockFetched && gatewaysOfAccountFetched) {
-            this.popupService.gateway = true;
-          }
-        }
-        else { console.log("Data not yet available.") }
-      })
-    } catch (error) {
-      console.error("Error while fetching the gatewaysof the account:", error);
-    } finally {
-      this.isLoading = false; // Set isLoading to false when data fetching is complete
-    }
+    await this.fetchGatewaysLock()
+    await this.fetchGatewaysAccount()
     this.popupService.gateway = true;
   }
   async HoraDispositivo() {

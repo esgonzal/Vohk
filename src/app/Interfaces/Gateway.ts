@@ -8,8 +8,11 @@ export interface GatewayLock {
 export interface GatewayAccount {
     gatewayId: number;
     gatewayMac: string;
+    gatewayName: string;
     gatewayVersion: string;
-    networkName: string;
-    lockNum: number;
     isOnline: number;
+    lockNum: number;
+    networkName: string;
+    networkMac: string;
+    serialNumber: string;
 }

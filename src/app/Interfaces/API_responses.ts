@@ -1,4 +1,5 @@
 import { Card, Ekey, Fingerprint, Passcode, Record } from "./Elements";
+import { GatewayAccount, GatewayLock } from "./Gateway";
 import { Group } from "./Group";
 import { LockData } from "./Lock";
 
@@ -95,4 +96,14 @@ export interface UserRegisterResponse {
     errcode: number;
     errmsg: string;
     username: string;
+}
+export interface GatewayAccountResponse {
+    list: GatewayAccount[];
+    pageNo: number;
+    pageSize: number;
+    pages: number;
+    total: number;
+}
+export interface GatewayLockResponse {
+    list: GatewayLock[];
 }

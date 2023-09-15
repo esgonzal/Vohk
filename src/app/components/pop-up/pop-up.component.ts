@@ -376,12 +376,12 @@ export class PopUpComponent implements OnInit {
     this.isLoading = true;
     try {
       let response = await lastValueFrom(this.lockService.setAutoLock(this.popupService.token, this.popupService.lockID, segundos)) as operationResponse;
-      console.log(response);
       if (response.errcode === 0) {
         this.popupService.cerradoAutomatico = false;
         window.location.reload();
       } else {
         this.error = "No se pudo completar la acción, intente nuevamente más tarde"
+        console.log(response);
       }
     } catch (error) {
       console.error("Error while setting auto lock:", error);

@@ -38,8 +38,8 @@ export class PopUpService {
   wrongAccountType = false;              //Para cambiar la contraseña, se necesita que la cuenta sea creada dentro del sistema
   transferLockWarning = false;           //Antes de transferir la cerradura a otra cuenta, se muestra un popup para confirmar
   changeNickname = false;
-  gatewaysOfLock: GatewayLock[]
-  gatewaysOfAccount: GatewayAccount[]
+  gatewaysOfLock: GatewayLock[] = []
+  gatewaysOfAccount: GatewayAccount[] = []
   detalles: LockDetails;
   currentTime: number;
   welcomingMessage: string;
