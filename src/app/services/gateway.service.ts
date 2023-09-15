@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { LockServiceService } from './lock-service.service';
 import { GatewayAccount } from '../Interfaces/Gateway';
-import { GatewayAccountResponse, GatewayLockResponse } from '../Interfaces/API_responses';
+import { GatewayAccountResponse, GatewayLockResponse, GetLockTimeResponse, operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +49,7 @@ export class GatewayService {
     body.set('date', fecha);
     return this.http.post<GatewayAccountResponse>(url, body.toString(), options);
   }
-  async unlock(token: string, lockID: number) {
+  unlock(token: string, lockID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/unlock'
     let header = new HttpHeaders({
@@ -61,16 +61,10 @@ export class GatewayService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString())
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while getting the list of Gateways of a Lock:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
+    
   }
-  async lock(token: string, lockID: number) {
+  lock(token: string, lockID: number): Observable<operationResponse> {
     let fecha = this.lockService.timestamp()
     let url = 'https://euapi.ttlock.com/v3/lock/lock'
     let header = new HttpHeaders({
@@ -82,16 +76,9 @@ export class GatewayService {
     body.set('accessToken', token);
     body.set('lockId', lockID.toString())
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while getting the list of Gateways of a Lock:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<operationResponse>(url, body.toString(), options);
   }
-  async getLockTime(token: string, lockId: number) {
+  getLockTime(token: string, lockId: number): Observable<GetLockTimeResponse> {
     let fecha = this.lockService.timestamp();
     let url = 'https://euapi.ttlock.com/v3/lock/queryDate'
     let header = new HttpHeaders({
@@ -103,14 +90,7 @@ export class GatewayService {
     body.set('accessToken', token);
     body.set('lockId', lockId.toString())
     body.set('date', fecha);
-    try {
-      const response = await lastValueFrom(this.http.post(url, body.toString(), options));
-      this.dataSubject.next(response);
-      console.log(response)
-    } catch (error) {
-      console.error("Error while getting the time of the lock:", error);
-      this.dataSubject.next(null); // Emit null to dataSubject on error
-    }
+    return this.http.post<GetLockTimeResponse>(url, body.toString(), options);
   }
   async adjustLockTime(token: string, lockId: number) {
     let fecha = this.lockService.timestamp();

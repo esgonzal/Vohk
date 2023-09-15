@@ -107,3 +107,6 @@ export interface GatewayAccountResponse {
 export interface GatewayLockResponse {
     list: GatewayLock[];
 }
+export interface GetLockTimeResponse {
+    date: number;
+}

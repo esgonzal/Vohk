@@ -15,11 +15,10 @@ import { GatewayService } from '../../services/gateway.service';
 import { PassageModeService } from '../../services/passage-mode.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Group } from '../../Interfaces/Group';
-import { last, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
-import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse } from '../../Interfaces/API_responses';
-import { GatewayAccount, GatewayLock } from 'src/app/Interfaces/Gateway';
+import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse } from '../../Interfaces/API_responses';
 
 
 @Component({
@@ -856,7 +855,12 @@ export class LockComponent implements OnInit {
     if (this.gateway === '1') {
       this.isLoading = true;
       try {
-        await this.gatewayService.unlock(this.token, this.lockId);
+        let response = await lastValueFrom(this.gatewayService.unlock(this.token, this.lockId)) as operationResponse;
+        if (response.errcode === 0) {
+          console.log("Cerradura desbloqueada")
+        } else {
+          console.log(response)
+        }
       } catch (error) {
         console.error("Error unlocking:", error);
       } finally {
@@ -871,7 +875,12 @@ export class LockComponent implements OnInit {
     if (this.gateway === '1') {
       this.isLoading = true;
       try {
-        await this.gatewayService.lock(this.token, this.lockId);
+        let response = await lastValueFrom(this.gatewayService.lock(this.token, this.lockId)) as operationResponse;
+        if (response.errcode === 0) {
+          console.log("Cerradura bloqueada")
+        } else {
+          console.log(response)
+        }
       } catch (error) {
         console.error("Error locking:", error);
       } finally {
@@ -904,12 +913,12 @@ export class LockComponent implements OnInit {
       this.gatewayService.lockID = this.lockId;
       this.isLoading = true;
       try {
-        await this.gatewayService.getLockTime(this.token, this.lockId);
-        this.gatewayService.data$.subscribe((data) => {
-          if (data) {
-            this.popupService.currentTime = data.date;
-          }
-        })
+        let response = await lastValueFrom(this.gatewayService.getLockTime(this.token, this.lockId)) as GetLockTimeResponse;
+        if (response.date) {
+          this.popupService.currentTime = response.date;
+        } else {
+          console.log(response)
+        }
       } catch (error) {
         console.error("Error while fetching lock's time:", error)
       } finally {
