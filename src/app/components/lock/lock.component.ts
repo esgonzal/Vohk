@@ -188,7 +188,7 @@ export class LockComponent implements OnInit {
     //console.log("Passcodes: ", this.passcodes)
     //console.log("Cards: ", this.cards)
     //console.log("Fingerprints: ", this.fingerprints)
-    console.log("Records: ", this.records)
+    //console.log("Records: ", this.records)
     for (const feature of this.featureList) {
       const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
       if (isSupported) {
@@ -527,9 +527,13 @@ export class LockComponent implements OnInit {
     return prefijo.concat(this.userService.customBase64Encode(username))
   }
   decodeNombre(username: string) {
-    let nombre_dividido = username.split("_");
-    if (nombre_dividido[0] === 'bhaaa') {
-      return this.userService.customBase64Decode(nombre_dividido[1])
+    if (username) {
+      let nombre_dividido = username.split("_");
+      if (nombre_dividido[0] === 'bhaaa') {
+        return this.userService.customBase64Decode(nombre_dividido[1])
+      } else {
+        return username;
+      }
     } else {
       return username;
     }

@@ -51,6 +51,7 @@ export class RegisterComponent {
     if (this.validarInputs(data)) {
       if (await this.validarCuentaNueva(data)) {
         let encode = this.userService.customBase64Encode(data.username);
+        let accountName = 'bhaaa_'.concat(encode)
         const phoneValidation = this.userService.isValidPhone(data.username);
         if (this.userService.isValidEmail(data.username)) {//Es un email
           this.registerError = ''
@@ -59,7 +60,9 @@ export class RegisterComponent {
           if (response.username) {
             this.popupService.registro = true;
             this.popupService.welcomingMessage = `Bienvenido ${data.username}!<br>Presione el siguiente botón para iniciar sesión en su cuenta.<br>También hemos enviado los datos de acceso a tu correo electrónico`;
-            this.userService.sendEmail_NewUser(data.username, data.password);
+            //this.userService.sendEmail_NewUser(data.username, data.password);
+            const response2 = await lastValueFrom(this.userService.createUserDB(accountName, data.username, data.username, data.username, '0', data.password));
+            console.log(response2)
           } else if (response.errcode === 30003) {
             this.registerError = 'Ya existe una cuenta asociada con el correo electrónico'
           } else if (response.errcode === 30002) {//Nunca debería ocurrir esto porque el nombre se codifica
@@ -76,6 +79,8 @@ export class RegisterComponent {
           if (response.username) {
             this.popupService.registro = true;
             this.popupService.welcomingMessage = `Bienvenido ${data.username}!<br>Presione el siguiente botón para iniciar sesión en su cuenta.`;
+            const response2 = await lastValueFrom(this.userService.createUserDB(accountName, data.username, data.username, '0', data.username, data.password));
+            console.log(response2)
           } else if (response.errcode === 30003) {
             this.registerError = 'Ya existe una cuenta asociada con el numero de teléfono'
           } else if (response.errcode === 30002) {//Nunca debería ocurrir esto porque el nombre se codifica
@@ -83,6 +88,8 @@ export class RegisterComponent {
           } else if (response.errcode === 90000) {//Nunca debería ocurrir esto porque la validacion de google de telefono lo evita
             this.registerError = 'el numero ingresado es muy largo'
           }
+
+
         } else {//No es email ni telefono
           this.registerError = 'Debe ingresar un correo electrónico o un número con prefijo telefónico (+XX)';
         }

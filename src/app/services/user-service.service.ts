@@ -184,7 +184,7 @@ export class UserServiceService {
     // Store the updated list back in localStorage as a JSON string
     localStorage.setItem(username, JSON.stringify(accessList));
   }
-  isInAccessList(username: string, lockId: number):boolean {
+  isInAccessList(username: string, lockId: number): boolean {
     // Retrieve the user's access list
     const accessList = JSON.parse(localStorage.getItem(username) || '[]');
     // Check if the lock ID is in the access list
@@ -201,4 +201,21 @@ export class UserServiceService {
     // Store the updated list back in localStorage as a JSON string
     localStorage.setItem(username, JSON.stringify(accessList));
   }
+  createUserDB(accountName: string, originalUsername: string, nickname: string, email: string, phone: string, password: string) {
+    let url = 'http://localhost:3000/api/usuarios/create';
+    let newUser  = {
+      accountName,
+      originalUsername,
+      nickname,
+      email,
+      phone,
+      password,
+    };
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    let options = { headers };
+    return this.http.post(url, newUser , options);
+  }
+
 }
