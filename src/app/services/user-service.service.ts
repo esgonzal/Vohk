@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Md5 } from 'ts-md5';
 import { Observable, lastValueFrom } from 'rxjs';
-import { LockServiceService } from './lock-service.service';
-import { GetAccessTokenResponse, ResetPasswordResponse, UserRegisterResponse } from '../Interfaces/API_responses';
+import { GetAccessTokenResponse, ResetPasswordResponse, UserRegisterResponse, checkUserInDBResponse } from '../Interfaces/API_responses';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import emailjs from 'emailjs-com';
 
@@ -18,7 +17,7 @@ export class UserServiceService {
   loggedIn = false;
   private phoneNumberUtil: PhoneNumberUtil;
 
-  constructor(private http: HttpClient, private lockService: LockServiceService) {
+  constructor(private http: HttpClient) {
     this.phoneNumberUtil = PhoneNumberUtil.getInstance();
   }
 
@@ -99,69 +98,20 @@ export class UserServiceService {
       return false;
     }
   }
-  UserRegister(nombre: string, clave: string): Observable<UserRegisterResponse> {
-    let date = this.lockService.timestamp();
-    let clave_encriptada = this.getMD5(clave);
-    let url = 'https://euapi.ttlock.com/v3/user/register';
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
-    body.set('username', nombre);
-    body.set('password', clave_encriptada);
-    body.set('date', date.toString());
-    return this.http.post<UserRegisterResponse>(url, body.toString(), options)
+  UserRegister(nombre: string, clave: string): Observable<UserRegisterResponse> { 
+    let body = { nombre, clave };
+    let url = 'http://localhost:3000/api/ttlock/user/register';
+    return this.http.post<UserRegisterResponse>(url, body);
   }
   getAccessToken(nombre: string, clave: string): Observable<GetAccessTokenResponse> {
-    let clave_encriptada = this.getMD5(clave);
-    let url = 'https://euapi.ttlock.com/oauth2/token';
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
-    body.set('username', nombre);
-    body.set('password', clave_encriptada);
-    return this.http.post<GetAccessTokenResponse>(url, body.toString(), options);
+    let body = { nombre, clave };
+    let url = 'http://localhost:3000/api/ttlock/user/login'
+    return this.http.post<GetAccessTokenResponse>(url, body);
   }
   ResetPassword(nombre: string, clave: string): Observable<ResetPasswordResponse> {
-    let date = this.lockService.timestamp()
-    let clave_encriptada = this.getMD5(clave);
-    const url = 'https://euapi.ttlock.com/v3/user/resetPassword';
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
-    body.set('username', nombre);
-    body.set('password', clave_encriptada);
-    body.set('date', date.toString());
-    return this.http.post<ResetPasswordResponse>(url, body.toString(), options);
-  }
-  DeleteUser(nombre: string) {
-    let date = this.lockService.timestamp();
-    let url = 'https://euapi.ttlock.com/v3/user/delete';
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let prefix = 'bhaaa_';
-    let username = prefix.concat(nombre)
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('clientSecret', '33b556bdb803763f2e647fc7a357dedf');
-    body.set('username', username);
-    body.set('date', date.toString());
-    this.http.post(url, body.toString(), options).subscribe((response: any) => {
-      console.log(response)
-    });
+    let body = { nombre, clave };
+    let url = 'http://localhost:3000/api/ttlock/resetPassword'
+    return this.http.post<ResetPasswordResponse>(url, body);
   }
   sendEmail_NewUser(recipientEmail: string, password: string) {//Template para passcode recurrente
     //esteban.vohk+6@gmail.com
@@ -203,7 +153,7 @@ export class UserServiceService {
   }
   createUserDB(accountName: string, originalUsername: string, nickname: string, email: string, phone: string, password: string) {
     let url = 'http://localhost:3000/api/usuarios/create';
-    let newUser  = {
+    let newUser = {
       accountName,
       originalUsername,
       nickname,
@@ -215,7 +165,15 @@ export class UserServiceService {
       'Content-Type': 'application/json',
     });
     let options = { headers };
-    return this.http.post(url, newUser , options);
+    return this.http.post(url, newUser, options);
+  }
+  checkUserInDB(accountName:string): Observable<checkUserInDBResponse>{
+    let url = `http://localhost:3000/api/usuarios/exists/${accountName}`;
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    let options = { headers };
+    return this.http.get<checkUserInDBResponse>(url, options);
   }
 
 }

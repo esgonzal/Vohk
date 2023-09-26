@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PassageModeService } from '../../services/passage-mode.service';
-import { PassageMode } from '../../Interfaces/PassageMode';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { operationResponse } from 'src/app/Interfaces/API_responses';
@@ -11,11 +10,11 @@ import { operationResponse } from 'src/app/Interfaces/API_responses';
   styleUrls: ['./passage-mode.component.css']
 })
 export class PassageModeComponent implements OnInit {
-  constructor(private passageModeService: PassageModeService, private cdr: ChangeDetectorRef, private router: Router) {
-    if(!this.passageModeService.passageModeConfig) {
+  constructor(private passageModeService: PassageModeService, private router: Router) {
+    if (!this.passageModeService.passageModeConfig) {
       this.router.navigate(['users', this.username, 'lock', this.lockId])
     }
-   }
+  }
   username = localStorage.getItem('user') ?? ''
   lockId: number = Number(localStorage.getItem('lockID') ?? '')
   isPassageModeToggleOn: boolean = false;
@@ -32,7 +31,7 @@ export class PassageModeComponent implements OnInit {
   startHour: string = '';
   endHour: string = '';
   error: string = '';
-  isLoading:boolean = false;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.updateValues()
@@ -90,16 +89,13 @@ export class PassageModeComponent implements OnInit {
     }
     else {
       this.isLoading = true;
-      const Config: PassageMode = {
-        "autoUnlock": 1,
-        "endDate": this.transformarHora(this.endHour),
-        "isAllDay": this.transformarAllHoursToggle(this.isAllHoursToggleOn),
-        "passageMode": this.transformarPassageToggle(this.isPassageModeToggleOn),
-        "startDate": this.transformarHora(this.startHour),
-        "weekDays": selectedDayNumbers
-      }
       try {
-        let response = await lastValueFrom(this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, Config)) as operationResponse
+        let passageMode = this.transformarPassageToggle(this.isPassageModeToggleOn);
+        let startDate = this.transformarHora(this.startHour);
+        let endDate = this.transformarHora(this.endHour);
+        let isAllDay = this.transformarAllHoursToggle(this.isAllHoursToggleOn);
+        let weekDays = selectedDayNumbers;
+        let response = await lastValueFrom(this.passageModeService.setPassageMode(this.passageModeService.token, this.passageModeService.lockID, passageMode, startDate, endDate, isAllDay, weekDays)) as operationResponse
         if (response.errcode === 0) {
           console.log("Modo de Paso configurado correctamente")
           this.router.navigate(["users", this.username, "lock", this.lockId]);

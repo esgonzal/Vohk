@@ -168,6 +168,7 @@ export class EkeyComponent {
           else if (userRegisterResponse.errcode === 30003) {//Es una cuenta existente creada en el PC
             console.log("La cuenta ya existía, pero no fue creada en TTLock, fue creada en el PC")
             sendEkeyResponse = await (lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, 'bhaaa_'.concat(encode), datos.name, "0", "0", 1))) as sendEkeyResponse;
+            console.log(sendEkeyResponse)
             if (sendEkeyResponse.errcode === 0) {//Se envia correctamente la ekey a la cuenta de PC
               if (this.userService.isValidEmail(datos.recieverName)) {//la cuenta es email asi que se manda correo
                 this.ekeyService.sendEmail_permanentEkey(datos.recieverName, datos.name)

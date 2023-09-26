@@ -1,7 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LockServiceService } from './lock-service.service';
 import { FingerprintResponse, operationResponse } from '../Interfaces/API_responses';
 
 @Injectable({
@@ -9,72 +8,26 @@ import { FingerprintResponse, operationResponse } from '../Interfaces/API_respon
 })
 export class FingerprintServiceService {
 
-  constructor(private http: HttpClient, private lockService: LockServiceService) { }
+  constructor(private http: HttpClient) { }
 
   getFingerprintsofLock(token: string, lockID: number, pageNo: number, pageSize: number): Observable<FingerprintResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/fingerprint/list'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('pageNo', pageNo.toString());
-    body.set('pageSize', pageSize.toString());
-    body.set('date', fecha);
-    return this.http.post<FingerprintResponse>(url, body.toString(), options);
+    let body = { token, lockID, pageNo, pageSize };
+    let url = 'http://localhost:3000/api/ttlock/fingerprint/getListLock';
+    return this.http.post<FingerprintResponse>(url, body);
   }
   deleteFingerprint(token: string, lockID: number, fingerprintID: number): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/fingerprint/delete'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('fingerprintId', fingerprintID.toString());
-    body.set('deleteType', "2");
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = { token, lockID, fingerprintID };
+    let url = 'http://localhost:3000/api/ttlock/fingerprint/delete';
+    return this.http.post<operationResponse>(url, body);
   }
   changeName(token: string, lockID: number, fingerprintID: number, newName: string): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/fingerprint/rename'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('fingerprintId', fingerprintID.toString());
-    body.set('fingerprintName', newName);
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = { token, lockID, fingerprintID, newName };
+    let url = 'http://localhost:3000/api/ttlock/fingerprint/rename';
+    return this.http.post<operationResponse>(url, body);
   }
   changePeriod(token: string, lockID: number, fingerprintID: number, newStartDate: string, newEndDate: string): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/fingerprint/changePeriod'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('fingerprintId', fingerprintID.toString());
-    body.set('startDate', newStartDate);
-    body.set('endDate', newEndDate);
-    body.set('changeType', '2');
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = { token, lockID, fingerprintID, newStartDate, newEndDate };
+    let url = 'http://localhost:3000/api/ttlock/fingerprint/changePeriod';
+    return this.http.post<operationResponse>(url, body);
   }
 }

@@ -1,7 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LockServiceService } from './lock-service.service';
 import { EkeyResponse, operationResponse, sendEkeyResponse, LockListResponse } from '../Interfaces/API_responses';
 import { LockData } from '../Interfaces/Lock';
 import { RecipientList } from '../Interfaces/RecipientList';
@@ -22,178 +21,57 @@ export class EkeyServiceService {
   recipients: RecipientList[] = [];
   ekeysimple = false;
 
-  constructor(private lockService: LockServiceService, private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   getEkeysofAccount(token: string, pageNo: number, pageSize: number, groupId?: number): Observable<LockListResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/list'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('pageNo', pageNo.toString());
-    body.set('pageSize', pageSize.toString());
-    body.set('date', fecha.toString());
-    if (groupId !== undefined) { body.set('groupId', groupId.toString()) }
-    return this.http.post<LockListResponse>(url, body.toString(), options);
+    let body = { token, pageNo, pageSize, groupId };
+    let url = 'http://localhost:3000/api/ttlock/ekey/getListAccount';
+    return this.http.post<LockListResponse>(url, body);
   }
   getEkeysofLock(token: string, lockID: number, pageNo: number, pageSize: number): Observable<EkeyResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/lock/listKey'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('pageNo', pageNo.toString());
-    body.set('pageSize', pageSize.toString());
-    body.set('date', fecha);
-    return this.http.post<EkeyResponse>(url, body.toString(), options);
+    let body = {token, lockID, pageNo, pageSize};
+    let url = 'http://localhost:3000/api/ttlock/ekey/getListLock';
+    return this.http.post<EkeyResponse>(url, body);
   }
   sendEkey(token: string, lockID: number, recieverName: string, keyName: string, startDate: string, endDate: string, keyRight: number, keyType?: number, startDay?: string, endDay?: string, weekDays?: string): Observable<sendEkeyResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/send'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('receiverUsername', recieverName);
-    body.set('keyName', keyName);
-    body.set('startDate', startDate);
-    body.set('endDate', endDate);
-    body.set('date', fecha);
-    body.set('keyRight', keyRight.toString());
-    if (keyType !== undefined) {
-      body.set('keyType', keyType.toString());
-    }
-    if (startDay !== undefined) {
-      body.set('startDay', startDay);
-    }
-    if (endDay !== undefined) {
-      body.set('endDay', endDay);
-    }
-    if (weekDays !== undefined) {
-      body.set('weekDays', weekDays);
-    }
-    return this.http.post<sendEkeyResponse>(url, body.toString(), options);
+   let body = {token, lockID, recieverName, keyName, startDate, endDate, keyRight, keyType, startDay, endDay, weekDays};
+   let url = 'http://localhost:3000/api/ttlock/ekey/send';
+   return this.http.post<sendEkeyResponse>(url, body);
   }
   deleteEkey(token: string, keyID: number): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/delete'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('keyId', keyID.toString());
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = {token, keyID};
+    let url = 'http://localhost:3000/api/ttlock/ekey/delete';
+    return this.http.post<operationResponse>(url, body);
   }
   freezeEkey(token: string, keyID: number): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/freeze'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('keyId', keyID.toString());
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = {token, keyID};
+    let url = 'http://localhost:3000/api/ttlock/ekey/freeze';
+    return this.http.post<operationResponse>(url, body);
   }
   unfreezeEkey(token: string, keyID: number): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/unfreeze'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('keyId', keyID.toString());
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = {token, keyID};
+    let url = 'http://localhost:3000/api/ttlock/ekey/unfreeze';
+    return this.http.post<operationResponse>(url, body);
   }
-  modifyEkey(token: string, ekeyID: number, newName?: string, remoteEnable?: string): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/update'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('keyId', ekeyID.toString());
-    body.set('date', fecha);
-    if (newName !== undefined) {
-      body.set('keyName', newName);
-    }
-    if (remoteEnable !== undefined) {
-      body.set('remoteEnable', remoteEnable);
-    }
-    return this.http.post<operationResponse>(url, body.toString(), options);
+  modifyEkey(token: string, keyID: number, newName?: string, remoteEnable?: string): Observable<operationResponse> {
+    let body = {token, keyID, newName, remoteEnable};
+    let url = 'http://localhost:3000/api/ttlock/ekey/modify';
+    return this.http.post<operationResponse>(url, body);
   }
-  changePeriod(token: string, ekeyID: number, newStartDate: string, newEndDate: string): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/changePeriod'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('keyId', ekeyID.toString());
-    body.set('startDate', newStartDate);
-    body.set('endDate', newEndDate);
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+  changePeriod(token: string, keyID: number, newStartDate: string, newEndDate: string): Observable<operationResponse> {
+    let body = {token, keyID, newStartDate, newEndDate};
+    let url = 'http://localhost:3000/api/ttlock/ekey/changePeriod';
+    return this.http.post<operationResponse>(url, body);
   }
   AuthorizeEkey(token: string, lockID: number, keyID: number): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/authorize'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('keyId', keyID.toString());
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = {token, lockID, keyID};
+    let url = 'http://localhost:3000/api/ttlock/ekey/authorize';
+    return this.http.post<operationResponse>(url, body);
   }
   cancelAuthorizeEkey(token: string, lockID: number, keyID: number): Observable<operationResponse> {
-    let fecha = this.lockService.timestamp()
-    let url = 'https://euapi.ttlock.com/v3/key/unauthorize'
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    let options = { headers: header };
-    let body = new URLSearchParams();
-    body.set('clientId', 'c4114592f7954ca3b751c44d81ef2c7d');
-    body.set('accessToken', token);
-    body.set('lockId', lockID.toString());
-    body.set('keyId', keyID.toString());
-    body.set('date', fecha);
-    return this.http.post<operationResponse>(url, body.toString(), options);
+    let body = {token, lockID, keyID};
+    let url = 'http://localhost:3000/api/ttlock/ekey/unauthorize';
+    return this.http.post<operationResponse>(url, body);
   }
   async sendEmail_permanentEkey(recipientEmail: string, keyName: string) {//Template para eKey permanente a una cuenta existente
     //esteban.vohk@gmail.com

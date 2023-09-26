@@ -3,7 +3,7 @@ import { User } from '../../Interfaces/User';
 import { UserServiceService } from '../../services/user-service.service';
 import { PopUpService } from '../../services/pop-up.service';
 import { lastValueFrom } from 'rxjs';
-import { GetAccessTokenResponse, UserRegisterResponse } from '../../Interfaces/API_responses';
+import { GetAccessTokenResponse, UserRegisterResponse, checkUserInDBResponse } from '../../Interfaces/API_responses';
 
 @Component({
   selector: 'app-register',
@@ -56,13 +56,16 @@ export class RegisterComponent {
         if (this.userService.isValidEmail(data.username)) {//Es un email
           this.registerError = ''
           const response = await lastValueFrom(this.userService.UserRegister(encode, data.password)) as UserRegisterResponse;
-          console.log(response)
+          //console.log(response)
           if (response.username) {
             this.popupService.registro = true;
             this.popupService.welcomingMessage = `Bienvenido ${data.username}!<br>Presione el siguiente botón para iniciar sesión en su cuenta.<br>También hemos enviado los datos de acceso a tu correo electrónico`;
             //this.userService.sendEmail_NewUser(data.username, data.password);
-            const response2 = await lastValueFrom(this.userService.createUserDB(accountName, data.username, data.username, data.username, '0', data.password));
-            console.log(response2)
+            const existsInDB = await lastValueFrom(this.userService.checkUserInDB(accountName)) as checkUserInDBResponse;
+            if (existsInDB.exists === false) {
+              const response2 = await lastValueFrom(this.userService.createUserDB(accountName, data.username, data.username, data.username, '', data.password));
+              console.log(response2)
+            }
           } else if (response.errcode === 30003) {
             this.registerError = 'Ya existe una cuenta asociada con el correo electrónico'
           } else if (response.errcode === 30002) {//Nunca debería ocurrir esto porque el nombre se codifica
@@ -73,14 +76,16 @@ export class RegisterComponent {
         }
         else if (phoneValidation.isValid) {//Es un telefono
           this.registerError = ''
-          //console.log("País:", phoneValidation.country);
           const response = await lastValueFrom(this.userService.UserRegister(encode, data.password)) as UserRegisterResponse;
-          console.log(response)
+          //console.log(response)
           if (response.username) {
             this.popupService.registro = true;
             this.popupService.welcomingMessage = `Bienvenido ${data.username}!<br>Presione el siguiente botón para iniciar sesión en su cuenta.`;
-            const response2 = await lastValueFrom(this.userService.createUserDB(accountName, data.username, data.username, '0', data.username, data.password));
-            console.log(response2)
+            const existsInDB = await lastValueFrom(this.userService.checkUserInDB(accountName)) as checkUserInDBResponse;
+            if (existsInDB.exists === false) {
+              const response2 = await lastValueFrom(this.userService.createUserDB(accountName, data.username, data.username, '', data.username, data.password));
+              console.log(response2)
+            }
           } else if (response.errcode === 30003) {
             this.registerError = 'Ya existe una cuenta asociada con el numero de teléfono'
           } else if (response.errcode === 30002) {//Nunca debería ocurrir esto porque el nombre se codifica
@@ -88,8 +93,6 @@ export class RegisterComponent {
           } else if (response.errcode === 90000) {//Nunca debería ocurrir esto porque la validacion de google de telefono lo evita
             this.registerError = 'el numero ingresado es muy largo'
           }
-
-
         } else {//No es email ni telefono
           this.registerError = 'Debe ingresar un correo electrónico o un número con prefijo telefónico (+XX)';
         }

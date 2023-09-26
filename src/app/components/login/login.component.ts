@@ -41,7 +41,7 @@ export class LoginComponent {
     let response;
     if (this.validarInputs(data)) {
       response = await lastValueFrom(this.userService.getAccessToken(data.username, data.password)) as GetAccessTokenResponse;
-      console.log("Primer intento(cuenta TTLock)", response)
+      console.log(response)
       if (response.access_token) {
         this.access_token = response.access_token
         localStorage.setItem('logged', '1')
@@ -54,9 +54,8 @@ export class LoginComponent {
       } else {
         let encode = this.userService.customBase64Encode(data.username);
         response = await lastValueFrom(this.userService.getAccessToken('bhaaa_'.concat(encode), data.password)) as GetAccessTokenResponse;
-        console.log("Segundo intento(cuenta VOHK)", response)
+        console.log(response)
         if (response.access_token) {
-          let country = 
           this.access_token = response.access_token
           localStorage.setItem('logged', '1')
           localStorage.setItem('user', data.username)

@@ -110,3 +110,6 @@ export interface GatewayLockResponse {
 export interface GetLockTimeResponse {
     date: number;
 }
+export interface checkUserInDBResponse {
+    exists: boolean;
+}
