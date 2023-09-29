@@ -525,13 +525,13 @@ export class PopUpComponent implements OnInit {
     this.isLoading = true;
     try {
       if (this.currentPassword !== '' && this.newPassword !== '' && this.confirmPassword !== '') {
-        if (this.currentPassword === localStorage.getItem('password')) {
+        if (this.currentPassword === sessionStorage.getItem('password')) {
           const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
           if (passwordPattern.test(this.newPassword)) {
             if (this.newPassword === this.confirmPassword) {
-              let response = await lastValueFrom(this.userService.ResetPassword("bhaaa_".concat(this.userService.customBase64Encode(localStorage.getItem('user') ?? '')), this.newPassword)) as ResetPasswordResponse;
+              let response = await lastValueFrom(this.userService.ResetPassword("bhaaa_".concat(this.userService.customBase64Encode(sessionStorage.getItem('user') ?? '')), this.newPassword)) as ResetPasswordResponse;
               if (response.errcode === 0) {
-                localStorage.setItem('password', this.newPassword)
+                sessionStorage.setItem('password', this.newPassword)
                 this.popupService.resetPassword = false;
                 window.location.reload();
               } else {
@@ -590,7 +590,7 @@ export class PopUpComponent implements OnInit {
     if (!datos.name) {
       this.error = 'Ingrese un nombre'
     } else {
-      localStorage.setItem('nickname', datos.name)
+      sessionStorage.setItem('nickname', datos.name)
       this.popupService.changeNickname = false;
       window.location.reload();
     }

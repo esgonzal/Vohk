@@ -12,8 +12,8 @@ import emailjs from 'emailjs-com';
 export class EkeyServiceService {
 
   token: string;
-  username = localStorage.getItem('user') ?? ''
-  lockAlias = localStorage.getItem('Alias') ?? ''
+  username = sessionStorage.getItem('user') ?? ''
+  lockAlias = sessionStorage.getItem('Alias') ?? ''
   lockID: number;
   endDateUser: string;
   currentLocks: LockData[] = []

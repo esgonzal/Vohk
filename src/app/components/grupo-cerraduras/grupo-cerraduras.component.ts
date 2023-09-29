@@ -14,8 +14,8 @@ import { GroupResponse, LockListResponse } from '../../Interfaces/API_responses'
 })
 export class GrupoCerradurasComponent implements OnInit {
 
-  token = localStorage.getItem('token') ?? ''
-  username = localStorage.getItem('user') ?? ''
+  token = sessionStorage.getItem('token') ?? ''
+  username = sessionStorage.getItem('user') ?? ''
   displayedColumnsGroup: string[] = ['Nombre', 'Cantidad', 'Operacion'];
   groups: Group[] = [];
   allLocks: LockData[] = [];

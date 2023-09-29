@@ -13,12 +13,12 @@ export class PerfilComponent {
 
   faEye = faEye;
   faEyeSlash = faEyeSlash;
-  username = localStorage.getItem('nickname') ?? ''
-  account = localStorage.getItem('user') ?? ''
-  password = localStorage.getItem('password') ?? ''
-  email = localStorage.getItem('email') ?? ''
-  country = localStorage.getItem('country') ?? ''
-  phone = localStorage.getItem('phone') ?? ''
+  username = sessionStorage.getItem('nickname') ?? ''
+  account = sessionStorage.getItem('user') ?? ''
+  password = sessionStorage.getItem('password') ?? ''
+  email = sessionStorage.getItem('email') ?? ''
+  country = sessionStorage.getItem('country') ?? ''
+  phone = sessionStorage.getItem('phone') ?? ''
   showPassword = false;
 
   togglePasswordVisibility() {
@@ -35,7 +35,7 @@ export class PerfilComponent {
     }
   }
   getAccountType(){
-    return localStorage.getItem('Account');
+    return sessionStorage.getItem('Account');
   }
   cambiarNombre(){
     this.popupService.changeNickname = true;

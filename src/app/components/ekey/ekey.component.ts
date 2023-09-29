@@ -17,7 +17,7 @@ export class EkeyComponent {
 
   constructor(private router: Router, public ekeyService: EkeyServiceService, private userService: UserServiceService, private lockService: LockServiceService) {
     if(!this.ekeyService.username || !this.ekeyService.token || !this.ekeyService.lockID || !this.ekeyService.endDateUser) {
-      this.router.navigate(['users', localStorage.getItem('user'), 'lock', localStorage.getItem('lockID')])
+      this.router.navigate(['users', sessionStorage.getItem('user'), 'lock', sessionStorage.getItem('lockID')])
     }
    }
   

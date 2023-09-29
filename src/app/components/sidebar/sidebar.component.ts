@@ -23,9 +23,9 @@ export class SidebarComponent {
     } else {
       this.groupService.updateSelectedGroup(group);
     }
-    this.router.navigate(['users', localStorage.getItem('user')]);
+    this.router.navigate(['users', sessionStorage.getItem('user')]);
   }
   toGrupoCerraduras() {
-    this.router.navigate(['/users/', localStorage.getItem('user'), 'grupos']);
+    this.router.navigate(['/users/', sessionStorage.getItem('user'), 'grupos']);
   }
 }

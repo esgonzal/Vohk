@@ -126,30 +126,30 @@ export class UserServiceService {
   }
   addLockToAccessList(username: string, lockId: number) {
     // Retrieve the current access list or create an empty array
-    const accessList = JSON.parse(localStorage.getItem(username) || '[]');
+    const accessList = JSON.parse(sessionStorage.getItem(username) || '[]');
     // Add the lock ID to the list if it's not already present
     if (!accessList.includes(lockId)) {
       accessList.push(lockId);
     }
     // Store the updated list back in localStorage as a JSON string
-    localStorage.setItem(username, JSON.stringify(accessList));
+    sessionStorage.setItem(username, JSON.stringify(accessList));
   }
   isInAccessList(username: string, lockId: number): boolean {
     // Retrieve the user's access list
-    const accessList = JSON.parse(localStorage.getItem(username) || '[]');
+    const accessList = JSON.parse(sessionStorage.getItem(username) || '[]');
     // Check if the lock ID is in the access list
     return accessList.includes(lockId);
   }
   removeLockFromAccessList(username: string, lockId: number) {
     // Retrieve the current access list or create an empty array
-    const accessList = JSON.parse(localStorage.getItem(username) || '[]');
+    const accessList = JSON.parse(sessionStorage.getItem(username) || '[]');
     // Remove the lock ID from the list if it exists
     const index = accessList.indexOf(lockId);
     if (index !== -1) {
       accessList.splice(index, 1);
     }
     // Store the updated list back in localStorage as a JSON string
-    localStorage.setItem(username, JSON.stringify(accessList));
+    sessionStorage.setItem(username, JSON.stringify(accessList));
   }
   createUserDB(accountName: string, originalUsername: string, nickname: string, email: string, phone: string, password: string) {
     let url = 'http://localhost:3000/api/usuarios/create';

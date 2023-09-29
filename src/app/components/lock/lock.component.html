@@ -101,7 +101,7 @@
       <div class="funciones_cerradura">
         <div>
           <div class="tablist">
-            <mat-tab-group backgroundColor="primary" color="warn">
+            <mat-tab-group backgroundColor="primary" color="warn" (selectedTabChange)="onTabChanged($event)">
               <div *ngIf="!(userService.isInAccessList(username, lockId))">
                 <mat-tab label="Usuarios">
                   <div class="contenido">

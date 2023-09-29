@@ -21,6 +21,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse, LockListResponse, GroupResponse } from '../../Interfaces/API_responses';
 import { PassageMode } from 'src/app/Interfaces/PassageMode';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-lock',
@@ -42,18 +43,18 @@ export class LockComponent implements OnInit {
   isLoading: boolean = false;
   lock: LockData;
   lockDetails: LockDetails;
-  token = localStorage.getItem('token') ?? '';
-  username = localStorage.getItem('user') ?? ''
-  lockId: number = Number(localStorage.getItem('lockID') ?? '')
-  Alias = localStorage.getItem('Alias') ?? '';
-  Bateria = localStorage.getItem('Bateria') ?? '';
-  userType = localStorage.getItem('userType') ?? '';
-  keyRight = localStorage.getItem('keyRight') ?? '';
-  startDateDeUser = localStorage.getItem('startDate') ?? '';
-  endDateDeUser = localStorage.getItem('endDate') ?? '';
-  fullName = localStorage.getItem('user') ?? '';
-  gateway = localStorage.getItem('gateway') ?? '';
-  featureValue = localStorage.getItem('features') ?? '';
+  token = sessionStorage.getItem('token') ?? '';
+  username = sessionStorage.getItem('user') ?? ''
+  lockId: number = Number(sessionStorage.getItem('lockID') ?? '')
+  Alias = sessionStorage.getItem('Alias') ?? '';
+  Bateria = sessionStorage.getItem('Bateria') ?? '';
+  userType = sessionStorage.getItem('userType') ?? '';
+  keyRight = sessionStorage.getItem('keyRight') ?? '';
+  startDateDeUser = sessionStorage.getItem('startDate') ?? '';
+  endDateDeUser = sessionStorage.getItem('endDate') ?? '';
+  fullName = sessionStorage.getItem('user') ?? '';
+  gateway = sessionStorage.getItem('gateway') ?? '';
+  featureValue = sessionStorage.getItem('features') ?? '';
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -67,6 +68,7 @@ export class LockComponent implements OnInit {
   locksWithoutGroup: LockData[] = [];
   groups: Group[] = []
   ////////////////////////////////////////////////////////////
+  selectedTabIndex = 0;
   ekeysDataSource: MatTableDataSource<Ekey>;
   passcodesDataSource: MatTableDataSource<Passcode>;
   cardsDataSource: MatTableDataSource<Card>;
@@ -159,6 +161,7 @@ export class LockComponent implements OnInit {
   ];
 
   async ngOnInit() {
+    await this.fetchEkeys();
     await this.getAllLocks();
     await this.fetchGroups();
     //await this.getLocksWithoutGroup();
@@ -169,20 +172,7 @@ export class LockComponent implements OnInit {
         //console.log("Locks without group",this.locksWithoutGroup)
       }
     });
-    await this.fetchLockDetails();
-    await this.fetchEkeys();
-    await this.fetchPasscodes();
-    await this.fetchCards();
-    await this.fetchFingerprints();
-    await this.fetchRecords();
-    this.updatePasscodeUsage()
-    this.ekeysDataSource = new MatTableDataSource(this.ekeys);
-    this.passcodesDataSource = new MatTableDataSource(this.passcodes);
-    this.cardsDataSource = new MatTableDataSource(this.cards);
-    this.fingerprintsDataSource = new MatTableDataSource(this.fingerprints);
-    this.recordsDataSource = new MatTableDataSource(this.records);
-    this.recordsFiltrados = this.records.filter(record => record.username === this.encodeNombre(this.username));
-    this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.encodeNombre(this.username));
+  
     //console.log("Los detalles del lock: ", this.lockDetails)
     //console.log("eKeys: ", this.ekeys)
     //console.log("Passcodes: ", this.passcodes)
@@ -195,6 +185,7 @@ export class LockComponent implements OnInit {
         //console.log(`${feature.bit} - ${feature.feature} - ${isSupported}`);
       }
     }
+    this.ekeysDataSource = new MatTableDataSource(this.ekeys);
   }
   async getAllLocks() {
     this.isLoading = true;
@@ -512,6 +503,34 @@ export class LockComponent implements OnInit {
     }
   }
   //FUNCIONES PARA FORMATO DE TABLA
+  async onTabChanged(event: MatTabChangeEvent): Promise<void> {
+    this.selectedTabIndex = event.index;
+    switch (this.selectedTabIndex) {
+      case 0:
+        await this.fetchEkeys();
+        this.ekeysDataSource = new MatTableDataSource(this.ekeys);
+        break;
+      case 1:
+        await this.fetchPasscodes();
+        this.updatePasscodeUsage()
+        this.passcodesDataSource = new MatTableDataSource(this.passcodes);
+        this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.encodeNombre(this.username));
+        break;
+      case 2:
+        await this.fetchCards();
+        this.cardsDataSource = new MatTableDataSource(this.cards);
+        break;
+      case 3:
+        await this.fetchFingerprints();
+        this.fingerprintsDataSource = new MatTableDataSource(this.fingerprints);
+        break;
+      case 4:
+        await this.fetchRecords();
+        this.recordsDataSource = new MatTableDataSource(this.records);
+        this.recordsFiltrados = this.records.filter(record => record.username === this.encodeNombre(this.username));
+        break;
+    }
+  }
   Number(palabra: string) {
     return Number(palabra)
   }
@@ -1161,7 +1180,7 @@ export class LockComponent implements OnInit {
     this.popupService.desautorizarFalso = true;
   }
   getVariable(nombre: string) {
-    return localStorage.getItem(nombre);
+    return sessionStorage.getItem(nombre);
   }
   //FUNCIONES PASSCODE
   crearPasscode() {

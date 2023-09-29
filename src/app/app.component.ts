@@ -11,7 +11,7 @@ export class AppComponent {
   constructor() { }
 
   returnLogged() {
-    return localStorage.getItem('logged') ?? '';
+    return sessionStorage.getItem('logged') ?? '';
   }
 
 }

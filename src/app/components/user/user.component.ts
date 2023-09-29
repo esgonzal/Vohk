@@ -19,11 +19,11 @@ import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 })
 export class UserComponent implements OnInit {
 
-  username = localStorage.getItem('user') ?? '';
-  password = localStorage.getItem('password') ?? '';
+  username = sessionStorage.getItem('user') ?? '';
+  password = sessionStorage.getItem('password') ?? '';
   newPassword: string;
   newPasswordDisplay = false;
-  token = localStorage.getItem('token') ?? '';
+  token = sessionStorage.getItem('token') ?? '';
   isLoading: boolean = false;
   ekeyList: LockListResponse;
   allLocks: LockData[] = [];
@@ -182,15 +182,15 @@ export class UserComponent implements OnInit {
     this.groupService.locksWithoutGroup = this.locksWithoutGroup;
   }
   onLockButtonClick(lock: LockData) {
-    localStorage.setItem('lockID', lock.lockId.toString())
-    localStorage.setItem('Alias', lock.lockAlias)
-    localStorage.setItem('Bateria', lock.electricQuantity.toString())
-    localStorage.setItem('userType', lock.userType)
-    localStorage.setItem('keyRight', lock.keyRight.toString())
-    localStorage.setItem('startDate', lock.startDate)
-    localStorage.setItem('endDate', lock.endDate)
-    localStorage.setItem('gateway', lock.hasGateway.toString())
-    localStorage.setItem('features', lock.featureValue)
+    sessionStorage.setItem('lockID', lock.lockId.toString())
+    sessionStorage.setItem('Alias', lock.lockAlias)
+    sessionStorage.setItem('Bateria', lock.electricQuantity.toString())
+    sessionStorage.setItem('userType', lock.userType)
+    sessionStorage.setItem('keyRight', lock.keyRight.toString())
+    sessionStorage.setItem('startDate', lock.startDate)
+    sessionStorage.setItem('endDate', lock.endDate)
+    sessionStorage.setItem('gateway', lock.hasGateway.toString())
+    sessionStorage.setItem('features', lock.featureValue)
     this.router.navigate(['users', this.username, 'lock', lock.lockId])
   }
   onInvalidButtonClick() {

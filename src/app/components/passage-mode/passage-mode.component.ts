@@ -15,8 +15,8 @@ export class PassageModeComponent implements OnInit {
       this.router.navigate(['users', this.username, 'lock', this.lockId])
     }
   }
-  username = localStorage.getItem('user') ?? ''
-  lockId: number = Number(localStorage.getItem('lockID') ?? '')
+  username = sessionStorage.getItem('user') ?? ''
+  lockId: number = Number(sessionStorage.getItem('lockID') ?? '')
   isPassageModeToggleOn: boolean = false;
   weekDays = [
     { name: 'Lunes', value: 1, checked: false },

@@ -12,39 +12,39 @@ export class NavbarComponent {
   constructor(private router: Router, public userService: UserServiceService) { }
 
   returnNombre() {
-    return localStorage.getItem('nickname') ?? '';
+    return sessionStorage.getItem('nickname') ?? '';
   }
   returnLogged() {
-    return localStorage.getItem('logged') ?? '';
+    return sessionStorage.getItem('logged') ?? '';
   }
   mostrarCerraduras() {
-    let username = localStorage.getItem('user') ?? '';
+    let username = sessionStorage.getItem('user') ?? '';
     this.router.navigate(['users', username]);
   }
   toPerfil() {
-    let username = localStorage.getItem('user') ?? '';
+    let username = sessionStorage.getItem('user') ?? '';
     this.router.navigate(['users', username, 'perfil']);
   }
   cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('nickname');
-    localStorage.removeItem('password');
-    localStorage.removeItem('token');
-    localStorage.removeItem('keyRight');
-    localStorage.removeItem('Bateria');
-    localStorage.removeItem('Alias');
-    localStorage.removeItem('userType');
-    localStorage.removeItem('startDate');
-    localStorage.removeItem('endDate');
-    localStorage.removeItem('senderUsername');
-    localStorage.removeItem('lockID');
-    localStorage.removeItem('gateway');
-    localStorage.removeItem('logged');
-    localStorage.removeItem('features');
-    localStorage.removeItem('Account');
-    localStorage.removeItem('email');
-    localStorage.removeItem('phone');
-    localStorage.removeItem('country');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('nickname');
+    sessionStorage.removeItem('password');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('keyRight');
+    sessionStorage.removeItem('Bateria');
+    sessionStorage.removeItem('Alias');
+    sessionStorage.removeItem('userType');
+    sessionStorage.removeItem('startDate');
+    sessionStorage.removeItem('endDate');
+    sessionStorage.removeItem('senderUsername');
+    sessionStorage.removeItem('lockID');
+    sessionStorage.removeItem('gateway');
+    sessionStorage.removeItem('logged');
+    sessionStorage.removeItem('features');
+    sessionStorage.removeItem('Account');
+    sessionStorage.removeItem('email');
+    sessionStorage.removeItem('phone');
+    sessionStorage.removeItem('country');
     this.router.navigate(['home']);
   }
 }

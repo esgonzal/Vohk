@@ -25,7 +25,7 @@ export class MultipleEkeyComponent {
     private lockService: LockServiceService,
     private userService: UserServiceService) {
       if (ekeyService.currentLocks.length === 0) {
-        this.router.navigate(['users', localStorage.getItem('user'), 'lock', localStorage.getItem('lockID')])
+        this.router.navigate(['users', sessionStorage.getItem('user'), 'lock', sessionStorage.getItem('lockID')])
       }
      }
 

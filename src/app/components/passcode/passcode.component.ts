@@ -17,7 +17,7 @@ export class PasscodeComponent{
 
   constructor(public passcodeService: PasscodeServiceService, public lockService: LockServiceService, private router: Router, public popupService: PopUpService) {
     if(!this.passcodeService.token || !this.passcodeService.username || !this.passcodeService.lockID || !this.passcodeService.endDateUser || !this.passcodeService.featureValue) {
-      this.router.navigate(['users', localStorage.getItem('user'), 'lock', localStorage.getItem('lockID')])
+      this.router.navigate(['users', sessionStorage.getItem('user'), 'lock', sessionStorage.getItem('lockID')])
     }
    }
 

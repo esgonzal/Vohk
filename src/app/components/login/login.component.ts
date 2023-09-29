@@ -44,12 +44,12 @@ export class LoginComponent {
       console.log(response)
       if (response.access_token) {
         this.access_token = response.access_token
-        localStorage.setItem('logged', '1')
-        localStorage.setItem('user', data.username)
-        localStorage.setItem('nickname', data.username)
-        localStorage.setItem('password', data.password);
-        localStorage.setItem('token', this.access_token);
-        localStorage.setItem('Account', 'TTLock')
+        sessionStorage.setItem('logged', '1')
+        sessionStorage.setItem('user', data.username)
+        sessionStorage.setItem('nickname', data.username)
+        sessionStorage.setItem('password', data.password);
+        sessionStorage.setItem('token', this.access_token);
+        sessionStorage.setItem('Account', 'TTLock')
         this.router.navigate(['/users/', data.username]);
       } else {
         let encode = this.userService.customBase64Encode(data.username);
@@ -57,18 +57,18 @@ export class LoginComponent {
         console.log(response)
         if (response.access_token) {
           this.access_token = response.access_token
-          localStorage.setItem('logged', '1')
-          localStorage.setItem('user', data.username)
-          localStorage.setItem('nickname', data.username)
-          localStorage.setItem('password', data.password);
-          localStorage.setItem('token', this.access_token);
-          localStorage.setItem('Account', 'Vohk')
+          sessionStorage.setItem('logged', '1')
+          sessionStorage.setItem('user', data.username)
+          sessionStorage.setItem('nickname', data.username)
+          sessionStorage.setItem('password', data.password);
+          sessionStorage.setItem('token', this.access_token);
+          sessionStorage.setItem('Account', 'Vohk')
           if(this.userService.isValidEmail(data.username)) { 
-            localStorage.setItem('email', data.username);
+            sessionStorage.setItem('email', data.username);
           }
           if(this.userService.isValidPhone(data.username).isValid) {
-            localStorage.setItem('phone', data.username)
-            localStorage.setItem('country', this.userService.isValidPhone(data.username).country ?? '')
+            sessionStorage.setItem('phone', data.username)
+            sessionStorage.setItem('country', this.userService.isValidPhone(data.username).country ?? '')
           }
           this.router.navigate(['/users/', data.username]);
         } else {

@@ -16,8 +16,8 @@ export class TransferLockComponent {
   constructor(private userService: UserServiceService, public popupService: PopUpService, private lockService: LockServiceService, private router: Router) { }
 
   error: string = '';
-  username = localStorage.getItem('user') ?? ''
-  lockId: number = Number(localStorage.getItem('lockID') ?? '')
+  username = sessionStorage.getItem('user') ?? ''
+  lockId: number = Number(sessionStorage.getItem('lockID') ?? '')
   recieverUsername: string;
   isLoading: boolean;
 
@@ -26,18 +26,18 @@ export class TransferLockComponent {
     // 2 - Si no funciona, se intenta asumiendo que la cuenta receptora es VOHK. Si no funciona quiere decir que la cuenta no existe.
     this.isLoading = true;
     try {
-      let lockID = localStorage.getItem('lockID') ?? ''
+      let lockID = sessionStorage.getItem('lockID') ?? ''
       let lockIDList: string = "[".concat(lockID).concat("]");
       let response = await lastValueFrom(this.lockService.transferLock(this.lockService.token, this.recieverUsername, lockIDList)) as operationResponse;
       if (response.errcode === 0) {//Es cuenta TTLock
-        this.router.navigate(["users", localStorage.getItem('user') ?? '']);
+        this.router.navigate(["users", sessionStorage.getItem('user') ?? '']);
         console.log("La cerradura se transfirió a la cuenta TTLock exitosamente")
         this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
       } else if (response.errcode === -1002) {
         let encode = this.userService.customBase64Encode(this.recieverUsername);
         response = await lastValueFrom(this.lockService.transferLock(this.lockService.token, 'bhaaa_'.concat(encode), lockIDList)) as operationResponse;
         if (response.errcode == 0) {//Es cuenta VOHK
-          this.router.navigate(["users", localStorage.getItem('user') ?? '']);
+          this.router.navigate(["users", sessionStorage.getItem('user') ?? '']);
           console.log("La cerradura se transfirió a la cuenta VOHK exitosamente")
           this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
         } else if (response.errcode === -1002) {
