@@ -18,6 +18,7 @@ export interface Ekey {
     endDay: string;
     weekDays: string;
     remoteEnable: number;
+    isuser: boolean; 
 }
 export interface Passcode {
     endDate: string;

@@ -119,7 +119,7 @@ export class PopUpComponent implements OnInit {
       if (response?.errcode === 0) {
         this.popupService.delete = false;
         if (this.popupService.elementType === 'ekey') {
-          this.userService.removeLockFromAccessList(this.popupService.ekeyUsername, this.popupService.lockID)
+          lastValueFrom(this.ekeyService.deleteEkeyDB(this.popupService.ekeyUsername, this.popupService.lockID))
         }
         console.log(this.popupService.elementType, "borrada exitosamente")
         window.location.reload();
@@ -138,8 +138,8 @@ export class PopUpComponent implements OnInit {
     window.location.reload();
   }
   autorizarFalso() {
-    console.log("Se quita", this.popupService.lockID, "del repertorio limitado de", this.popupService.elementType)
-    this.userService.removeLockFromAccessList(this.popupService.elementType, this.popupService.lockID)
+    lastValueFrom(this.ekeyService.changeIsUser(this.popupService.elementType, this.popupService.lockID, false))
+    window.location.reload();
     this.popupService.autorizarFalso = false;
   }
   async desautorizar() {
@@ -148,8 +148,8 @@ export class PopUpComponent implements OnInit {
     window.location.reload();
   }
   desautorizarFalso() {
-    console.log("Se agrega", this.popupService.lockID, "al repertorio limitado de", this.popupService.elementType)
-    this.userService.addLockToAccessList(this.popupService.elementType, this.popupService.lockID);
+    lastValueFrom(this.ekeyService.changeIsUser(this.popupService.elementType, this.popupService.lockID, true));
+    window.location.reload();
     this.popupService.desautorizarFalso = false;
   }
   async congelar() {
@@ -608,6 +608,18 @@ export class PopUpComponent implements OnInit {
       console.error("Error while adjusting the time of a lock:", error);
     } finally {
       this.isLoading = false;
+    }
+  }
+  decodeNombre(username: string) {
+    if (username) {
+      let nombre_dividido = username.split("_");
+      if (nombre_dividido[0] === 'bhaaa') {
+        return this.userService.customBase64Decode(nombre_dividido[1])
+      } else {
+        return username;
+      }
+    } else {
+      return username;
     }
   }
 }

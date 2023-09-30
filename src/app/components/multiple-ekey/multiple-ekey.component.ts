@@ -120,7 +120,6 @@ export class MultipleEkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, lockID)
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta PC
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -136,7 +135,6 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -150,38 +148,11 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
           }
         }
-
-        /*
-        const response = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, "0", "0", 1));
-        const typedResponse = response as sendEkeyResponse;
-        if (typedResponse.errcode === 0) {//La ekey fue recibida correctamente
-          if (this.userService.isValidEmail(datos.recieverName)) {//La cuenta es un correo electronico
-            if (await this.userService.isEmailNew(datos.recieverName)) {//La cuenta de destinatario fue creada ahora
-              console.log("La cuenta es nueva, cambiar contraseña")
-              this.ekeyService.sendEmail_permanentEkey_newAccount(datos.recieverName, datos.name, "il.com")
-            } else {//La cuenta de destinatario ya existia
-              this.ekeyService.sendEmail_oneTimeEkey(datos.recieverName, datos.name);
-              console.log("La cuenta ya existia, mandar correo normal")
-            }
-          } else {//La cuenta es un numero de celular
-            console.log("No es un correo, por lo tanto deberia ser un numero. Mandar mensaje de texto en vez de correo")
-          }
-          localStorage.setItem(datos.recieverName, "1");
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
-        } else {
-          if (typedResponse.errcode === -1002) {//Destinatario inválido
-            this.error = "El nombre del destinatario es inválido"
-          }
-          console.log("error:", typedResponse);
-        }
-        */
-        ///////////AQUI TERMINA EKEY PERMANENTE///////////////////////////////////////////////////////
       }
       else if (datos.ekeyType === '2') {
 
@@ -199,7 +170,6 @@ export class MultipleEkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, lockID)
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta PC
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -215,7 +185,6 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -229,7 +198,6 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -249,7 +217,6 @@ export class MultipleEkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, lockID)
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -265,7 +232,6 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -279,37 +245,11 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
           }
         }
-        /*
-        const response = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, moment().valueOf().toString(), "1", 1));
-        const typedResponse = response as sendEkeyResponse;
-        if (typedResponse.errcode === 0) {//La ekey fue recibida correctamente
-          if (this.userService.isValidEmail(datos.recieverName)) {//La cuenta es un correo electronico
-            if (await this.userService.isEmailNew(datos.recieverName)) {//La cuenta de destinatario fue creada ahora
-              this.ekeyService.sendEmail_oneTimeEkey_newAccount(datos.recieverName, datos.name, "il.com")
-              console.log("La cuenta es nueva, cambiar contraseña")
-            } else {//La cuenta de destinatario ya existia
-              this.ekeyService.sendEmail_oneTimeEkey(datos.recieverName, datos.name);
-              console.log("La cuenta ya existia, mandar correo normal")
-            }
-          } else {//La cuenta es un numero de celular
-            console.log("No es un correo, por lo tanto deberia ser un numero. Mandar mensaje de texto en vez de correo")
-          }
-          localStorage.setItem(datos.recieverName, "1");
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
-        } else {
-          if (typedResponse.errcode === -1002) {//Destinatario inválido
-            this.error = "El nombre del destinatario es inválido"
-          }
-          console.log("error:", typedResponse);
-        }
-        */
-        ///////////AQUI TERMINA EKEY DE UN USO//////////////////////////////////////////////////////////////////
       }
       else if (datos.ekeyType === '4') {
         ///////////SOLICITANTE////////////////////////////////////////////
@@ -330,7 +270,6 @@ export class MultipleEkeyComponent {
           } else {//la cuenta es numero de celular
             console.log("mandar mensaje de wsp")
           }
-          this.userService.addLockToAccessList(datos.recieverName, lockID)
         }
         else if (sendEkeyResponse.errcode === -1002) {//No existe una cuenta TTLock con el nombre ingresado, asi que se intenta con cuenta VOHK
           let encode = this.userService.customBase64Encode(datos.recieverName)
@@ -346,7 +285,6 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
@@ -360,37 +298,11 @@ export class MultipleEkeyComponent {
               } else {//la cuenta es numero de celular
                 console.log("mandar mensaje de wsp")
               }
-              this.userService.addLockToAccessList(datos.recieverName, lockID)
             } else {//La ekey no se pudo envío 
               console.log("Error:", sendEkeyResponse)
             }
           }
         }
-        /*
-        const response = await lastValueFrom(this.ekeyService.sendEkey(this.ekeyService.token, this.ekeyService.lockID, datos.recieverName, datos.name, newStartDate.toString(), newEndDate.toString(), 4, 1, newStartDay.toString(), newEndDay.toString(), JSON.stringify(selectedDayNumbers)))
-        const typedResponse = response as sendEkeyResponse;
-        if (typedResponse.errcode === 0) {//La ekey fue recibida correctamente
-          if (this.userService.isValidEmail(datos.recieverName)) {//La cuenta es un correo electronico
-            if (await this.userService.isEmailNew(datos.recieverName)) {//La cuenta de destinatario fue creada ahora
-              this.ekeyService.sendEmail_solicitanteEkey(datos.recieverName, datos.name, this.getSelectedDayNames(selectedDayNumbers, this.weekDays), moment(newStartDate).format('HH:mm'), moment(newEndDate).format('HH:mm'));
-              console.log("La cuenta es nueva, cambiar contraseña")
-            } else {//La cuenta de destinatario ya existia
-              this.ekeyService.sendEmail_solicitanteEkey(datos.recieverName, datos.name, this.getSelectedDayNames(selectedDayNumbers, this.weekDays), moment(newStartDate).format('HH:mm'), moment(newEndDate).format('HH:mm'));
-              console.log("La cuenta ya existia, mandar correo normal")
-            }
-          } else {//La cuenta es un numero de celular
-            console.log("No es un correo, por lo tanto deberia ser un numero. Mandar mensaje de texto en vez de correo")
-          }
-          localStorage.setItem(datos.recieverName, "1");
-          this.router.navigate(["users", this.username, "lock", this.lockId]);
-        } else {
-          if (typedResponse.errcode === -1002) {//Destinatario inválido
-            this.error = "El nombre del destinatario es inválido"
-          }
-          console.log("error:", typedResponse);
-        }
-        */
-        ///////////AQUI TERMINA EKEY SOLICITANTE////////////////////////////////////////////
       }
     } catch (error) {
       console.error("Error while creating Ekey:", error);

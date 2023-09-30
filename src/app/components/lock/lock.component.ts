@@ -19,7 +19,7 @@ import { Group } from '../../Interfaces/Group';
 import { lastValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserServiceService } from 'src/app/services/user-service.service';
-import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse, LockListResponse, GroupResponse } from '../../Interfaces/API_responses';
+import { RecordResponse, EkeyResponse, PasscodeResponse, CardResponse, FingerprintResponse, GatewayAccountResponse, GatewayLockResponse, operationResponse, GetLockTimeResponse, LockListResponse, GroupResponse, getByUserAndLockIdResponse } from '../../Interfaces/API_responses';
 import { PassageMode } from 'src/app/Interfaces/PassageMode';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
@@ -30,6 +30,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   encapsulation: ViewEncapsulation.None,
 })
 export class LockComponent implements OnInit {
+  pageLoaded = false;
   //encapsulation: ViewEncapsulation.None;
   ////////////////////////////////////////////////////////////
   faBatteryFull = faBatteryFull
@@ -41,12 +42,12 @@ export class LockComponent implements OnInit {
   faWifi = faWifi
   ////////////////////////////////////////////////////////////
   isLoading: boolean = false;
-  lock: LockData;
+  //lock: LockData;
   lockDetails: LockDetails;
   token = sessionStorage.getItem('token') ?? '';
   username = sessionStorage.getItem('user') ?? ''
   lockId: number = Number(sessionStorage.getItem('lockID') ?? '')
-  Alias = sessionStorage.getItem('Alias') ?? '';
+  Alias: string;
   Bateria = sessionStorage.getItem('Bateria') ?? '';
   userType = sessionStorage.getItem('userType') ?? '';
   keyRight = sessionStorage.getItem('keyRight') ?? '';
@@ -79,6 +80,7 @@ export class LockComponent implements OnInit {
   displayedColumnsCard: string[] = ['cardName', 'cardNumber', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsFingerprint: string[] = ['fingerprintName', 'senderUsername', 'createDate', 'Asignacion', 'Estado', 'Operacion']
   displayedColumnsRecord: string[] = ['Operador', 'Metodo_Apertura', 'Horario_Apertura', 'Estado']
+  isUserValue: boolean;
 
   constructor(
     private router: Router,
@@ -164,21 +166,9 @@ export class LockComponent implements OnInit {
     await this.fetchEkeys();
     await this.getAllLocks();
     await this.fetchGroups();
-    //await this.getLocksWithoutGroup();
-    this.groupService.selectedGroupSubject.subscribe(async selectedGroup => {
-      if (selectedGroup) {
-        await this.fetchLocks(selectedGroup.groupId);
-        //console.log("All Locks",this.allLocks)
-        //console.log("Locks without group",this.locksWithoutGroup)
-      }
-    });
-  
+    await this.fetchLockDetails();
     //console.log("Los detalles del lock: ", this.lockDetails)
-    //console.log("eKeys: ", this.ekeys)
-    //console.log("Passcodes: ", this.passcodes)
-    //console.log("Cards: ", this.cards)
-    //console.log("Fingerprints: ", this.fingerprints)
-    //console.log("Records: ", this.records)
+    this.Alias = this.lockDetails.lockAlias;
     for (const feature of this.featureList) {
       const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
       if (isSupported) {
@@ -186,6 +176,12 @@ export class LockComponent implements OnInit {
       }
     }
     this.ekeysDataSource = new MatTableDataSource(this.ekeys);
+    if(sessionStorage.getItem('Account') === 'Vohk'){
+      this.isUserValue = await this.isUser(this.encodeNombre(this.username))
+    } else {
+      this.isUserValue = await this.isUser(this.username);
+    }
+    this.pageLoaded = true;
   }
   async getAllLocks() {
     this.isLoading = true;
@@ -307,6 +303,10 @@ export class LockComponent implements OnInit {
       const response = await lastValueFrom(this.ekeyService.getEkeysofLock(this.token, this.lockId, pageNo, 100))
       const typedResponse = response as EkeyResponse;
       if (typedResponse?.list) {
+        for (const ekey of typedResponse.list) {
+          ekey.isuser = await this.isUser(ekey.username);
+        }
+
         this.ekeys.push(...typedResponse.list);
         if (typedResponse.pages > pageNo) {
           await this.fetchEkeysPage(pageNo + 1);
@@ -507,38 +507,51 @@ export class LockComponent implements OnInit {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0:
+        this.ekeys = [];
         await this.fetchEkeys();
         this.ekeysDataSource = new MatTableDataSource(this.ekeys);
+        //console.log("eKeys: ", this.ekeys)
         break;
       case 1:
+        this.passcodes = [];
         await this.fetchPasscodes();
         this.updatePasscodeUsage()
         this.passcodesDataSource = new MatTableDataSource(this.passcodes);
         this.passcodesFiltradas = this.passcodes.filter(passcode => passcode.senderUsername === this.encodeNombre(this.username));
+        //console.log("Passcodes: ", this.passcodes)
         break;
       case 2:
+        this.cards = [];
         await this.fetchCards();
         this.cardsDataSource = new MatTableDataSource(this.cards);
+        //console.log("Cards: ", this.cards)
         break;
       case 3:
+        this.fingerprints = [];
         await this.fetchFingerprints();
         this.fingerprintsDataSource = new MatTableDataSource(this.fingerprints);
+        //console.log("Fingerprints: ", this.fingerprints)
         break;
       case 4:
+        this.records = [];
         await this.fetchRecords();
         this.recordsDataSource = new MatTableDataSource(this.records);
         this.recordsFiltrados = this.records.filter(record => record.username === this.encodeNombre(this.username));
+        //console.log("Records: ", this.records)
         break;
     }
   }
   Number(palabra: string) {
     return Number(palabra)
   }
-  rol(username: string) {
-    if (this.userService.isInAccessList(username, this.lockId)) {
-      return 'Usuario'
+  async isUser(username: string) {
+    let response = await lastValueFrom(this.ekeyService.getIsUser(username, this.lockId)) as getByUserAndLockIdResponse;
+    if(response.isuser) {
+      console.log("isUser de ",response.accountname,response.isuser)
+      return response.isuser;
     } else {
-      return 'Administrador Secundario'
+      console.log("isUser de ",username,'false')
+      return false
     }
   }
   encodeNombre(username: string) {
@@ -1170,7 +1183,7 @@ export class LockComponent implements OnInit {
     this.popupService.desautorizar = true;
   }
   AutorizarFalso(ekeyUsername: string) {
-    this.popupService.elementType = ekeyUsername;
+    this.popupService.elementType = ekeyUsername;;
     this.popupService.lockID = this.lockId;
     this.popupService.autorizarFalso = true;
   }

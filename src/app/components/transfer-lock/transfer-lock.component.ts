@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { operationResponse } from 'src/app/Interfaces/API_responses';
+import { EkeyServiceService } from 'src/app/services/ekey-service.service';
 import { LockServiceService } from 'src/app/services/lock-service.service';
 import { PopUpService } from 'src/app/services/pop-up.service';
 import { UserServiceService } from 'src/app/services/user-service.service';
@@ -13,7 +14,12 @@ import { UserServiceService } from 'src/app/services/user-service.service';
 })
 export class TransferLockComponent {
 
-  constructor(private userService: UserServiceService, public popupService: PopUpService, private lockService: LockServiceService, private router: Router) { }
+  constructor(
+    private userService: UserServiceService, 
+    public popupService: PopUpService, 
+    private lockService: LockServiceService, 
+    private ekeyService: EkeyServiceService, 
+    private router: Router) { }
 
   error: string = '';
   username = sessionStorage.getItem('user') ?? ''
@@ -32,14 +38,15 @@ export class TransferLockComponent {
       if (response.errcode === 0) {//Es cuenta TTLock
         this.router.navigate(["users", sessionStorage.getItem('user') ?? '']);
         console.log("La cerradura se transfirió a la cuenta TTLock exitosamente")
-        this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
+        
+        lastValueFrom(this.ekeyService.changeIsUser(this.recieverUsername, Number(lockID), false))
       } else if (response.errcode === -1002) {
         let encode = this.userService.customBase64Encode(this.recieverUsername);
         response = await lastValueFrom(this.lockService.transferLock(this.lockService.token, 'bhaaa_'.concat(encode), lockIDList)) as operationResponse;
         if (response.errcode == 0) {//Es cuenta VOHK
           this.router.navigate(["users", sessionStorage.getItem('user') ?? '']);
           console.log("La cerradura se transfirió a la cuenta VOHK exitosamente")
-          this.userService.removeLockFromAccessList(this.recieverUsername, Number(lockID))
+          lastValueFrom(this.ekeyService.changeIsUser('bhaaa_'.concat(encode), Number(lockID), false))
         } else if (response.errcode === -1002) {
           this.error = 'El receptor ingresado no tiene una cuenta registrada.'
         } else {
