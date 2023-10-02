@@ -110,7 +110,7 @@ export class UserServiceService {
   }
   ResetPassword(nombre: string, clave: string): Observable<ResetPasswordResponse> {
     let body = { nombre, clave };
-    let url = 'http://localhost:3000/api/ttlock/resetPassword'
+    let url = 'http://localhost:3000/api/ttlock/user/resetPassword'
     return this.http.post<ResetPasswordResponse>(url, body);
   }
   sendEmail_NewUser(recipientEmail: string, password: string) {//Template para passcode recurrente
@@ -165,6 +165,18 @@ export class UserServiceService {
     let body = {
       accountName,
       nickname
+    }
+    return this.http.put(url, body, options);
+  }
+  changePasswordDB(accountName: string, password: string) {
+    let url = `http://localhost:3000/api/usuarios/password`;
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    let options = { headers };
+    let body = {
+      accountName,
+      password
     }
     return this.http.put(url, body, options);
   }

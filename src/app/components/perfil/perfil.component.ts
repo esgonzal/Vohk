@@ -48,6 +48,8 @@ export class PerfilComponent implements OnInit {
   }
   resetPassword() {
     if (this.getAccountType() === 'Vohk') {
+      this.popupService.accountName = this.accountname;
+      this.popupService.password = this.password;
       this.popupService.resetPassword = true;
     } else {
       this.popupService.wrongAccountType = true;
