@@ -31,16 +31,11 @@ export class NavbarComponent {
     sessionStorage.removeItem('password');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('keyRight');
-    sessionStorage.removeItem('Bateria');
-    sessionStorage.removeItem('Alias');
     sessionStorage.removeItem('userType');
     sessionStorage.removeItem('startDate');
     sessionStorage.removeItem('endDate');
-    sessionStorage.removeItem('senderUsername');
     sessionStorage.removeItem('lockID');
-    sessionStorage.removeItem('gateway');
     sessionStorage.removeItem('logged');
-    sessionStorage.removeItem('features');
     sessionStorage.removeItem('Account');
     sessionStorage.removeItem('email');
     sessionStorage.removeItem('phone');

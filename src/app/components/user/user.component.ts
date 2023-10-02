@@ -183,14 +183,10 @@ export class UserComponent implements OnInit {
   }
   onLockButtonClick(lock: LockData) {
     sessionStorage.setItem('lockID', lock.lockId.toString())
-    sessionStorage.setItem('Alias', lock.lockAlias)
-    sessionStorage.setItem('Bateria', lock.electricQuantity.toString())
     sessionStorage.setItem('userType', lock.userType)
     sessionStorage.setItem('keyRight', lock.keyRight.toString())
     sessionStorage.setItem('startDate', lock.startDate)
     sessionStorage.setItem('endDate', lock.endDate)
-    sessionStorage.setItem('gateway', lock.hasGateway.toString())
-    sessionStorage.setItem('features', lock.featureValue)
     this.router.navigate(['users', this.username, 'lock', lock.lockId])
   }
   onInvalidButtonClick() {

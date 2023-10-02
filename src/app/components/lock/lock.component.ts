@@ -42,20 +42,18 @@ export class LockComponent implements OnInit {
   faWifi = faWifi
   ////////////////////////////////////////////////////////////
   isLoading: boolean = false;
-  //lock: LockData;
   lockDetails: LockDetails;
   token = sessionStorage.getItem('token') ?? '';
   username = sessionStorage.getItem('user') ?? ''
   lockId: number = Number(sessionStorage.getItem('lockID') ?? '')
-  Alias: string;
-  Bateria = sessionStorage.getItem('Bateria') ?? '';
   userType = sessionStorage.getItem('userType') ?? '';
   keyRight = sessionStorage.getItem('keyRight') ?? '';
   startDateDeUser = sessionStorage.getItem('startDate') ?? '';
   endDateDeUser = sessionStorage.getItem('endDate') ?? '';
-  fullName = sessionStorage.getItem('user') ?? '';
-  gateway = sessionStorage.getItem('gateway') ?? '';
-  featureValue = sessionStorage.getItem('features') ?? '';
+  Alias: string;
+  Bateria: string
+  gateway:string;
+  featureValue:string;
   ////////////////////////////////////////////////////////////
   ekeys: Ekey[] = []
   passcodes: Passcode[] = []
@@ -169,6 +167,9 @@ export class LockComponent implements OnInit {
     await this.fetchLockDetails();
     //console.log("Los detalles del lock: ", this.lockDetails)
     this.Alias = this.lockDetails.lockAlias;
+    this.Bateria = this.lockDetails.electricQuantity.toString();
+    this.gateway = this.lockDetails.hasGateway.toString();
+    this.featureValue = this.lockDetails.featureValue;
     for (const feature of this.featureList) {
       const isSupported = this.lockService.checkFeature(this.featureValue, feature.bit);
       if (isSupported) {
@@ -547,10 +548,8 @@ export class LockComponent implements OnInit {
   async isUser(username: string) {
     let response = await lastValueFrom(this.ekeyService.getIsUser(username, this.lockId)) as getByUserAndLockIdResponse;
     if(response.isuser) {
-      console.log("isUser de ",response.accountname,response.isuser)
       return response.isuser;
     } else {
-      console.log("isUser de ",username,'false')
       return false
     }
   }

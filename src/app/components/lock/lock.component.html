@@ -151,7 +151,7 @@
                           <th mat-header-cell *matHeaderCellDef class="table-cell">Operacion</th>
                           <td mat-cell *matCellDef="let ekey" class="table-cell">
                             <button
-                              *ngIf="( (userType==='110301') || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) || (ekey.username===fullName) )"
+                              *ngIf="( (userType==='110301') || (userType==='110302' && keyRight==='1' && ekey.senderUsername===username) || (ekey.username===username) )"
                               mat-button class="mat-warn" (click)="borrarEkey(ekey.keyId, decodeNombre(ekey.username))">Eliminar</button>
                             <!--
                             <button
@@ -160,15 +160,15 @@
                               Nombre</button>
                             -->
                             <button
-                              *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName) )"
+                              *ngIf="( userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===username) )"
                               mat-button class="mat-primary" (click)="cambiarPeriodoEkey(ekey.keyId)">Editar
                               Periodo</button>
                             <button
-                              *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName)) && ekey.keyStatus==='110401'"
+                              *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===username)) && ekey.keyStatus==='110401'"
                               mat-button class="mat-primary"
                               (click)="congelar(ekey.keyId, ekey.username)">Congelar</button>
                             <button
-                              *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===fullName)) && ekey.keyStatus==='110405'"
+                              *ngIf="(userType==='110301' || (userType==='110302' && keyRight==='1' && ekey.senderUsername===username)) && ekey.keyStatus==='110405'"
                               mat-button class="mat-primary"
                               (click)="descongelar(ekey.keyId, ekey.username)">Descongelar</button>
                             <!--
