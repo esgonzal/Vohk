@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Md5 } from 'ts-md5';
 import { Observable, lastValueFrom } from 'rxjs';
-import { GetAccessTokenResponse, ResetPasswordResponse, UserRegisterResponse, checkUserInDBResponse } from '../Interfaces/API_responses';
+import { GetAccessTokenResponse, ResetPasswordResponse, UserRegisterResponse, checkUserInDBResponse, getUserInDBResponse } from '../Interfaces/API_responses';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import emailjs from 'emailjs-com';
 
@@ -147,6 +147,14 @@ export class UserServiceService {
     });
     let options = { headers };
     return this.http.get<checkUserInDBResponse>(url, options);
+  }
+  getUserDB(accountName: string): Observable<getUserInDBResponse>{
+    let url = `http://localhost:3000/api/usuarios/${accountName}`;
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    let options = { headers };
+    return this.http.get<getUserInDBResponse>(url, options);
   }
 
 }

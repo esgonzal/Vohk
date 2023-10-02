@@ -1,43 +1,62 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { PopUpService } from '../../services/pop-up.service';
+import { UserServiceService } from 'src/app/services/user-service.service';
+import { getUserInDBResponse } from 'src/app/Interfaces/API_responses';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.css']
 })
-export class PerfilComponent {
-
-  constructor(public popupService: PopUpService){}
+export class PerfilComponent implements OnInit {
 
   faEye = faEye;
   faEyeSlash = faEyeSlash;
-  username = sessionStorage.getItem('nickname') ?? ''
-  account = sessionStorage.getItem('user') ?? ''
-  password = sessionStorage.getItem('password') ?? ''
-  email = sessionStorage.getItem('email') ?? ''
-  country = sessionStorage.getItem('country') ?? ''
-  phone = sessionStorage.getItem('phone') ?? ''
+  accountname: string;
+  originalusername: string;
+  nickname: string;
+  email: string;
+  phone: string;
+  password: string;
   showPassword = false;
+  dataLoaded = false;
 
+  constructor(public popupService: PopUpService, private userService: UserServiceService) { }
+
+  async ngOnInit() {
+    const accountName = 'bhaaa_'.concat(this.userService.customBase64Encode(sessionStorage.getItem('user') || ''));
+    if (accountName) {
+      const response = await lastValueFrom(this.userService.getUserDB(accountName)) as getUserInDBResponse;
+      if (response) {
+        this.accountname = response.accountname || '';
+        this.originalusername = response.originalusername || '';
+        this.nickname = response.nickname || '';
+        this.email = response.email || '';
+        this.phone = response.phone || '';
+        this.password = response.password || '';
+        this.dataLoaded = true;
+      }
+    }
+  }
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
   maskPassword(password: string) {
     return '*'.repeat(password.length);
   }
-  resetPassword(){
-    if(this.getAccountType() === 'Vohk') {
+  resetPassword() {
+    if (this.getAccountType() === 'Vohk') {
       this.popupService.resetPassword = true;
     } else {
       this.popupService.wrongAccountType = true;
     }
   }
-  getAccountType(){
+  getAccountType() {
     return sessionStorage.getItem('Account');
   }
-  cambiarNombre(){
+  cambiarNickname() {
     this.popupService.changeNickname = true;
   }
 }

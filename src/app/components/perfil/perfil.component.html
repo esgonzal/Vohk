@@ -1,42 +1,31 @@
 <div class="pagina_completa">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a [routerLink]="['/users', username]">Mis Dispositivos</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="['/users', accountname]">Mis Dispositivos</a></li>
       <li class="breadcrumb-item active" aria-current="page">Perfil de la Cuenta</li>
     </ol>
   </nav>
-  <div class="resto">
+  <div class="resto" *ngIf="dataLoaded">
     <div class="linea">
       <div class="titulo">
-        Nombre de Usuario
+        Cuenta
       </div>
       <div class="content">
-        {{username}}
-      </div>
-      <div class="-button">
-        <button (click)="cambiarNombre()">Editar</button>
-      </div>
-    </div>
-    <div class="linea">
-      <div class="titulo">
-        País / region
-      </div>
-      <div class="content">
-        {{country}}
-      </div>
-      <div class="-button">
-
-      </div>
-    </div>
-    <div class="linea">
-      <div class="titulo">
-        Account
-      </div>
-      <div class="content">
-        {{account}}
+        {{originalusername}}
       </div>
       <div class="-button">
         
+      </div>
+    </div>
+    <div class="linea">
+      <div class="titulo">
+        nickname
+      </div>
+      <div class="content">
+        {{nickname}}
+      </div>
+      <div class="-button">
+        <button (click)="cambiarNickname()">Editar</button>
       </div>
     </div>
     <div class="linea">

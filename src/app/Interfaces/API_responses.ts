@@ -113,6 +113,14 @@ export interface GetLockTimeResponse {
 export interface checkUserInDBResponse {
     exists: boolean;
 }
+export interface getUserInDBResponse {
+    accountname: string;
+    originalusername: string;
+    nickname: string;
+    email: string;
+    phone: string;
+    password: string;
+}
 export interface getByUserAndLockIdResponse {
     accountname: string;
     lockid: number;
