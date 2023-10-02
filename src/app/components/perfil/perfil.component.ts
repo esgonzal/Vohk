@@ -57,6 +57,7 @@ export class PerfilComponent implements OnInit {
     return sessionStorage.getItem('Account');
   }
   cambiarNickname() {
+    this.popupService.accountName = this.accountname;
     this.popupService.changeNickname = true;
   }
 }

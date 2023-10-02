@@ -24,7 +24,7 @@ export class MultipleEkeyComponent {
     public popupService: PopUpService,
     private lockService: LockServiceService,
     private userService: UserServiceService) {
-      if (ekeyService.currentLocks.length === 0) {
+      if(!this.ekeyService.username || !this.ekeyService.token || !this.ekeyService.lockID || !this.ekeyService.endDateUser) {
         this.router.navigate(['users', sessionStorage.getItem('user'), 'lock', sessionStorage.getItem('lockID')])
       }
      }

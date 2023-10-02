@@ -20,9 +20,6 @@ import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 export class UserComponent implements OnInit {
 
   username = sessionStorage.getItem('user') ?? '';
-  password = sessionStorage.getItem('password') ?? '';
-  newPassword: string;
-  newPasswordDisplay = false;
   token = sessionStorage.getItem('token') ?? '';
   isLoading: boolean = false;
   ekeyList: LockListResponse;

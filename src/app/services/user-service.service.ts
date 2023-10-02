@@ -156,5 +156,17 @@ export class UserServiceService {
     let options = { headers };
     return this.http.get<getUserInDBResponse>(url, options);
   }
+  changeNicknameDB(accountName: string, nickname: string) {
+    let url = `http://localhost:3000/api/usuarios/nickname`;
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    let options = { headers };
+    let body = {
+      accountName,
+      nickname
+    }
+    return this.http.put(url, body, options);
+  }
 
 }

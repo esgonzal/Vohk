@@ -55,6 +55,7 @@ export class PopUpService {
   recipients: RecipientList[] = [];
   transferLockReciever: string;
   newIsUser: boolean;
+  accountName: string;
 
   toggleLockSelection(lockId: number) {
     const index = this.selectedLockIds_forMultipleEkeys.indexOf(lockId);

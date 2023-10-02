@@ -46,8 +46,6 @@ export class LoginComponent {
         this.access_token = response.access_token
         sessionStorage.setItem('logged', '1')
         sessionStorage.setItem('user', data.username)
-        sessionStorage.setItem('nickname', data.username)
-        sessionStorage.setItem('password', data.password);
         sessionStorage.setItem('token', this.access_token);
         sessionStorage.setItem('Account', 'TTLock')
         this.router.navigate(['/users/', data.username]);
@@ -59,17 +57,8 @@ export class LoginComponent {
           this.access_token = response.access_token
           sessionStorage.setItem('logged', '1')
           sessionStorage.setItem('user', data.username)
-          sessionStorage.setItem('nickname', data.username)
-          sessionStorage.setItem('password', data.password);
           sessionStorage.setItem('token', this.access_token);
           sessionStorage.setItem('Account', 'Vohk')
-          if(this.userService.isValidEmail(data.username)) { 
-            sessionStorage.setItem('email', data.username);
-          }
-          if(this.userService.isValidPhone(data.username).isValid) {
-            sessionStorage.setItem('phone', data.username)
-            sessionStorage.setItem('country', this.userService.isValidPhone(data.username).country ?? '')
-          }
           this.router.navigate(['/users/', data.username]);
         } else {
           this.loginError = "Nombre de usuario y/o contraseña inválidos";

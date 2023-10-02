@@ -586,11 +586,12 @@ export class PopUpComponent implements OnInit {
       this.isLoading = false;
     }
   }
-  changeNickname(datos: Formulario) {
+  async changeNickname(datos: Formulario) {
     if (!datos.name) {
       this.error = 'Ingrese un nombre'
     } else {
-      sessionStorage.setItem('nickname', datos.name)
+      const response = await lastValueFrom(this.userService.changeNicknameDB(this.popupService.accountName, datos.name))
+      console.log(response);
       this.popupService.changeNickname = false;
       window.location.reload();
     }

@@ -8,9 +8,4 @@ import emailjs from 'emailjs-com';
 })
 export class HomeComponent {
 
-  recipientEmail: string = '';
-  emailSubject: string = '';
-  emailContent: string = '';
-
-
 }
